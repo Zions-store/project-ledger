@@ -54,5 +54,22 @@ Based on what was found, classify the project type:
 - Game (unknown engine)
 - Other (describe briefly)
 
+### 6. Sub-Type Specific Hints
+
+**Docker projects** (`Dockerfile` + `docker-compose.yml` detected at step 2):
+- Read `Dockerfile` to identify base image, exposed ports, multi-stage builds
+- Read `docker-compose.yml` to identify services, volumes, networks
+- Entry points: `CMD` / `ENTRYPOINT` directives
+
+**Database projects** (`*.sql` + `migrations/` detected at step 2):
+- Identify DB engine from file extensions (`.sql`, `.psql`, `.mysql`)
+- Check for ORM migration frameworks (Prisma, Alembic, Flyway, etc.)
+- Entry points: schema files, seed scripts, main migration file
+
+**Shader projects** (`.glsl`/`.hlsl` detected at step 2):
+- Identify shader types: vertex, fragment/pixel, compute, geometry
+- Check for shader toolchain (ShaderLab, Unity Shader Graph, custom pipeline)
+- Entry points: main shader file or include chain
+
 ## AGENTS.md Output
 Follow the standard template. In "Notes", flag anything unusual and suggest the user create a type-specific rule pack if they work with this project type frequently.

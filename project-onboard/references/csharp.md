@@ -84,3 +84,10 @@ Extract:
 - `.editorconfig` → Code style rules
 - `Directory.Build.props` → MSBuild shared properties
 - `.github/workflows/` → CI/CD
+
+### 7. Build & Run Commands
+Extract from the project:
+- **Build**: `dotnet build` or `dotnet publish`
+- **Run**: `dotnet run` (console/web), `dotnet watch` (hot reload)
+- **Test**: `dotnet test` (xUnit/NUnit/MSTest)
+- **EF Core**: `dotnet ef` for database migrations

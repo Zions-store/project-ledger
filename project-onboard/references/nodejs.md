@@ -58,7 +58,15 @@ Find the actual entry file:
 - Vite: `index.html` in root
 - General: `glob **/index.{ts,js,tsx,jsx}` in src/
 
-### 5. Check for Config Files
+### 5. Build & Run Commands
+Extract from `package.json` scripts:
+- **Install**: `npm install` / `yarn` / `pnpm install`
+- **Dev**: Check `dev` or `start` script (e.g., `vite`, `next dev`, `nodemon`)
+- **Build**: Check `build` script
+- **Test**: Check `test` script (e.g., `jest`, `vitest`, `mocha`)
+- **Lint**: Check `lint` script
+
+### 6. Check for Config Files
 - `tsconfig.json` → TypeScript configuration
 - `tailwind.config.*` → Tailwind CSS
 - `.eslintrc.*` → Linting rules

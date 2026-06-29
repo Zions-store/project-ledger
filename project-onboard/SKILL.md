@@ -1,5 +1,6 @@
 ---
 name: project-onboard
+version: 1.1.0
 description: Analyze any project directory and generate AGENTS.md for AI context. Use when the user asks to "onboard", "analyze this project", "understand this project", "generate AGENTS.md", or provides a project path they want to understand. Supports auto-detection of Unity, Unreal, Node.js, Python, Rust, Go, Java, C/C++, C#, Lua, and general projects.
 ---
 

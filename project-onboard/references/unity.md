@@ -10,7 +10,7 @@
 
 ### 1. Read Package Dependencies
 ```bash
-read Assets/Packages/manifest.json (or Packages/manifest.json)
+read Packages/manifest.json
 ```
 Extract key packages and their purposes:
 - `com.unity.render-pipelines.universal` → URP
@@ -62,6 +62,12 @@ Read top 50 lines of each core script to extract class name and purpose.
 - `.asset` files: ScriptableObject data
 - `.prefab` files: YAML format, note but don't deep-read (can be very large)
 - `.unity` files: Scene data, YAML format, note entry scenes only
+
+### 7. Build & Run Commands
+- **Run in Editor**: Open the project in Unity Hub → Select version → Open
+- **Build**: File → Build Settings → select platform → Build
+- **Test**: Unity Test Framework (Window → General → Test Runner)
+- **Package Manager**: Packages managed via `Packages/manifest.json` (auto-resolved by Unity)
 
 ## AGENTS.md Additions for Unity
 Include:

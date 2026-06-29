@@ -1,5 +1,6 @@
 ---
 name: project-docs
+version: 1.0.0
 description: Initialize or update the three-document project knowledge system (AGENTS.md + PROJECT_STATE.md + DEVLOG.md). Use when the user says "init docs", "建立文档体系", "project-docs", "更新项目状态", or when a new project needs a living documentation framework.
 ---
 
@@ -59,8 +60,8 @@ For **non-English output**: translate section headers, labels, and placeholder d
 
 ### 1. Initialize (new project / missing documents)
 
-0. Ask the user what language to generate documents in:
-   > "What language should the project docs be written in? (e.g., English, 中文, 日本語, 한국어, Français)"
+0. Ask the user what language to generate documents in. Default to English if they skip or say "I don't care":
+   > "What language should the project docs be written in? (Default: English. Also supported: 中文, 日本語, 한국어, Français)"
 
 1. Check if `AGENTS.md` exists.
    - **If not**: Offer to run the `project-onboard` skill first to generate AGENTS.md. Stop here.
@@ -82,7 +83,7 @@ For **non-English output**: translate section headers, labels, and placeholder d
    - Fill in project name.
    - Leave the entry template ready for the first development log entry.
 
-5. Prepend the following block to the top of `AGENTS.md` (after the title/H1 line):
+5. Prepend the following block to the top of `AGENTS.md`, directly after the `# Project Name` heading line (but before the rest of the content):
    ```markdown
    ## Read This First
 

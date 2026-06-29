@@ -80,7 +80,15 @@ Lua has no built-in module system. Check which pattern is used:
 - Custom `require` wrappers (common in game engines)
 - `import` → Moonscript
 
-### 6. Check for Config Files
+### 6. Build & Run Commands
+Extract from project manifests:
+- **Test**: `busted` (BDD) or `luaunit` or `luacheck .`
+- **Install deps**: `luarocks install` or `luarocks make`
+- **Run**: Project-specific — check Makefile, `main.lua` entry, or README
+- **LÖVE2D**: `love .`
+- **CI**: Check `.travis.yml` / `.github/workflows/` for test commands
+
+### 7. Check for Config Files
 - `.luacheckrc` → Linting rules and globals configuration
 - `.busted` → Test framework config
 - `.luacov` → Coverage config

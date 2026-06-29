@@ -68,7 +68,14 @@ Common framework classes:
 - Is Networking in use? → Check `bReplicates` patterns + OnlineSubsystem
 - Blueprint-heavy or C++-heavy? → Compare `Content/` vs `Source/` file counts
 
-## AGENTS.md Additions for Unreal
+### 8. Build & Run Commands
+- **Generate project files**: Right-click `.uproject` → Generate Visual Studio project files
+- **Build**: Open `.sln` in Visual Studio → Build, or `UnrealBuildTool` from command line
+- **Run in Editor**: Double-click `.uproject` or launch from Epic Games Launcher
+- **Hot Reload**: Ctrl+Alt+F11 in editor (`.cpp` function body changes only; full rebuild for header changes)
+- **Cook/Package**: File → Package Project in the editor
+
+### 9. Identify Patterns
 Include:
 - Engine version from `.uproject`
 - Modules list with brief purpose

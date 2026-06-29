@@ -55,7 +55,15 @@ read pyproject.toml (check "requires-python")
 read .python-version (if exists)
 ```
 
-### 5. Config Files
+### 5. Build & Run Commands
+Extract from project configuration:
+- **Install deps**: `pip install -r requirements.txt` or `poetry install` or `pipenv install`
+- **Run**: `python main.py` or `uvicorn app:app` (FastAPI) or `python manage.py runserver` (Django)
+- **Test**: `pytest` or `python -m pytest` or `python manage.py test` (Django)
+- **Lint**: `ruff`, `flake8`, `mypy`
+- **Format**: `black`, `isort`
+
+### 6. Config Files
 - `.env` / `.env.example` → Environment variables
 - `Dockerfile` → Container deployment
 - `docker-compose.yml` → Multi-service

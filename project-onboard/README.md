@@ -58,11 +58,20 @@ Also compatible with `.claude/skills/` and `.agents/skills/`.
 
 ## Usage
 
-```
-# Auto-detect project type
-onboard C:\my-unity-project
+Just tell your AI agent:
 
-# Skip detection, force a specific type
+```
+onboard this project
+analyze my project
+help me understand this project
+generate AGENTS.md for this project
+what does this project do?
+```
+
+Or specify a path and optional type:
+
+```
+onboard C:\my-unity-project
 onboard C:\my-project --type unity
 ```
 
