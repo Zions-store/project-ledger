@@ -23,7 +23,7 @@ Turn any project directory into an AGENTS.md that gives the AI agent instant pro
 ## Parameters
 
 - **path** (required): Project directory path
-- **type** (optional): Force project type, skip auto-detection. Values: `unity`, `unreal`, `nodejs`, `python`, `rust`, `go`, `java`, `cpp`, `csharp`, `lua`, `general`
+- **type** (optional): Force project type, skip auto-detection. Values: `unity`, `unreal`, `nodejs`, `python`, `rust`, `go`, `java`, `cpp`, `csharp`, `lua`, `general`. If an invalid value is given, warn the user and fall back to auto-detection.
 - **output** (optional): Where to save AGENTS.md. Default: `<project_root>/AGENTS.md`
 
 ## Execution Flow
@@ -31,6 +31,10 @@ Turn any project directory into an AGENTS.md that gives the AI agent instant pro
 ### Step 1: Confirm the Target
 
 If no path given, ask the user which project to analyze. If path is relative, resolve to absolute. Confirm with user before proceeding.
+
+**Edge cases:**
+- **Empty directory** (fewer than 10 files): Default to `general` type. Note in AGENTS.md that the project appears to be in very early stage.
+- **Monorepo** (multiple build systems at top level, e.g. a `frontend/` directory with its own `package.json` plus a `backend/` with `go.mod`): Inform the user that multiple project types were detected and ask which sub-directory to target. Record in AGENTS.md that this is a monorepo with listed sub-projects.
 
 ### Step 2: Quick Scan for Project Type (if --type not specified)
 
@@ -50,7 +54,9 @@ Use `glob` with pattern `*` to list top-level directory entries. Match the resul
 | `*.rockspec` or `lua_modules/` or `.luacheckrc` or `.busted` | lua | `references/lua.md` |
 | None of the above | general | `references/general.md` |
 
-Check in order. First match wins. When multiple signatures could match (e.g., a project with both `package.json` and `CMakeLists.txt`), prefer the one that appears first. If unsure or if the detected type seems wrong after scanning, fall back to `general` or ask the user to specify `--type`.
+Check in order. First match wins. When multiple signatures could match (e.g., a project with both `package.json` and `CMakeLists.txt`), prefer the one that appears first in the table. If ambiguous or the detected type seems wrong after scanning, fall back to `general` or ask the user to specify `--type`.
+
+> **Ordering note**: The detection order is deliberate. Unity appears before Node.js and C# because Unity projects also contain `package.json` and `*.csproj` files in their `ProjectSettings/` directory. Do not reorder without understanding these signature overlaps.
 
 > **Sub-type detection**: Projects with `Dockerfile`, database files (`*.sql` + `migrations/`), or shader files (`.glsl`/`.hlsl`) are detected as `general` at Step 2. The `references/general.md` rule pack handles these during the deep scan.
 
