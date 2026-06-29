@@ -35,7 +35,7 @@ Per major milestone (~every 3-5 new files/classes, or weekly).
 
 ### Per-section update frequency
 
-Sections adapt to project type. Unreal and Unity have engine-specific sections; all other types use the generic template. See SKILL.md "Template Selection by Project Type" for exact section naming.
+Sections adapt to project type. Unreal and Unity have engine-specific sections; all other types use the generic template. See SKILL.md "Template Selection" for auto-discovery rules.
 
 | Section (generic / game-engine) | Frequency | Trigger |
 |---------|-----------|---------|

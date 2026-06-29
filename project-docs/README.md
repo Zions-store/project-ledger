@@ -48,19 +48,15 @@ project-docs/
 ├── maintenance-spec.md         # Detailed update rules
 └── templates/
     ├── DEVLOG.md.tmpl          # Shared across all project types
-    ├── PROJECT_STATE.md.tmpl   # Generic template (Node, Python, Rust, Go, Java, C++, C#, Lua, etc.)
+    ├── PROJECT_STATE.md.tmpl   # Generic fallback template (for any type without its own)
     ├── unreal/
-    │   └── PROJECT_STATE.md.tmpl  # Unreal Engine template (Blueprint, InputActions, Game Systems, Hot Reload)
+    │   └── PROJECT_STATE.md.tmpl  # Unreal Engine (Blueprint, InputActions, Game Systems, Hot Reload)
     └── unity/
-        └── PROJECT_STATE.md.tmpl  # Unity template (Prefabs, Input System Package, Scenes, Build Profiles)
+        └── PROJECT_STATE.md.tmpl  # Unity (Prefabs, Input System Package, Scenes, Build Profiles)
 ```
 
 ## Template Selection
 
-The skill reads the `Type` field from `AGENTS.md` and auto-selects the matching template:
+Templates are auto-discovered — like project-onboard rule packs. The skill tries `templates/<type>/PROJECT_STATE.md.tmpl` where `<type>` comes from the AGENTS.md Type field. If no match, it falls back to `templates/PROJECT_STATE.md.tmpl`.
 
-| AGENTS.md Type | Template |
-|---|---|
-| `unreal` | `templates/unreal/PROJECT_STATE.md.tmpl` |
-| `unity` | `templates/unity/PROJECT_STATE.md.tmpl` |
-| `nodejs`, `python`, `rust`, `go`, `java`, `cpp`, `csharp`, `lua`, `general` | `templates/PROJECT_STATE.md.tmpl` |
+**Adding a new engine/framework**: drop a `templates/<name>/PROJECT_STATE.md.tmpl` file. Zero code changes. The skill discovers it on next run.

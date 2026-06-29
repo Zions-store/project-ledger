@@ -21,17 +21,18 @@ Creates and maintains a three-document project knowledge system. Supports all pr
 
 See `maintenance-spec.md` for detailed rules on update triggers, content boundaries, and consistency checks.
 
-## Template Selection by Project Type
+## Template Selection
 
-The skill auto-selects the right `PROJECT_STATE.md` template based on the project type declared in `AGENTS.md` (under **Basic Information → Type**):
+Templates follow the same auto-discovery pattern as `project-onboard` rule packs. The skill attempts to load `templates/<type>/PROJECT_STATE.md.tmpl` where `<type>` is the lowercased Type value from `AGENTS.md` Basic Information. If no type-specific template exists, it falls back to `templates/PROJECT_STATE.md.tmpl`.
 
-| AGENTS.md Type | Template | Sections adapted for |
-|---|---|---|
-| `unreal` | `templates/unreal/PROJECT_STATE.md.tmpl` | Blueprint, Input System, Game Systems, Level Config, C++ Hot Reload |
-| `unity` | `templates/unity/PROJECT_STATE.md.tmpl` | Prefabs, Input System Package, Scenes, Build Profiles |
-| `nodejs`, `python`, `rust`, `go`, `java`, `cpp`, `csharp`, `lua`, `general` | `templates/PROJECT_STATE.md.tmpl` | Generic: module map, configuration, services, build commands |
+```
+templates/<type>/PROJECT_STATE.md.tmpl exists? → use it
+                                             no → use templates/PROJECT_STATE.md.tmpl (generic fallback)
+```
 
-All types share the same `templates/DEVLOG.md.tmpl` (project-type-agnostic).
+Adding support for a new engine or framework: create `templates/<type>/PROJECT_STATE.md.tmpl`. No code changes needed — the skill discovers it automatically.
+
+All types share `templates/DEVLOG.md.tmpl` (project-type-agnostic).
 
 ## AGENTS.md → PROJECT_STATE.md Field Mapping
 
@@ -70,10 +71,9 @@ For **non-English output**: translate section headers, labels, and placeholder d
      - **Type** (from Basic Information — e.g., "unreal", "unity", "nodejs", "python")
      - Core architecture (classes, files, roles)
 
-2. **Detect template**: Based on the extracted Type, load the corresponding PROJECT_STATE template:
-   - `unreal` → `templates/unreal/PROJECT_STATE.md.tmpl`
-   - `unity` → `templates/unity/PROJECT_STATE.md.tmpl`
-   - Any other type → `templates/PROJECT_STATE.md.tmpl` (generic)
+2. **Detect template**: Based on the extracted Type (lowercased), try to load a type-specific template. If no match, fall back to the generic template:
+   - First try `templates/<type>/PROJECT_STATE.md.tmpl`
+   - If that file does not exist, use `templates/PROJECT_STATE.md.tmpl` (generic)
 
 3. Generate `PROJECT_STATE.md` from the selected template:
    - Pre-fill §1-§3 from AGENTS.md data using the field mapping table above.
@@ -124,16 +124,19 @@ After any update, verify:
 
 ## Templates
 
-Type-specific templates — auto-selected based on project type in AGENTS.md:
+Templates are auto-discovered by project type — no hardcoded mapping table. The directory mirrors the `project-onboard` reference structure:
 
-| Template | Scope | Sections |
-|----------|-------|----------|
-| `templates/unreal/PROJECT_STATE.md.tmpl` | Unreal Engine | §1-§10 with Blueprint, InputActions, Game Systems, Level Config, Hot Reload |
-| `templates/unity/PROJECT_STATE.md.tmpl` | Unity | §1-§10 with Prefabs, Input System Package, Scenes, Build Profiles |
-| `templates/PROJECT_STATE.md.tmpl` | Generic (all other types) | §1-§10 with Module Map, Configuration, Services, Build Commands |
-| `templates/DEVLOG.md.tmpl` | All types | Timeline entry format — project-type-agnostic |
+```
+templates/
+├── DEVLOG.md.tmpl              ← All types (generic)
+├── PROJECT_STATE.md.tmpl       ← Fallback (generic)
+├── unreal/PROJECT_STATE.md.tmpl     ← Unreal Engine
+└── unity/PROJECT_STATE.md.tmpl      ← Unity
+```
 
-Adding a new project type: create a `templates/<type>/PROJECT_STATE.md.tmpl` with type-specific sections, and add the type to the selection table in this SKILL.md.
+`templates/<type>/PROJECT_STATE.md.tmpl` files are optional. The skill tries to load one matching the AGENTS.md Type; if absent, it uses the root generic template.
+
+**Adding a new type**: create `templates/<type>/PROJECT_STATE.md.tmpl` with type-specific sections. The skill discovers it on the next run — zero code changes.
 
 ## Rules
 
