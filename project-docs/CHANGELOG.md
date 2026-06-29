@@ -2,14 +2,7 @@
 
 ## [Unreleased]
 
-### Added
-- 
-
-### Changed
-- 
-
-### Fixed
-- 
+_No unreleased changes yet._
 
 ---
 

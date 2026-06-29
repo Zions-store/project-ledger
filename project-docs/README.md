@@ -1,3 +1,6 @@
+Copyright (C) 2026 ZionXiaoxiSuOGLocGo
+SPDX-License-Identifier: GPL-3.0-or-later
+
 # Project Docs
 
 Initialize and maintain a three-document project knowledge system that gives AI agents persistent project context across sessions.
@@ -8,7 +11,7 @@ Creates and maintains three documents:
 
 | File | Purpose | Update Frequency |
 |------|---------|-----------------|
-| `AGENTS.md` | Project overview: identity, directory structure, class architecture, entry points, dependencies | Per milestone (~3-5 new files/classes) |
+| `AGENTS.md` | Project overview: identity, directory structure, class architecture, entry points, dependencies, Notes | Per milestone (~3-5 new files/classes) |
 | `PROJECT_STATE.md` | Living document: full class spectrum, blueprint config, input system map, game flows, done/todo list | Every session end |
 | `DEVLOG.md` | Development log: timeline entries with what was done, why, and lessons learned | Per day or per feature milestone |
 

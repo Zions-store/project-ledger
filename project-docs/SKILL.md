@@ -35,7 +35,7 @@ See `maintenance-spec.md` for detailed rules on update triggers, content boundar
    > "What language should the project docs be written in? (e.g., English, 中文, 日本語, 한국어, Français)"
 
 1. Check if `AGENTS.md` exists.
-   - **If not**: Tell user to run `/init` or enable project-onboard skill first to generate AGENTS.md. Stop here.
+   - **If not**: Guide user to generate AGENTS.md first (e.g., run the project-onboard skill or similar initialization). Stop here.
    - **If yes**: Read and extract project name, engine version, class list from it.
 
 2. Generate `PROJECT_STATE.md` from `templates/PROJECT_STATE.md.tmpl`:

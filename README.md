@@ -1,3 +1,6 @@
+Copyright (C) 2026 ZionXiaoxiSuOGLocGo
+SPDX-License-Identifier: GPL-3.0-or-later
+
 # Project Ledger
 
 AI agent skills for project structure analysis and development logging. Compatible with opencode, Claude Code, Codex, Cursor, and other Copilot-compatible agents.
