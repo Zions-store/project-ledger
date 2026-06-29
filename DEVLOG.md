@@ -49,6 +49,24 @@
 - **GPL-3.0 consistency**: All skills and the repo itself use the same license.
 - **Version metadata in SKILL.md frontmatter**: Both skills now declare their version (`v1.0.0` for project-docs, `v1.1.0` for project-onboard).
 
+### Multi-language support across both skills
+
+- **What was done**:
+  - Added language selection step (Step 0) to project-onboard, matching project-docs' existing language prompt.
+  - Replaced hardcoded language list with the principle: "Any language the LLM can output is supported."
+  - Added translation instructions for non-English output.
+  - Added "Multi-Language Support" sections to all 3 READMEs with 11-12 language trigger examples each.
+  - Updated both SKILL.md description fields with "Supports any language via LLM-native translation."
+
+- **Why this approach**:
+  - LLM-native translation eliminates i18n infrastructure. No locale files needed.
+  - Differentiator: traditional tools hardcode translations; project-ledger leverages the LLM's inherent multilingual capability.
+  - Attracts international users who can use the skills in their native language.
+
+- **Lessons learned**:
+  - Hardcoded language lists are anti-patterns for LLM-native tools. Declare the principle and let the AI handle the rest.
+  - Trigger phrases should include examples from multiple languages for reliable recognition.
+
 ### Template auto-discovery replaces hardcoded mapping
 
 - **What was done**:
