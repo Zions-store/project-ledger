@@ -12,7 +12,7 @@ Creates and maintains three documents:
 | File | Purpose | Update Frequency |
 |------|---------|-----------------|
 | `AGENTS.md` | Project overview: identity, directory structure, class architecture, entry points, dependencies, Notes | Per milestone (~3-5 new files/classes) |
-| `PROJECT_STATE.md` | Living document: full class spectrum, blueprint config, input system map, game flows, done/todo list | Every session end |
+| `PROJECT_STATE.md` | Living document: full source spectrum, configuration, module/system flows, done/todo list | Every session end |
 | `DEVLOG.md` | Development log: timeline entries with what was done, why, and lessons learned | Per day or per feature milestone |
 
 ## Why Project Docs
