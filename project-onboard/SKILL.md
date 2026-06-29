@@ -1,7 +1,7 @@
 ---
 name: project-onboard
 version: 1.1.0
-description: Analyze any project directory and generate AGENTS.md for AI context. Use when the user asks to "onboard", "analyze this project", "understand this project", "generate AGENTS.md", or provides a project path they want to understand. Supports auto-detection of Unity, Unreal, Node.js, Python, Rust, Go, Java, C/C++, C#, Lua, and general projects.
+description: Analyze any project directory and generate AGENTS.md for AI context. Supports any language via LLM-native translation. Use when the user asks to "onboard", "analyze this project", "分析这个项目", or provides a project path. Auto-detects Unity, Unreal, Node.js, Python, Rust, Go, Java, C/C++, C#, Lua, and general projects.
 ---
 
 Copyright (C) 2026 ZionXiaoxiSuOGLocGo
@@ -14,10 +14,11 @@ Turn any project directory into an AGENTS.md that gives the AI agent instant pro
 ## When This Skill Triggers
 
 - "onboard this project"
-- "analyze my project"
+- "analyze this project" / "analyze my project"
 - "help me understand this project"
 - "generate AGENTS.md for this project"
 - "what does this project do?"
+- "分析这个项目" / "プロジェクトを分析" / "프로젝트 분석" / "analyser ce projet"
 - User provides a project path without context
 
 ## Parameters
@@ -27,6 +28,12 @@ Turn any project directory into an AGENTS.md that gives the AI agent instant pro
 - **output** (optional): Where to save AGENTS.md. Default: `<project_root>/AGENTS.md`
 
 ## Execution Flow
+
+### Step 0: Choose Output Language
+
+Ask the user what language to generate AGENTS.md in. Default to English if they skip. Any language the LLM can output is supported — translation is done by the agent at generation time:
+
+> "What language should AGENTS.md be written in? Default: English. Any language the LLM can output is supported."
 
 ### Step 1: Confirm the Target
 
@@ -83,7 +90,7 @@ Use `grep` to find key patterns. Use `read` with 30-80 line limits per file to e
 
 ### Step 5: Generate AGENTS.md
 
-Write `<project_root>/AGENTS.md` with EXACTLY this structure:
+Write `<project_root>/AGENTS.md` with EXACTLY this structure. If the user chose a non-English language in Step 0, translate section headers, labels, and placeholder descriptions into that language. Keep structured data (paths, commands, dependency names, version numbers) in their original language:
 
 ```markdown
 # [Project Name]

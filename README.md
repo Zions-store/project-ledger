@@ -31,6 +31,28 @@ project-docs       →  PROJECT_STATE.md  (track status, type-specific template)
                    →  DEVLOG.md         (record history)
 ```
 
+## Multi-Language Support
+
+Both skills support generating documentation in any language your AI agent can output. The LLM handles translation at runtime — no pre-translated files, no locale config. Whatever language you speak to your agent, it can produce `AGENTS.md`, `PROJECT_STATE.md`, and `DEVLOG.md` in that language.
+
+A few examples of trigger phrases across languages — but the full list is unlimited:
+
+| Language | project-onboard trigger | project-docs trigger |
+|---|---|---|
+| English | "onboard this project" | "init project docs" |
+| 中文 | "分析这个项目" | "建立文档体系" |
+| 日本語 | "プロジェクトを分析" | "ドキュメントを初期化" |
+| 한국어 | "프로젝트 분석" | "문서 초기화" |
+| Français | "analyser ce projet" | "initialiser la documentation" |
+| Deutsch | "Projekt analysieren" | "Dokumentation initialisieren" |
+| Español | "analizar proyecto" | "inicializar documentos" |
+| Русский | "анализировать проект" | "инициализация документации" |
+| Português | "analisar projeto" | "inicializar documentos" |
+| Italiano | "analizza progetto" | "inizializza documenti" |
+| العربية | "تحليل المشروع" | "تهيئة المستندات" |
+
+...and any other language your LLM can produce.
+
 ## Installation
 
 Copy individual skill directories to your agent's skills folder.

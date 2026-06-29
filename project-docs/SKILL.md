@@ -1,7 +1,7 @@
 ---
 name: project-docs
 version: 1.0.0
-description: Initialize or update the three-document project knowledge system (AGENTS.md + PROJECT_STATE.md + DEVLOG.md). Use when the user says "init docs", "建立文档体系", "project-docs", "更新项目状态", or when a new project needs a living documentation framework.
+description: Initialize or update the three-document project knowledge system (AGENTS.md + PROJECT_STATE.md + DEVLOG.md). Supports any language via LLM-native translation. Use when the user says "init docs", "建立文档体系", "project-docs", "更新项目状态", or when a new project needs a living documentation framework.
 ---
 
 Copyright (C) 2026 ZionXiaoxiSuOGLocGo
@@ -61,8 +61,8 @@ For **non-English output**: translate section headers, labels, and placeholder d
 
 ### 1. Initialize (new project / missing documents)
 
-0. Ask the user what language to generate documents in. Default to English if they skip or say "I don't care":
-   > "What language should the project docs be written in? (Default: English. Also supported: 中文, 日本語, 한국어, Français)"
+0. Ask the user what language to generate documents in. Default to English if they skip or say "I don't care". Any language the LLM can output is supported — the agent handles translation at generation time:
+   > "What language should the project docs be written in? Default: English. Any language the LLM can output is supported."
 
 1. Check if `AGENTS.md` exists.
    - **If not**: Offer to run the `project-onboard` skill first to generate AGENTS.md. Stop here.

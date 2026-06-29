@@ -77,6 +77,28 @@ onboard C:\my-project --type unity
 
 Output: `<project_root>/AGENTS.md`
 
+## Multi-Language Support
+
+Project-onboard generates AGENTS.md in any language your LLM can output. The agent translates section headers and labels at generation time — keeping paths, commands, and dependency names intact.
+
+Trigger phrases work in any language:
+
+| Language | Trigger phrase examples |
+|---|---|
+| English | "onboard this project", "analyze this project" |
+| 中文 | "分析这个项目", "生成项目文档" |
+| 日本語 | "プロジェクトを分析", "AGENTS.mdを生成" |
+| 한국어 | "프로젝트 분석", "AGENTS.md 생성" |
+| Français | "analyser ce projet", "générer AGENTS.md" |
+| Deutsch | "Projekt analysieren", "AGENTS.md erstellen" |
+| Español | "analizar proyecto", "generar AGENTS.md" |
+| Русский | "анализировать проект", "создать AGENTS.md" |
+| Português | "analisar projeto", "gerar AGENTS.md" |
+| Italiano | "analizza progetto", "genera AGENTS.md" |
+| العربية | "تحليل المشروع", "إنشاء AGENTS.md" |
+
+...and any other language the LLM can produce.
+
 ## Adding New Project Types
 
 1. Add a detection signature in `SKILL.md` Step 2
