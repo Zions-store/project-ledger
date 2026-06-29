@@ -49,6 +49,19 @@
 - **GPL-3.0 consistency**: All skills and the repo itself use the same license.
 - **Version metadata in SKILL.md frontmatter**: Both skills now declare their version (`v1.0.0` for project-docs, `v1.1.0` for project-onboard).
 
+### Template auto-discovery replaces hardcoded mapping
+
+- **What was done**:
+  - Replaced the hardcoded `Template Selection by Project Type` mapping table with auto-discovery: the skill tries `templates/<type>/PROJECT_STATE.md.tmpl`, falling back to `templates/PROJECT_STATE.md.tmpl` if absent.
+  - Updated SKILL.md, root README.md, project-docs/README.md, and maintenance-spec.md.
+
+- **Why this approach**:
+  - Mirrors project-onboard's rule pack auto-discovery (`references/<type>.md` → fallback `general.md`). Adding a new engine type now needs only `templates/<name>/PROJECT_STATE.md.tmpl` — zero code changes, no mapping table to update.
+  - Architectural consistency across both skills in the same repo.
+
+- **Lessons learned**:
+  - When two skills share a pattern (rule pack discovery / template discovery), they should stay architecturally identical. Simple fallback logic scales better than documentation tables.
+
 ---
 
 <!-- Append new entries above this line. -->
