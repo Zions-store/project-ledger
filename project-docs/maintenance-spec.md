@@ -1,13 +1,14 @@
 # Project Documentation Maintenance Spec
 
 > Applies to: `AGENTS.md`, `PROJECT_STATE.md`, `DEVLOG.md`
+> PROJECT_STATE.md sections vary by project type (see SKILL.md for template selection). This spec documents all possible sections; unused sections may be absent from a given project's STATE.
 
 ## Document Responsibilities
 
 | File | Role | Content Boundary | Audience |
 |------|------|-----------------|----------|
-| **AGENTS.md** | Project overview | Project identity, directory structure, class architecture, entry points, dependencies, Notes | opencode startup first impression |
-| **PROJECT_STATE.md** | Living document | Full class spectrum (with params), blueprint config checklist, input system map, game system flows, level config, done/todo list | New session context recovery |
+| **AGENTS.md** | Project overview | Project identity, directory structure, class architecture, entry points, dependencies, Notes | Agent startup first impression |
+| **PROJECT_STATE.md** | Living document | Full source spectrum (with params), configuration checklist, system flows, done/todo list | New session context recovery |
 | **DEVLOG.md** | Development log | Timeline entries — what was done, why, what was learned | Review / traceability |
 
 **No overlap:** AGENTS = architecture overview. STATE = parameter details. AGENTS = directory structure. STATE = file manifest. No single piece of information should appear in two documents.
@@ -17,14 +18,14 @@
 ## AGENTS.md Update Rules
 
 ### Trigger conditions
-- New C++ class or module subdirectory
-- New blueprint asset path (under `Content/`)
-- Plugin added/removed
-- Entry point change (GameMode, level, PlayerController)
-- Module dependency change (Build.cs)
+- New source file, class, or module subdirectory
+- New key asset path or configuration file
+- Plugin/package added or removed
+- Entry point change (startup file, main class, entry scene)
+- Dependency manifest change (build config, package manager)
 
 ### Non-triggers
-- Bug fixes, parameter tweaks, blueprint config changes → record in PROJECT_STATE.md
+- Bug fixes, parameter tweaks, config changes → record in PROJECT_STATE.md
 - Feature status changes → record in PROJECT_STATE.md "Current Status" list
 
 ### Update frequency
@@ -34,21 +35,24 @@ Per major milestone (~every 3-5 new files/classes, or weekly).
 
 ### Per-section update frequency
 
-| Section | Frequency | Trigger |
+Sections adapt to project type. Unreal and Unity have engine-specific sections; all other types use the generic template. See SKILL.md "Template Selection by Project Type" for exact section naming.
+
+| Section (generic / game-engine) | Frequency | Trigger |
 |---------|-----------|---------|
-| 2. Directory Structure | Low | New/deleted subdirectory |
-| 3. C++ Class Spectrum | Medium | New class / new key member |
-| 4. Blueprint Asset Checklist | High | Any BP Class Defaults config change |
-| 5. Input System | Medium | New/modified InputAction binding |
-| 6. Game Systems | Medium | System logic change |
-| 7. Level Config | Medium | Actor added/removed from level |
-| 8. Key Parameters Quick Reference | High | Any numeric parameter change |
-| 9. Compilation & Build | Very low | Only when new compile tricks/error patterns discovered |
-| 10. Current Status | **Every session end** | Done list, todo list, known issues |
+| §2 Directory Structure | Low | New/deleted subdirectory |
+| §3 Source/Script Spectrum | Medium | New file / class / new key member |
+| §4 Configuration & Environment / Prefab & Asset Checklist | High | Any config file change, defaults change |
+| §5 Module Map / Input System | Medium | New module, new binding, new package export |
+| §6 Architecture & Data Flow / Game Systems | Medium | System logic change |
+| §7 Dependencies & Services / Scene/Level Config | Medium | New service, new actor, new external dependency |
+| §8 Key Parameters Quick Reference | High | Any numeric parameter change |
+| §9 Build & Run / Build Settings | Very low | New compile errors, build command changes |
+| §10 Current Status | **Every session end** | Done list, todo list, known issues |
 
 ### Done/Todo Entry Template
 ```
 ### Done (N/M)
+<!-- "N completed out of M total" — update the ratio when items move. -->
 - [x] <brief description>
 ### Todo
 | # | Item | Priority |
@@ -69,7 +73,7 @@ Per major milestone (~every 3-5 new files/classes, or weekly).
 ```
 
 ### Granularity
-One entry per **day** or per **feature milestone**. Do not record every Ctrl+Alt+F11.
+One entry per **day** or per **feature milestone**. Do not record every minor edit or rebuild.
 
 ### Prohibited
 - ❌ Duplicating parameter tables or config checklists already in STATE
@@ -81,6 +85,6 @@ One entry per **day** or per **feature milestone**. Do not record every Ctrl+Alt
 Run after every STATE update:
 
 - [ ] AGENTS directory structure entries all have counterparts in STATE
-- [ ] STATE parameter quick reference values match .h defaults (also check BP CDO overrides)
-- [ ] STATE todo list does not contradict DEVLOG latest entry (if DEVLOG says done, STATE should match)
+- [ ] STATE §8 parameter values match actual source/code defaults (e.g., `.h` defaults, config file values, class default overrides per template type)
+- [ ] STATE §10 todo list does not contradict DEVLOG latest entry (if DEVLOG says done, STATE should match)
 - [ ] No duplicate information across the three documents (one fact = one location)

@@ -1,63 +1,58 @@
 # {{PROJECT_NAME}} Project State
 
 > Living document — update at end of every session. Provides quick context for new AI sessions.
-> Maintenance spec: see project-docs Skill.
 
 ## 1. Project Identity
-- **Engine**: {{ENGINE_VERSION}}
-- **Template**: {{TEMPLATE_ORIGIN}}
-- **Module**: {{MODULE_NAME}}
-- **Build**: {{BUILD_CONFIG}}
+- **Type**: {{PROJECT_TYPE}}
+- **Language**: {{LANGUAGE}}
+- **Framework/Engine**: {{FRAMEWORK}}
+- **Key Dependencies**: {{KEY_DEPENDENCIES}}
 
 ## 2. Directory Structure
 
 ```
-Source/{{MODULE_NAME}}/
-├── {{MODULE_NAME}}.Build.cs
-└── ...
+{{DIRECTORY_TREE}}
 ```
 
-## 3. C++ Class Spectrum
+## 3. Source Code Spectrum
+<!-- Fill from AGENTS.md "Core Architecture" section. List key files/classes and their roles. -->
 
-### {{VARIANT_NAME}}
+### {{COMPONENT_NAME}}
 
-| Class | Parent | Interfaces | Responsibility | File |
-|---|---|---|---|---|
-| `{{CLASS_NAME}}` | `{{PARENT_CLASS}}` | — | {{RESPONSIBILITY}} | `{{FILE_NAME}}` |
-
-### {{CLASS_NAME}} Key Members
-
-| Category | Member | Default |
-|---|---|---|
-| HP | `MaxHP` / `CurrentHP` | {{DEFAULT_HP}} |
-
-## 4. Blueprint Asset Checklist
-
-### {{BP_NAME}} (Parent: {{CLASS_NAME}})
-| Property | Value | Location |
-|---|---|---|
-| Mesh | `{{MESH_ASSET}}` | Components → Mesh |
-
-## 5. Input System Map
-
-### InputActions
-| Action | Path | Key | Binding |
+| File/Symbol | Type | Responsibility | Location |
 |---|---|---|---|
-| {{ACTION_NAME}} | `{{ACTION_PATH}}` | {{KEY}} | {{IMC}} |
+| `{{NAME}}` | {{TYPE}} | {{RESPONSIBILITY}} | `{{PATH}}` |
 
-## 6. Game Systems
+### {{COMPONENT_NAME}} Key Details
 
-### {{SYSTEM_NAME}} Flow
-```
-{{SYSTEM_FLOW}}
-```
-
-## 7. Level Config
-
-### {{LEVEL_NAME}} Required Actors
-| Actor | Type | Config Notes |
+| Category | Detail | Value |
 |---|---|---|
-| {{ACTOR_NAME}} | `{{ACTOR_TYPE}}` | {{CONFIG_NOTES}} |
+| {{CATEGORY}} | {{DETAIL}} | {{VALUE}} |
+
+## 4. Configuration & Environment
+
+| Key | Value | File |
+|---|---|---|
+| {{CONFIG_KEY}} | {{CONFIG_VALUE}} | {{CONFIG_FILE}} |
+
+## 5. Module / Package Map
+
+| Module | Exports | Consumers | Path |
+|---|---|---|---|
+| {{MODULE}} | {{EXPORTS}} | {{CONSUMERS}} | {{PATH}} |
+
+## 6. Architecture & Data Flow
+
+### {{FLOW_NAME}}
+```
+{{FLOW_DIAGRAM}}
+```
+
+## 7. External Dependencies & Services
+
+| Dependency | Purpose | Config |
+|---|---|---|
+| {{DEP_NAME}} | {{PURPOSE}} | {{CONFIG}} |
 
 ## 8. Key Parameters Quick Reference
 
@@ -65,13 +60,14 @@ Source/{{MODULE_NAME}}/
 |---|---|---|
 | {{PARAM_NAME}} | {{VALUE}} | {{LOCATION}} |
 
-## 9. Compilation & Build
+## 9. Build & Run
 
-### Hot Reload vs Full Rebuild
-- **Ctrl+Alt+F11**: .cpp function body changes only
-- **Full rebuild steps**: Close editor → Delete Binaries/ → Delete Intermediate/ → Right-click .uproject → Generate VS → Open
+### Commands
+- **Build**: `{{BUILD_CMD}}`
+- **Run**: `{{RUN_CMD}}`
+- **Test**: `{{TEST_CMD}}`
 
-### Common Compile Errors Quick Reference
+### Common Issues
 | Error | Fix |
 |---|---|
 | {{ERROR_PATTERN}} | {{FIX}} |
@@ -79,6 +75,7 @@ Source/{{MODULE_NAME}}/
 ## 10. Current Status
 
 ### Done (0/N)
+<!-- "N completed out of M total" -->
 - _No items completed yet_
 
 ### Todo

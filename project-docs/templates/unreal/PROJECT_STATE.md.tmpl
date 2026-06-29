@@ -1,0 +1,93 @@
+# {{PROJECT_NAME}} Project State
+
+> Living document — update at end of every session. Provides quick context for new AI sessions.
+
+## 1. Project Identity
+<!-- Fill from AGENTS.md "Basic Information" section -->
+- **Engine**: {{ENGINE_VERSION}}
+- **Template**: {{TEMPLATE_ORIGIN}}
+- **Module**: {{MODULE_NAME}}<!-- The primary Unreal module (e.g. "MyProject"). Maps to AGENTS.md "Entry Points" or "Core Architecture" -->
+- **Build**: {{BUILD_CONFIG}}
+
+## 2. Directory Structure
+<!-- Fill from AGENTS.md "Directory Structure" section -->
+
+```
+Source/{{MODULE_NAME}}/
+├── {{MODULE_NAME}}.Build.cs
+└── ...
+```
+
+## 3. C++ Class Spectrum
+<!-- Fill from AGENTS.md "Core Architecture" section -->
+
+### {{VARIANT_NAME}}<!-- Logical grouping: e.g. "Player", "Enemy", "Weapon", "Core". Group related classes under a descriptive variant name. -->
+
+| Class | Parent | Interfaces | Responsibility | File |
+|---|---|---|---|---|
+| `{{CLASS_NAME}}` | `{{PARENT_CLASS}}` | — | {{RESPONSIBILITY}} | `{{FILE_NAME}}` |
+
+### {{CLASS_NAME}} Key Members
+
+| Category | Member | Default |
+|---|---|---|
+| HP | `MaxHP` / `CurrentHP` | {{DEFAULT_HP}} |
+
+## 4. Blueprint Asset Checklist
+
+### {{BP_NAME}} (Parent: {{CLASS_NAME}})
+| Property | Value | Location |
+|---|---|---|
+| Mesh | `{{MESH_ASSET}}` | Components → Mesh |
+
+## 5. Input System Map
+
+### InputActions
+| Action | Path | Key | Binding |
+|---|---|---|---|
+| {{ACTION_NAME}} | `{{ACTION_PATH}}` | {{KEY}} | {{IMC}} |
+
+## 6. Game Systems
+
+### {{SYSTEM_NAME}} Flow
+```
+{{SYSTEM_FLOW}}
+```
+
+## 7. Level Config
+
+### {{LEVEL_NAME}} Required Actors
+| Actor | Type | Config Notes |
+|---|---|---|
+| {{ACTOR_NAME}} | `{{ACTOR_TYPE}}` | {{CONFIG_NOTES}} |
+
+## 8. Key Parameters Quick Reference
+
+| Parameter | Value | Location |
+|---|---|---|
+| {{PARAM_NAME}} | {{VALUE}} | {{LOCATION}} |
+
+## 9. Compilation & Build
+
+### Hot Reload vs Full Rebuild
+- **Ctrl+Alt+F11**: .cpp function body changes only
+- **Full rebuild steps**: Close editor → Delete Binaries/ → Delete Intermediate/ → Right-click .uproject → Generate VS → Open
+
+### Common Compile Errors Quick Reference
+| Error | Fix |
+|---|---|
+| {{ERROR_PATTERN}} | {{FIX}} |
+
+## 10. Current Status
+
+### Done (0/N)
+<!-- "N completed out of M total" -->
+- _No items completed yet_
+
+### Todo
+| # | Item | Priority |
+|---|---|---|
+| 1 | {{TODO_ITEM}} | High/Med/Low/TBD |
+
+### Known Issues
+- None

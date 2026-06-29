@@ -33,26 +33,25 @@ If no path given, ask the user which project to analyze. If path is relative, re
 
 ### Step 2: Quick Scan for Project Type (if --type not specified)
 
-Use `glob` to look for 50-100 top-level entries. Match against the detection table:
+Use `glob` with pattern `*` to list top-level directory entries. Match the results against the detection table below.
 
 | Signature | Type | Rule Pack |
 |---|---|---|
 | `Assets/` + `ProjectSettings/` | unity | `references/unity.md` |
 | `Source/` + `.uproject` | unreal | `references/unreal.md` |
 | `package.json` without `Assets/` | nodejs | `references/nodejs.md` |
-| `pyproject.toml` or `requirements.txt` or `setup.py` | python | `references/python.md` |
+| `pyproject.toml` or `requirements.txt` or `setup.py` or `Pipfile` | python | `references/python.md` |
 | `Cargo.toml` | rust | `references/rust.md` |
 | `go.mod` | go | `references/go.md` |
 | `pom.xml` or `build.gradle` | java | `references/java.md` |
 | `CMakeLists.txt` | cpp | `references/cpp.md` |
 | `*.csproj` or `*.sln` without `Assets/` | csharp | `references/csharp.md` |
-| `*.rockspec` or `lua_modules/` or `.luacheckrc` | lua | `references/lua.md` |
-| `Dockerfile` + `docker-compose.yml` | docker | `references/general.md` |
-| `*.sql` + `migrations/` | database | `references/general.md` |
-| `.glsl` or `.hlsl` files in top-level search | shader | `references/general.md` |
+| `*.rockspec` or `lua_modules/` or `.luacheckrc` or `.busted` | lua | `references/lua.md` |
 | None of the above | general | `references/general.md` |
 
-Check in order. First match wins. If unsure, use `general`.
+Check in order. First match wins. When multiple signatures could match (e.g., a project with both `package.json` and `CMakeLists.txt`), prefer the one that appears first. If unsure or if the detected type seems wrong after scanning, fall back to `general` or ask the user to specify `--type`.
+
+> **Sub-type detection**: Projects with `Dockerfile`, database files (`*.sql` + `migrations/`), or shader files (`.glsl`/`.hlsl`) are detected as `general` at Step 2. The `references/general.md` rule pack handles these during the deep scan.
 
 ### Step 3: Load the Rule Pack
 
