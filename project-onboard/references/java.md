@@ -1,3 +1,5 @@
+Copyright (C) 2026 ZionXiaoxiSuOGLocGo
+SPDX-License-Identifier: GPL-3.0-or-later
 # Java Project Analysis Rules
 
 ## Signature Detection
@@ -7,27 +9,27 @@
 
 ### 1. Read Build File
 **Maven (pom.xml)**:
-- `groupId` + `artifactId` + `version` â†’ Project identity
-- `<parent>` â†’ Spring Boot starter parent (if `spring-boot-starter-parent`)
-- Dependencies â†’ Key frameworks:
-  - `spring-boot-starter-web` â†’ Spring Boot web app
-  - `spring-boot-starter-data-jpa` â†’ JPA/Hibernate
-  - `spring-boot-starter-security` â†’ Spring Security
-  - `spring-boot-starter-test` â†’ Testing
-  - `spring-cloud-starter-*` â†’ Spring Cloud microservice
-  - `lombok` â†’ Lombok boilerplate reduction
-  - `jackson-*` â†’ JSON serialization
-  - `mapstruct` â†’ Object mapping
-  - `hibernate-validator` â†’ Bean validation
-  - `junit-jupiter` â†’ JUnit 5 testing
-  - `mockito-*` â†’ Mocking framework
-- `<packaging>` â†’ `jar` (app) or `war` (traditional web) or `pom` (parent/multi-module)
-- `<modules>` â†’ Multi-module sub-projects
+- `groupId` + `artifactId` + `version` â†?Project identity
+- `<parent>` â†?Spring Boot starter parent (if `spring-boot-starter-parent`)
+- Dependencies â†?Key frameworks:
+  - `spring-boot-starter-web` â†?Spring Boot web app
+  - `spring-boot-starter-data-jpa` â†?JPA/Hibernate
+  - `spring-boot-starter-security` â†?Spring Security
+  - `spring-boot-starter-test` â†?Testing
+  - `spring-cloud-starter-*` â†?Spring Cloud microservice
+  - `lombok` â†?Lombok boilerplate reduction
+  - `jackson-*` â†?JSON serialization
+  - `mapstruct` â†?Object mapping
+  - `hibernate-validator` â†?Bean validation
+  - `junit-jupiter` â†?JUnit 5 testing
+  - `mockito-*` â†?Mocking framework
+- `<packaging>` â†?`jar` (app) or `war` (traditional web) or `pom` (parent/multi-module)
+- `<modules>` â†?Multi-module sub-projects
 
 **Gradle (build.gradle)**:
 - Plugins: `java`, `org.springframework.boot`, `io.spring.dependency-management`
-- Dependencies block â†’ same identification as above
-- `java.toolchain` â†’ JDK version
+- Dependencies block â†?same identification as above
+- `java.toolchain` â†?JDK version
 
 ### 2. Determine Build Tool
 | Tool | Key File | Wrapper Script |
@@ -67,10 +69,10 @@ Most common: An `Application.java` or `Main.java` annotated with `@SpringBootApp
 ### 5. Read Configuration
 - `src/main/resources/application.properties` or `application.yml`
 - Key Spring Boot properties: `server.port`, `spring.datasource.url`, `spring.profiles.active`
-- Multiple profiles? â†’ `application-{profile}.yml`
+- Multiple profiles? â†?`application-{profile}.yml`
 
 ### 6. Identify Architecture
-- **Layered**: Controller â†’ Service â†’ Repository (most common in Spring Boot)
+- **Layered**: Controller â†?Service â†?Repository (most common in Spring Boot)
 - **Hexagonal/Ports & Adapters**: `*.port` / `*.adapter` packages
 - **DDD**: `*.domain` + `*.infrastructure` + `*.application` packages
 - **Microservice**: Dockerfile + service discovery dependencies (Eureka, Consul)

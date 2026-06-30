@@ -1,3 +1,5 @@
+Copyright (C) 2026 ZionXiaoxiSuOGLocGo
+SPDX-License-Identifier: GPL-3.0-or-later
 # Project Documentation Maintenance Spec
 
 > Applies to: `AGENTS.md`, `PROJECT_STATE.md`, `DEVLOG.md`
@@ -9,7 +11,7 @@
 |------|------|-----------------|----------|
 | **AGENTS.md** | Project overview | Project identity, directory structure, class architecture, entry points, dependencies, Notes | Agent startup first impression |
 | **PROJECT_STATE.md** | Living document | Full source spectrum (with params), configuration checklist, system flows, done/todo list | New session context recovery |
-| **DEVLOG.md** | Development log | Timeline entries ‚Äî what was done, why, what was learned | Review / traceability |
+| **DEVLOG.md** | Development log | Timeline entries ‚Ä?what was done, why, what was learned | Review / traceability |
 
 **No overlap:** AGENTS = architecture overview. STATE = parameter details. AGENTS = directory structure. STATE = file manifest. No single piece of information should appear in two documents.
 
@@ -25,8 +27,8 @@
 - Dependency manifest change (build config, package manager)
 
 ### Non-triggers
-- Bug fixes, parameter tweaks, config changes ‚Üí record in PROJECT_STATE.md
-- Feature status changes ‚Üí record in PROJECT_STATE.md "Current Status" list
+- Bug fixes, parameter tweaks, config changes ‚Ü?record in PROJECT_STATE.md
+- Feature status changes ‚Ü?record in PROJECT_STATE.md "Current Status" list
 
 ### Update frequency
 Per major milestone (~every 3-5 new files/classes, or weekly).
@@ -52,7 +54,7 @@ Sections adapt to project type. Unreal and Unity have engine-specific sections; 
 ### Done/Todo Entry Template
 ```
 ### Done (N/M)
-<!-- "N completed out of M total" ‚Äî update the ratio when items move. -->
+<!-- "N completed out of M total" ‚Ä?update the ratio when items move. -->
 - [x] <brief description>
 ### Todo
 | # | Item | Priority |
@@ -76,9 +78,9 @@ Sections adapt to project type. Unreal and Unity have engine-specific sections; 
 One entry per **day** or per **feature milestone**. Do not record every minor edit or rebuild.
 
 ### Prohibited
-- ‚ùå Duplicating parameter tables or config checklists already in STATE
-- ‚ùå Using DEVLOG as a progress tracker in place of STATE's "Current Status"
-- ‚ùå Describing "what will be done" (only write after completion)
+- ‚ù?Duplicating parameter tables or config checklists already in STATE
+- ‚ù?Using DEVLOG as a progress tracker in place of STATE's "Current Status"
+- ‚ù?Describing "what will be done" (only write after completion)
 
 ## Consistency Checklist
 

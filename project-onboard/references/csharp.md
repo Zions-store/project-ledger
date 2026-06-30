@@ -1,3 +1,5 @@
+Copyright (C) 2026 ZionXiaoxiSuOGLocGo
+SPDX-License-Identifier: GPL-3.0-or-later
 # C# Project Analysis Rules
 
 ## Signature Detection
@@ -11,11 +13,11 @@
 read *.csproj (or the main .csproj file)
 ```
 Extract:
-- `<TargetFramework>` â†’ .NET version (net6.0, net8.0, etc.)
-- `<OutputType>` â†’ Exe, Library, WinExe
-- `<PackageReference>` â†’ NuGet dependencies
-- `<ProjectReference>` â†’ Internal project references
-- `<RootNamespace>` â†’ Default namespace
+- `<TargetFramework>` â†?.NET version (net6.0, net8.0, etc.)
+- `<OutputType>` â†?Exe, Library, WinExe
+- `<PackageReference>` â†?NuGet dependencies
+- `<ProjectReference>` â†?Internal project references
+- `<RootNamespace>` â†?Default namespace
 
 If `.sln` exists, read it for multi-project structure:
 ```bash
@@ -76,14 +78,14 @@ Extract:
 - Feature flags
 
 ### 6. Check for Config Files
-- `appsettings.json` / `appsettings.*.json` â†’ Application configuration
-- `Properties/launchSettings.json` â†’ Debug profiles
-- `Dockerfile` â†’ Container deployment
-- `docker-compose.yml` â†’ Multi-service setup
-- `nuget.config` â†’ NuGet source configuration
-- `.editorconfig` â†’ Code style rules
-- `Directory.Build.props` â†’ MSBuild shared properties
-- `.github/workflows/` â†’ CI/CD
+- `appsettings.json` / `appsettings.*.json` â†?Application configuration
+- `Properties/launchSettings.json` â†?Debug profiles
+- `Dockerfile` â†?Container deployment
+- `docker-compose.yml` â†?Multi-service setup
+- `nuget.config` â†?NuGet source configuration
+- `.editorconfig` â†?Code style rules
+- `Directory.Build.props` â†?MSBuild shared properties
+- `.github/workflows/` â†?CI/CD
 
 ### 7. Build & Run Commands
 Extract from the project:

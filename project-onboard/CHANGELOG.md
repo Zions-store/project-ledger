@@ -1,6 +1,8 @@
+Copyright (C) 2026 ZionXiaoxiSuOGLocGo
+SPDX-License-Identifier: GPL-3.0-or-later
 # project-onboard Changelog
 
-## [1.1.0] - 2026-06-29 â€” Community Contribution
+## [1.1.0] - 2026-06-29 â€?Community Contribution
 **Source**: PR #1 by Lulugue (first community contribution)
 
 ### Added
@@ -13,7 +15,7 @@
 
 ---
 
-## [1.0.1] - 2026-06-21 â€” Emergency Fix
+## [1.0.1] - 2026-06-21 â€?Emergency Fix
 **Source**: ThirdPersonTest project usage feedback
 
 ### Fixed
@@ -21,7 +23,7 @@
 - `.git/` directory inside skill install path prevented opencode from discovering the skill. Removed `.git/` from `~/.config/opencode/skills/project-onboard/`.
 
 ### Added
-- Dual-directory workflow: `~/OpenCode_skills/` (development, with Git) â†” `~/.config/opencode/skills/` (install target, no `.git`).
+- Dual-directory workflow: `~/OpenCode_skills/` (development, with Git) â†?`~/.config/opencode/skills/` (install target, no `.git`).
 
 ### Principles
 - No non-YAML content before the `---` frontmatter block in SKILL.md.
@@ -30,11 +32,11 @@
 
 ---
 
-## [1.0.0] - 2026-06-19 â€” Initial Release
+## [1.0.0] - 2026-06-19 â€?Initial Release
 **Source**: openSkills project launch
 
 ### Added
-- Core execution flow: confirm target â†’ detect project type (12 signature matches) â†’ load rule pack â†’ deep scan â†’ generate AGENTS.md.
+- Core execution flow: confirm target â†?detect project type (12 signature matches) â†?load rule pack â†?deep scan â†?generate AGENTS.md.
 - 9 complete rule packs:
   - **Unity**: `.meta`/prefab analysis, package dependencies, scene entry points.
   - **Unreal**: module dependencies, framework classes, Config/`.ini`.
@@ -50,7 +52,7 @@
 - Copyright by ZionXiaoxiSuOGLocGo.
 
 ### Principles
-- Pluggable rule packs â€” adding a new type requires only one `.md` file, no core logic changes.
+- Pluggable rule packs â€?adding a new type requires only one `.md` file, no core logic changes.
 - AGENTS.md optimized for AI agent consumption (tables + bullet lists, 200-400 lines), not human documentation.
-- Zero external dependencies â€” uses only opencode built-in tools (`glob`/`grep`/`read`).
+- Zero external dependencies â€?uses only opencode built-in tools (`glob`/`grep`/`read`).
 - Auto-detection first, with optional `--type` override.

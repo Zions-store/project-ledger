@@ -1,3 +1,5 @@
+Copyright (C) 2026 ZionXiaoxiSuOGLocGo
+SPDX-License-Identifier: GPL-3.0-or-later
 # Go Project Analysis Rules
 
 ## Signature Detection
@@ -7,21 +9,21 @@
 
 ### 1. Read go.mod
 Extract:
-- `module` â€” Module path (e.g. `github.com/user/project`)
-- `go` â€” Go version
-- `require` â€” Direct dependencies. Key packages to identify:
-  - `github.com/gin-gonic/gin`, `github.com/labstack/echo`, `github.com/gorilla/mux` â†’ Web framework/router
-  - `github.com/go-chi/chi` â†’ Lightweight router
-  - `gorm.io/gorm`, `github.com/jmoiron/sqlx` â†’ ORM/database
-  - `github.com/spf13/cobra`, `github.com/urfave/cli` â†’ CLI tool
-  - `github.com/grpc/grpc-go` â†’ gRPC
-  - `github.com/hashicorp/terraform` â†’ Infrastructure tool
-  - `go.mongodb.org/mongo-driver` â†’ MongoDB
-  - `github.com/redis/go-redis` â†’ Redis
-  - `github.com/gorilla/websocket` â†’ WebSocket
-  - `github.com/stretchr/testify` â†’ Testing helpers
-  - `google.golang.org/api` â†’ Google Cloud APIs
-  - `github.com/aws/aws-sdk-go-v2` â†’ AWS SDK
+- `module` â€?Module path (e.g. `github.com/user/project`)
+- `go` â€?Go version
+- `require` â€?Direct dependencies. Key packages to identify:
+  - `github.com/gin-gonic/gin`, `github.com/labstack/echo`, `github.com/gorilla/mux` â†?Web framework/router
+  - `github.com/go-chi/chi` â†?Lightweight router
+  - `gorm.io/gorm`, `github.com/jmoiron/sqlx` â†?ORM/database
+  - `github.com/spf13/cobra`, `github.com/urfave/cli` â†?CLI tool
+  - `github.com/grpc/grpc-go` â†?gRPC
+  - `github.com/hashicorp/terraform` â†?Infrastructure tool
+  - `go.mongodb.org/mongo-driver` â†?MongoDB
+  - `github.com/redis/go-redis` â†?Redis
+  - `github.com/gorilla/websocket` â†?WebSocket
+  - `github.com/stretchr/testify` â†?Testing helpers
+  - `google.golang.org/api` â†?Google Cloud APIs
+  - `github.com/aws/aws-sdk-go-v2` â†?AWS SDK
 
 ### 2. Identify Project Type
 | Clue | Type |
@@ -56,9 +58,9 @@ glob cmd/*/main.go
 Read `main.go` for server startup, dependency wiring, router setup.
 
 ### 5. Read Key Files (Priority Order)
-1. `main.go` or `cmd/<name>/main.go` â€” 50 lines
-2. `internal/<name>/` â€” Core logic directory
-3. `.env.example` or `config.yaml` â€” Configuration schema
+1. `main.go` or `cmd/<name>/main.go` â€?50 lines
+2. `internal/<name>/` â€?Core logic directory
+3. `.env.example` or `config.yaml` â€?Configuration schema
 
 ### 6. Identify Architecture Patterns
 Go idioms to look for:

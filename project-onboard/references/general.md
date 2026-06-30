@@ -1,3 +1,5 @@
+Copyright (C) 2026 ZionXiaoxiSuOGLocGo
+SPDX-License-Identifier: GPL-3.0-or-later
 # General Project Analysis Rules (Fallback)
 
 Used when no specific project type is detected.
