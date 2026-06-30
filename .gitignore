@@ -16,3 +16,6 @@ desktop.ini
 # Temp
 *.tmp
 *.bak
+
+# LSP code validation temp files
+.tmp_validation/

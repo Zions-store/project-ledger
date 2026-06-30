@@ -6,79 +6,64 @@
 
 ## 2026-06-30
 
-### Project ledger repository established
+### 47/47 audit bugs resolved — manuals v2.2.1 / v2.1.1
 
 - **What was done**:
-  - Created GitHub organization `Zions-store` with profile README
-  - Set up `project-ledger` monorepo containing `project-onboard` and `project-docs` skills
-  - Deprecated old standalone `ZionXiaoxiSuOGLocGo/project-onboard` repo (13 commits, 4 stars preserved), added [DEPRECATED] notice with redirect to new location
-  - Established local development workflow: `C:\Users\22410\projects\Zion's Store\project-ledger\` with NTFS Junction symlinks to `~/.config/opencode/skills/` for zero-maintenance sync
-
-- **Why this approach**:
-  - Monorepo under a dedicated GitHub organization separates the "Zion's Store" brand from personal account repos
-  - Junction symlinks eliminate the manual copy-and-exclude-.git workflow previously documented in project-onboard CHANGELOG v1.0.1
-  - Each skill gets a GPL-3.0 LICENSE at both repo root and skill directory level for max clarity
-
-### Comprehensive two-round audit — 28 issues found, all resolved
-
-- **What was done**:
-  - Round 1 (format/consistency): 12 issues — copyright notices, template placeholders, CHANGELOG formatting (9 fixed, 3 deferred)
-  - Round 2 (content quality): 28 issues across all files — full reading of every SKILL.md, README, reference, template, and maintenance-spec
-  - Fixed: type-specific template system, AGENTS-to-STATE field mapping, complete update workflow, parameter value verification, trigger phrase alignment, Build & Test sections in 6 rule packs, edge case handling (empty repo, monorepo, invalid --type), version metadata, documentation comments
-
-- **Problems encountered + how resolved**:
-  - `Assets/Packages/manifest.json` is not a valid Unity path. Fixed to `Packages/manifest.json`.
-  - 6 out of 11 rule packs had no Build & Test sections. Added sections for csharp, lua, nodejs, python, unity, unreal — matching the AGENTS.md template requirement.
-  - Python detection table was missing `Pipfile` and `environment.yml` despite python.md checking them. Extended signatures.
-  - Docker/database/shader entries in detection table had no corresponding reference files. Converted to sub-type hints in general.md with explicit scanning instructions.
-  - project-docs template was hard-coded to Unreal Engine, making it non-functional for Unity/Node.js/Python etc. Restructured into `templates/unreal/`, `templates/unity/`, and `templates/general/` with auto-detection from AGENTS.md Type field.
-  - project-docs SKILL.md said "pre-fill §1-§3 from AGENTS.md" but never specified HOW. Added complete 7-row field mapping table.
-  - Update workflow only listed 4 sections; maintenance-spec defined triggers for all 10. Expanded workflow to cover §1-§10.
+  - Two-round comprehensive audit of unreal-manual (15 issues) and unity-manual (32 issues) — all resolved.
+  - HIGH: fixed 2 C++ compile errors, 1 ObjectPool crash, 1 Rigidbody anti-pattern example, 5 missing declarations, 2 false version claims, 1 fictitious file path.
+  - MEDIUM: removed 3 duplicate content sections, fixed 5 incorrect property/version/cross-reference items, corrected 3 misleading advice items.
+  - LOW: 13 polish items (typos, code block tags, README counts, SafeArea, ContextMenu).
+  - Added 4 missing sections: C++ Delegates, Smart Pointers, Async Loading (unreal) + Profiling & Debugging (unity).
+  - Root + org READMEs updated to list all 4 skills with versions.
+  - Created `.tmp_validation/` for LSP code block verification workflow.
 
 - **Lessons learned**:
-  - Template-driven skills need explicit field-level mapping tables. "Pre-fill from AGENTS.md" is too vague for LLMs.
-  - Detection table and reference files must stay in sync. When a reference file grows, the detection signature should grow too.
-  - Rule pack structure consistency matters. Every rule pack should have the same set of sections, even if some only say "no specific info available."
-  - `glob *` is more precise than "look for top-level entries" — different LLMs interpret the latter differently.
-  - The `without Assets/` qualifier on Node.js and C# detection is deliberate: Unity projects have `package.json` in `ProjectSettings/` and `*.csproj` as generated files. The detection order protects against false matches, but the qualifiers serve as a secondary safety net.
+  - Systematic root cause analysis (7 deficiencies) documented in 23KB countermeasures file.
+  - LSP validation via temp files catches ~25% of bugs; grep + manual review + coverage checklist cover the rest.
+  - Single-source-of-truth for version numbers prevents sync failures.
 
-### Key architectural decisions
+### Manuals integrated — unreal-manual (v2.2.0), unity-manual (v2.1.0)
 
-- **Type-specific templates over one-size-fits-all**: project-docs now selects `PROJECT_STATE.md.tmpl` based on AGENTS.md Type field. Unreal/Unity get engine-specific templates; all other types share a clean generic template.
-- **Monorepo over per-skill repos**: Easier to discover related skills, single clone. If individual repos are ever needed, git filter-repo can split them later.
-- **GPL-3.0 consistency**: All skills and the repo itself use the same license.
-- **Version metadata in SKILL.md frontmatter**: Both skills now declare their version (`v1.0.0` for project-docs, `v1.1.0` for project-onboard).
+- **What was done**:
+  - Added unreal-manual/ and unity-manual/ to monorepo with LICENSE + README.
+  - Created Junction symlinks from `.config/opencode/skills/` for zero-maintenance sync.
+  - unreal-manual: added Advanced Gameplay Patterns (Compatible Skeleton, Checkpoint/Respawn, Combo Input Cache, Substrate, Tool Ecosystem).
+  - unity-manual: added 7 new chapters (Avatar Retargeting, Anti-Patterns, Game Architecture, Input Advanced, Shader Graph, Mobile).
+  - Copyright + version metadata added to both SKILL.md frontmatters.
 
 ### Multi-language support across both skills
 
 - **What was done**:
   - Added language selection step (Step 0) to project-onboard, matching project-docs' existing language prompt.
-  - Replaced hardcoded language list with the principle: "Any language the LLM can output is supported."
-  - Added translation instructions for non-English output.
+  - Replaced hardcoded language list with: "Any language the LLM can output is supported."
   - Added "Multi-Language Support" sections to all 3 READMEs with 11-12 language trigger examples each.
   - Updated both SKILL.md description fields with "Supports any language via LLM-native translation."
 
 - **Why this approach**:
   - LLM-native translation eliminates i18n infrastructure. No locale files needed.
   - Differentiator: traditional tools hardcode translations; project-ledger leverages the LLM's inherent multilingual capability.
-  - Attracts international users who can use the skills in their native language.
-
-- **Lessons learned**:
-  - Hardcoded language lists are anti-patterns for LLM-native tools. Declare the principle and let the AI handle the rest.
-  - Trigger phrases should include examples from multiple languages for reliable recognition.
 
 ### Template auto-discovery replaces hardcoded mapping
 
 - **What was done**:
-  - Replaced the hardcoded `Template Selection by Project Type` mapping table with auto-discovery: the skill tries `templates/<type>/PROJECT_STATE.md.tmpl`, falling back to `templates/PROJECT_STATE.md.tmpl` if absent.
-  - Updated SKILL.md, root README.md, project-docs/README.md, and maintenance-spec.md.
+  - Replaced hardcoded `Template Selection by Project Type` table with auto-discovery: `templates/<type>/PROJECT_STATE.md.tmpl`.
+  - Mirrors project-onboard's rule pack auto-discovery pattern. Zero code changes to add new engine types.
 
-- **Why this approach**:
-  - Mirrors project-onboard's rule pack auto-discovery (`references/<type>.md` → fallback `general.md`). Adding a new engine type now needs only `templates/<name>/PROJECT_STATE.md.tmpl` — zero code changes, no mapping table to update.
-  - Architectural consistency across both skills in the same repo.
+### Comprehensive two-round audit — 28 issues found, all resolved
 
-- **Lessons learned**:
-  - When two skills share a pattern (rule pack discovery / template discovery), they should stay architecturally identical. Simple fallback logic scales better than documentation tables.
+- **What was done**:
+  - Round 1 (format): 12 issues — copyright notices, template placeholders, CHANGELOG formatting (9 fixed, 3 deferred).
+  - Round 2 (content): 28 issues — type-specific templates, AGENTS-to-STATE field mapping, complete update workflow, Build & Test sections in 6 rule packs, edge cases, version metadata.
+  - All 28 issues resolved.
+
+### Project ledger repository established
+
+- **What was done**:
+  - Created GitHub organization `Zions-store`.
+  - Set up `project-ledger` monorepo with project-onboard + project-docs skills.
+  - Deprecated old standalone `ZionXiaoxiSuOGLocGo/project-onboard` (4 stars preserved), added [DEPRECATED] redirect.
+  - Established Junction-based local dev workflow: `projects\Zion's Store\project-ledger\` → `.config\opencode\skills\`.
+  - Cleaned up legacy `OpenCode_skills\` directory.
 
 ---
 
