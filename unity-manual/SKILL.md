@@ -89,11 +89,9 @@ Use **Unity Hub** to install and switch engine versions. Projects created in new
 
 ### Version Control Setup
 
-```ini
-# ProjectSettings/EditorSettings.ini
-Asset Serialization: Force Text
-Version Control Mode: Visible Meta Files
-```
+Set in **Edit → Project Settings → Editor**:
+- **Asset Serialization**: Force Text
+- **Version Control Mode**: Visible Meta Files
 
 **Required `.gitignore` entries:**
 ```
@@ -191,44 +189,21 @@ Execution order is fixed. Understanding it prevents 90% of Unity timing bugs.
 Every script is a class that inherits from `MonoBehaviour`:
 
 ```csharp
-using UnityEngine;  // access Unity API
+using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]  // enforce dependency at edit time
+// Note: Simplified for teaching. For production physics movement, use
+// rb.velocity or rb.MovePosition in FixedUpdate instead (see §Physics).
 public class Player : MonoBehaviour
 {
     // === FIELDS ===
-    // SerializeField = private but visible in Inspector
     [SerializeField] private float speed = 5f;
     [SerializeField] private GameObject bulletPrefab;
-
-    // public without SerializeField = auto-visible in Inspector (legacy style)
     public int health = 100;
-
-    // Not visible in Inspector (no SerializeField, no public)
-    private Rigidbody rb;
-
-    // === LIFECYCLE METHODS ===
-    void Awake()
-    {
-        rb = GetComponent<Rigidbody>(); // cache references
-    }
-
-    void Start()
-    {
-        // Safe to access other objects here
-    }
 
     void Update()
     {
-        // Per-frame logic: input, animation, AI
         float h = Input.GetAxis("Horizontal");
         transform.Translate(Vector3.forward * h * speed * Time.deltaTime);
-    }
-
-    void FixedUpdate()
-    {
-        // Physics: forces, velocity changes
-        rb.AddForce(Vector3.down * 9.8f);
     }
 }
 ```
@@ -349,21 +324,9 @@ using MyGame.Player;  // then just: Controller controller;
 // or without using:  MyGame.Player.Controller controller;
 ```
 
-#### Critical Limitation (Unity 2020.1+)
+#### Namespace Limitation (Unity 2020.1–2022.1 only)
 
-**One file = one namespace for MonoBehaviour/ScriptableObject.** A single file cannot contain MonoBehaviour classes from different namespaces:
-
-```csharp
-// ❌ ERROR: Multiple namespaces with MonoBehaviour in one file
-namespace A { public class MyMB : MonoBehaviour { } }
-namespace B { public class OtherMB : MonoBehaviour { } }  // Unity ignores this
-
-// ✅ FIX: Split into separate files
-// File 1: MyMB.cs → namespace A { public class MyMB : MonoBehaviour { } }
-// File 2: OtherMB.cs → namespace B { public class OtherMB : MonoBehaviour { } }
-```
-
-This limitation was introduced for compilation speed. Old Asset Store packages may contain this issue and need manual fixing.
+In Unity versions prior to 2022.2, a single file could not contain MonoBehaviour classes from different namespaces. This restriction was **lifted in Unity 2022.2**. Since this skill targets 2022.3+, the limitation no longer applies. Old Asset Store packages may still contain this issue from pre-2022.2 projects.
 
 ### Null Reference Handling
 
@@ -419,6 +382,7 @@ using UnityEngine.Events;
 
 public class Health : MonoBehaviour
 {
+    private int health = 100;
     public UnityEvent onDeath;  // shows in Inspector
 
     public void TakeDamage(int amount)
@@ -728,7 +692,7 @@ Define tags and layers in **Edit → Project Settings → Tags and Layers**.
 | useGravity | Enable/disable gravity |
 | isKinematic | Physics-driven or script-driven |
 | interpolation | Smooth movement for jitter reduction |
-| collisionDetection | Continuous for fast objects (prevents tunnelling) |
+| collisionDetectionMode | Continuous for fast objects (prevents tunnelling) |
 
 ### Applying Forces
 
@@ -816,7 +780,7 @@ if (Physics.SphereCast(ray.origin, 0.5f, ray.direction, out hit, 10f)) { }
 RaycastHit[] hits = Physics.RaycastAll(ray, 100f);
 ```
 
-**Blueprint equivalent:** Use the `Line Trace By Channel` node (see unreal-manual Physics section).
+**Unreal equivalent:** `UWorld::LineTraceSingleByChannel()` in C++, or the `Line Trace By Channel` node in Blueprints.
 
 ### Common Pitfall
 
@@ -888,6 +852,13 @@ if (state.IsName("Run")) { /* ... */ }
 
 // Cross-fade with duration
 anim.CrossFade("Death", 0.1f);
+
+// Immediate state transition (no blend)
+anim.Play("Death");
+
+// Cache hash for performance (avoid string lookup per call)
+int deathHash = Animator.StringToHash("Death");
+if (state.shortNameHash == deathHash) { /* in Death state */ }
 ```
 
 ### Animation Curves
@@ -1001,7 +972,7 @@ slider.onValueChanged.AddListener(OnVolumeChange);
 
 Canvas render modes: Screen Space Overlay, Screen Space Camera, World Space.
 
-**Anchors and scaling:** Select a UI element → Rect Transform → Anchor Presets. Anchors define how the element resizes/stretches when screen resolution changes. Hold Shift to set pivot, Alt to set position. For responsive layouts: unity uses stretch anchors (the 4-arrow icon) to make UI fill a percentage of the screen.
+**Anchors and scaling:** Select a UI element → Rect Transform → Anchor Presets. Anchors define how the element resizes/stretches when screen resolution changes. Hold Shift to set pivot, Alt to set position. For responsive layouts: Unity uses stretch anchors (the 4-arrow icon) to make UI fill a percentage of the screen.
 
 **Canvas Scaler:** Controls how UI scales across resolutions → Constant Pixel Size (fixed), Scale With Screen Size (responsive, recommended), Constant Physical Size.
 
@@ -1232,7 +1203,13 @@ public class ObjectPool : MonoBehaviour
 
     public GameObject Get()
     {
-        if (pool.Count == 0) Instantiate(prefab); // expand if needed
+        if (pool.Count == 0)
+        {
+            // Expand pool: instantiate + enqueue before dequeueing
+            GameObject newObj = Instantiate(prefab);
+            newObj.SetActive(false);
+            pool.Enqueue(newObj);
+        }
         GameObject obj = pool.Dequeue();
         obj.SetActive(true);
         return obj;
@@ -1354,6 +1331,15 @@ public class PlayerEditor : Editor
 
 Place Editor scripts in an `Editor/` folder (anywhere under Assets). They won't be included in builds.
 
+**Simpler alternative — `[ContextMenu]`:** For simple right-click context actions on a component without creating an Editor script:
+
+```csharp
+[ContextMenu("Reset Player")]
+void ResetToSpawn() { transform.position = Vector3.zero; }
+```
+
+Right-click the component in Inspector → `Reset Player`. Zero Editor scripting needed.
+
 ---
 
 ## Coroutines
@@ -1362,6 +1348,7 @@ Place Editor scripts in an `Editor/` folder (anywhere under Assets). They won't 
 void Start() { StartCoroutine(FadeOut()); }
 
 IEnumerator FadeOut() {
+    Renderer renderer = GetComponent<Renderer>();
     float t = 0;
     while (t < 1f) {
         t += Time.deltaTime / duration;
@@ -1370,8 +1357,9 @@ IEnumerator FadeOut() {
     }
 }
 
-// Wait for seconds
-yield return new WaitForSeconds(2f);
+// Wait for seconds (cache to avoid GC allocation)
+WaitForSeconds wait = new WaitForSeconds(2f);
+yield return wait;
 
 // Wait until condition
 yield return new WaitUntil(() => health <= 0);
@@ -1410,6 +1398,8 @@ Install `UniTask` via Package Manager (by URL: `https://github.com/Cysharp/UniTa
 ```csharp
 using Cysharp.Threading.Tasks;
 
+// Note: async void Start is required by Unity's MonoBehaviour lifecycle.
+// Prefer async UniTaskVoid for non-lifecycle methods for proper exception handling.
 async void Start()
 {
     // Wait 2 seconds
@@ -1429,7 +1419,7 @@ async void Start()
 }
 ```
 
-### Native Task (Unity 2023+)
+### Native Task (Unity 2022.2+ / Unity 6)
 
 ```csharp
 using System.Threading.Tasks;
@@ -1450,7 +1440,7 @@ async void Start()
 | **Exception handling** | ❌ Try/catch doesn't work across `yield` | ✅ Full try/catch support |
 | **GC allocation** | Moderate | Minimal (UniTask) |
 | **Main thread guarantee** | ✅ Always | ⚠️ Must manually switch back |
-| **Error on destroy** | ❌ Silent stop | ❌ Silent stop (UniTask with cancellation token) |
+| **Error on destroy** | ❌ Silent stop | ⚠️ Silent stop (fix with CancellationToken, see below) |
 | **Use for** | Simple sequences | Complex async logic, value returns |
 
 ### Cancellation
@@ -1497,7 +1487,7 @@ void OnDestroy()
 
 - Use primitive colliders over MeshCollider
 - Set Rigidbody to kinematic when physics response is not needed
-- Adjust Fixed Timestep for target framerate
+- Keep Fixed Timestep at 0.02s (50 Hz) for most projects. Only lower for high-precision physics simulations. Do NOT tie to display framerate.
 - Disable collision between layers that don't interact
 
 ## Additional References
@@ -1541,7 +1531,7 @@ void Awake() { rb = GetComponent<Rigidbody>(); }
 // ✅ Pre-cached tag comparison
 bool IsPlayer(Collider other) => other.CompareTag("Player");
 
-// LINQ only in editor scripts or one-time init
+// LINQ only in editor scripts or one-time init (prefer Addressables for runtime asset loading)
 void SetupWeapons() { weapons = Resources.LoadAll<WeaponData>("Weapons").ToList(); }
 ```
 
@@ -1641,33 +1631,7 @@ movement = new FlyMovement(); // power-up changes behaviour
 
 ### Observer via ScriptableObject Event Channel
 
-Decouple senders and listeners without direct references:
-
-```csharp
-// IntEventSO.cs — broadcast without knowing listeners
-[CreateAssetMenu(menuName = "Events/Int Event")]
-public class IntEventSO : ScriptableObject
-{
-    public UnityAction<int> OnValueChanged;
-    public void Raise(int value) => OnValueChanged?.Invoke(value);
-}
-
-// PlayerHealth.cs — sender
-public class PlayerHealth : MonoBehaviour
-{
-    public IntEventSO healthChangedEvent;
-    void TakeDamage(int dmg) { health -= dmg; healthChangedEvent.Raise(health); }
-}
-
-// HealthBarUI.cs — listener (zero references to PlayerHealth!)
-public class HealthBarUI : MonoBehaviour
-{
-    public IntEventSO healthChangedEvent;
-    void OnEnable() => healthChangedEvent.OnValueChanged += UpdateBar;
-    void OnDisable() => healthChangedEvent.OnValueChanged -= UpdateBar;
-    void UpdateBar(int hp) => slider.value = hp;
-}
-```
+See §ScriptableObject → ScriptableObject as Event Channel for the full pattern with `IntEventSO`, `PlayerHealth`, and `HealthBarUI` examples. The same decoupling pattern applies to any event-driven architecture.
 
 ## Input System Advanced
 

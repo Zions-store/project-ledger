@@ -9,7 +9,7 @@ Comprehensive Unity engine reference for AI agents. Covers Unity core concepts, 
 
 ```
 unity-manual/
-├── SKILL.md        # Core reference (1700+ lines)
+├── SKILL.md        # Core reference (1800+ lines)
 ├── README.md       # This file
 ├── CHANGELOG.md    # Version history
 ├── LICENSE         # GPL-3.0

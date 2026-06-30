@@ -1,6 +1,6 @@
 # unreal-manual Changelog
 
-## [2.3.0] - 2026-06-30 — Advanced Gameplay Patterns + Substrate + Tool Ecosystem
+## [2.2.0] - 2026-06-30 — Advanced Gameplay Patterns + Substrate + Tool Ecosystem
 **Source**: ThirdPersonTest project-ledger development session
 
 ### Added
@@ -20,7 +20,7 @@
 
 ---
 
-## [2.1] - 2026-06-25 — MCP + ABP + Project Knowledge Board
+## [2.1.0] - 2026-06-25 — MCP + ABP + Project Knowledge Board
 **Source**: ThirdPersonTest UE 5.8 project (crouch animation + MCP integration session)
 
 ### Added
@@ -37,7 +37,7 @@
 
 ---
 
-## [2.0] - 2026-06-24 — Major Update
+## [2.0.0] - 2026-06-24 — Major Update
 **Source**: ThirdPersonTest UE 5.8 project hands-on summary
 
 ### Added

@@ -1,6 +1,6 @@
 ---
 name: unreal-manual
-version: 2.3.0
+version: 2.2.0
 description: Unreal Engine core concepts and best practices. Use when the user mentions Unreal Engine, UE5, Actor, Pawn, Character, GameMode, Blueprint, UMG, Enhanced Input, Chaos, Nanite, Lumen, UPROPERTY, UFUNCTION, replication, RPC, GameInstance, Niagara, Line Trace, Timer, Event Dispatcher, Blueprint Interface, module, FString, FName, FText, DataTable, GameplayTag, Subsystem, SaveGame, Timeline, Timeline Editor, Soft Reference, Packaging, Build.cs, IMPLEMENT_MODULE, Public/Private folder, UObject, or is working on Unreal Engine game development tasks.
 compatibility: ue-5.0, ue-5.5, ue-5.8
 ---
@@ -10,7 +10,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 # Unreal Engine Manual
 
-Covers UE core concepts, architecture, and best practices across UE 5.0 to 5.5. Provides the mental model of how UE works — not just API signatures.
+Covers UE core concepts, architecture, and best practices. See frontmatter `compatibility` field for supported engine versions.
 
 ## When to Use This Skill
 
@@ -123,7 +123,7 @@ Every object in the game world is an **Actor**. An Actor itself does nothing —
 - **Actor** = spatial identity (transform, lifespan, network role) + a list of Components
 - **Component** = reusable behaviour module (mesh, collision, audio, movement, custom logic)
 - **RootComponent** = the one Component that defines the Actor's transform in the world
-- Every Actor has a RootComponent — without it, the Actor has no position
+- Actors normally have a RootComponent — without one, the Actor has no world position
 - Components attach in a tree: child Components move relative to their parent
 
 ### The Actor Hierarchy
@@ -149,7 +149,7 @@ AActor* NewActor = GetWorld()->SpawnActor<AMyActor>(SpawnClass, Location, Rotati
 UStaticMeshComponent* Mesh = FindComponentByClass<UStaticMeshComponent>();
 
 // Get first actor of a class in the level (avoid in performance code)
-AMyActor* Found = UGameplayStatics::GetActorOfClass(GetWorld(), AMyActor::StaticClass());
+AMyActor* Found = Cast<AMyActor>(UGameplayStatics::GetActorOfClass(GetWorld(), AMyActor::StaticClass()));
 
 // Get the player's pawn
 APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
@@ -728,7 +728,7 @@ Use **Delay** node for one-shot waits, or **Set Timer by Event / Set Timer by Fu
 | **Set Timer by Event** | Wire a Custom Event as the callback, specify looping |
 | **Set Timer by Function Name** | Call a function by name string |
 | **Clear Timer by Handle** | Cancel a timer |
-| **Pause / Unpaus Timer by Handle** | Pause/resume |
+| **Pause / Unpause Timer by Handle** | Pause/resume |
 
 ### Timer Pitfalls
 
@@ -1043,12 +1043,7 @@ Event Blueprint Update Animation
 ```
 All `SET` nodes are on the Sequence execution chain. `Get` nodes are pure functions (no exec pins), connected by data lines to their targets.
 
-**C++ BlueprintPure for AnimBP access:**
-```cpp
-UFUNCTION(BlueprintPure, Category="Crouch")
-bool GetIsCrouched() const { return bIsCrouched; }
-```
-This exposes inherited `ACharacter::bIsCrouched` to the AnimBP without needing `Cast To Character` + long property lookups.
+**C++ BlueprintPure for AnimBP access:** See §Advanced Gameplay Patterns → C++ BlueprintPure for Animation Blueprint Access for full example with multi-function pattern and ABP Event Graph flow.
 
 ## Timelines
 
@@ -1118,9 +1113,9 @@ UCharacterMovementComponent* CMC = GetCharacterMovement();
 // Jump
 void AMyCharacter::OnJump()
 {
-    if (CMC->IsMovingOnGround())
+    if (GetCharacterMovement()->IsMovingOnGround())
     {
-        Character->Jump();  // launches with JumpZVelocity
+        Jump();  // inherited from ACharacter, uses JumpZVelocity
     }
 }
 
@@ -2036,14 +2031,7 @@ UE is whitespace-sensitive in variable names. `MovementComponent` ≠ `Movement 
 
 ### Compatible Skeleton Animation Retargeting
 
-When IK Rig Retarget doesn't work (Mixamo FBX in UE5.8: missing transform, no Humanoid dropdown, IK Rig preview broken), use **Compatible Skeleton** as a lightweight alternative:
-
-1. Open target Skeleton asset (e.g., `SK_Mannequin`)
-2. **Skeleton Tree** panel → right-click → **Manage Compatible Skeletons**
-3. Add the source skeleton (e.g., `UE4_Mannequin_Skeleton`)
-4. All animations on the source skeleton now auto-retarget to the target at runtime
-
-Works for: UE4 Mannequin → UE5 Mannequin, Animation Starter Pack animations. Does NOT support: radically different skeletons (quadrupeds, creatures).
+See §Animation → Compatible Skeleton Retargeting for the lightweight retargeting workflow (IK Rig fallback for Mixamo in UE5.8).
 
 ### C++ BlueprintPure for Animation Blueprint Access
 
@@ -2151,7 +2139,7 @@ AnimNotify_AttackMontageEnded:  // end
   → Start AttackCooldown timer
 ```
 
-### Substrate Material System (UE5.8)
+### Substrate Material System (UE 5.5+)
 
 UE5.5+ next-gen material system. Enable: `r.Substrate 1` (enabled by default in ThirdPersonTest):
 
