@@ -1,5 +1,25 @@
 # unreal-manual Changelog
 
+## [2.2.1] - 2026-06-30 — Audit Bug Fixes
+**Source**: project-ledger quality audit
+
+### Fixed
+- H1: Fix `GetActorOfClass` return type mismatch (added `Cast<>`)
+- H2: Fix `OnJump()` undeclared `Character` variable (use inherited `Jump()`)
+- H3: Version range contradiction resolved (body references frontmatter)
+- H4/H5: Duplicate content blocks replaced with cross-references (BlueprintPure, Compatible Skeleton)
+- H6: Substrate version corrected to UE 5.5+
+- M1/M2: CHANGELOG semver standardized
+- M4: Typo `Unpaus` → `Unpause`
+- M9: RootComponent contradiction resolved
+
+### Added
+- C++ Delegates section (`DECLARE_DELEGATE`, `DECLARE_DYNAMIC_MULTICAST_DELEGATE`)
+- Smart Pointers section (`TSharedPtr`, `TUniquePtr`, `TWeakPtr`, `TSharedRef`)
+- Async Loading section (`FStreamableManager::RequestAsyncLoad` with examples)
+
+---
+
 ## [2.2.0] - 2026-06-30 — Advanced Gameplay Patterns + Substrate + Tool Ecosystem
 **Source**: ThirdPersonTest project-ledger development session
 

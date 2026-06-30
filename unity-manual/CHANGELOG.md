@@ -1,5 +1,36 @@
 # unity-manual Changelog
 
+## [2.1.1] - 2026-06-30 — Audit Bug Fixes
+**Source**: project-ledger quality audit
+
+### Fixed
+- H1: Fix `ObjectPool.Get()` empty queue `Dequeue()` crash
+- H2: Remove conflicting `Rigidbody` from Player teaching example
+- H3: Replace outdated namespace limitation with "lifted in 2022.2" note
+- H4: Fix fictitious `EditorSettings.ini` to real menu instructions
+- H5: Add missing `health` field declarations (x2 locations)
+- H6: Fix `Unity 2023+` → `Unity 2022.2+ / Unity 6`
+- H7: Add `Renderer` declaration to `FadeOut` coroutine
+- M2: Cache `WaitForSeconds` in coroutine example
+- M4: Fix undefined `impulse` variable
+- M5: Fix async/await error-on-destroy table
+- M8: Fix dead cross-reference to unreal-manual
+- M9: Fix `collisionDetectionMode` property name
+- M11: Add Addressables note to Resources.LoadAll example
+- M13: Fix Fixed Timestep advice
+- M1: Replace duplicate SO Event Channel with cross-reference
+- L2: Fix lowercase "unity" → "Unity"
+- L4: Add SafeArea/notch handling note
+- L5: Update README line count
+
+### Added
+- Profiling & Debugging section (Profiler, Frame Debugger, common commands)
+- `Animator.Play()` and `StringToHash()` examples
+- `[ContextMenu]` attribute quick reference
+- `async void` lifecycle warning in UniTask example
+
+---
+
 ## [2.1.0] - 2026-06-30 — Anti-Patterns + Game Architecture + Retargeting + Mobile
 **Source**: project-ledger audit session
 
@@ -15,7 +46,7 @@
 ---
 
 ## [2.0] - 2026-06-20 — Major Expansion
-**Source**: openSkills session — requesting comprehensive Unity coverage beyond core concepts
+**Source**: project-ledger audit session
 
 ### Added
 - **Editor Basics**: panel layout (Scene/Game/Hierarchy/Inspector/Project/Console), scene navigation shortcuts, Transform tools (W/E/R/Q/T/Y/V), Play/Pause/Step modes.

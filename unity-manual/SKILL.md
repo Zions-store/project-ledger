@@ -1,6 +1,6 @@
 ---
 name: unity-manual
-version: 2.1.0
+version: 2.1.1
 description: Unity engine core concepts and best practices. Use when the user mentions Unity, GameObject, Component, MonoBehaviour, Scene, URP, HDRP, render pipeline, physics engine, animation system, Animator, UI Toolkit, uGUI, audio, Input System, Input Manager, prefab, ScriptableObject, camera, Cinemachine, 2D, Sprite, particle system, VFX, Shuriken, lighting, Light Probe, build, publish, async await, UniTask, Addressables, custom inspector, events, delegates, UnityEvent, timeScale, pause, Lerp, SmoothDamp, raycast, object pooling, singleton, or is working on Unity game development tasks.
 compatibility: unity-2022.3, unity-6
 ---
@@ -700,7 +700,7 @@ Define tags and layers in **Edit → Project Settings → Tags and Layers**.
 // In FixedUpdate() only
 void FixedUpdate() {
     rb.AddForce(Vector3.forward * speed);        // continuous force
-    rb.AddForce(impulse, ForceMode.Impulse);      // instant push
+    rb.AddForce(Vector3.up * 10f, ForceMode.Impulse);      // instant push
     rb.MovePosition(targetPos);                    // kinematic movement
 }
 ```
@@ -1797,8 +1797,56 @@ void OnLowMemory() {
 - **Memory**: 1-2GB budget. Profile with Memory Profiler package.
 - **Battery**: VSync on limits unnecessary frames. Avoid `while(true)` or unbounded Update.
 - **Touch vs mouse**: Use `Input.touchSupported` to switch between touch/mouse paths.
+- **Notch/Cutout**: Use `Screen.safeArea` to constrain UI to non-obscured screen regions.
 
 ---
+
+---
+
+## Profiling & Debugging
+
+### Profiler Window
+
+**Window → Analysis → Profiler** or `Ctrl+7`. Records CPU/GPU/memory/audio usage per frame:
+
+| Module | Shows |
+|---|---|
+| **CPU Usage** | Scripts, physics, rendering — sorted by time cost |
+| **GPU Usage** | Draw calls, shader passes, screen effects |
+| **Memory** | Textures, meshes, audio, GC allocations |
+| **Rendering** | Batches, set passes, VBO uploads |
+| **Audio** | Audio clip playback, mixers, voices |
+
+**Workflow:**
+1. Click Record (red circle) → run the scene → stop recording
+2. Click on CPU spikes to inspect per-frame script calls
+3. Deep Profile: enable **Deep Profile** in Build Settings to see per-method timing (slower, development only)
+
+### Frame Debugger
+
+**Window → Analysis → Frame Debugger**. Captures a single frame's draw call sequence:
+
+```
+Draw Call #1: Skybox
+Draw Call #2: Background meshes (StaticBatching)
+Draw Call #3: Character_SK (SkinnedMeshRenderer)
+Draw Call #4: UIPanel (Canvas)
+...
+```
+
+**Use for:**
+- Finding unnecessary draw calls (overdraw)
+- Checking batching (static/dynamic/GUI)
+- Verifying shader variants per object
+- Spotting hidden objects still rendering (Check `isVisible`)
+
+### Common Commands
+
+```
+Stats window → toggle real-time performance overlay
+Profiler → CPU Usage → search by MonoBehaviour name
+Frame Debugger → click draw call → highlights object in Scene View
+```
 
 ## Maintaining This Skill
 
