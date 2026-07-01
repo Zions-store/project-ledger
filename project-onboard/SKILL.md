@@ -1,6 +1,6 @@
 ---
 name: project-onboard
-version: 1.1.0
+version: 1.1.1
 description: Analyze any project directory and generate AGENTS.md for AI context. Supports any language via LLM-native translation. Use when the user asks to "onboard", "analyze this project", "分析这个项目", or provides a project path. Auto-detects Unity, Unreal, Node.js, Python, Rust, Go, Java, C/C++, C#, Lua, and general projects.
 ---
 
@@ -31,7 +31,13 @@ Turn any project directory into an AGENTS.md that gives the AI agent instant pro
 
 ### Step 0: Choose Output Language
 
-Ask the user what language to generate AGENTS.md in. Default to English if they skip. Any language the LLM can output is supported — translation is done by the agent at generation time:
+Detect the language of the user's message. If they wrote their request in a non-English language (e.g., "分析这个项目" in Chinese, "プロジェクトを分析" in Japanese), that is the implied preferred language. Use it as the default. Any language the LLM can output is supported — translation is done by the agent at generation time.
+
+Ask the user to confirm, offering the detected language as default:
+
+> "I noticed your message is in <detected-language>. Generate AGENTS.md in <detected-language>? Reply 'yes' or specify another language."
+
+If the user's message language is unclear or mixed, default to English:
 
 > "What language should AGENTS.md be written in? Default: English. Any language the LLM can output is supported."
 
