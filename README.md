@@ -7,7 +7,7 @@ AI agent skills for project onboarding and documentation. Compatible with openco
 
 ## Skills
 
-### project-onboard (v1.1.0)
+### project-onboard (v1.1.1)
 
 Auto-detect project type and generate AGENTS.md. 11 rule packs (Unity, Unreal, Node.js, Python, Rust, Go, Java, C++, C#, Lua, General). Zero dependencies.
 
