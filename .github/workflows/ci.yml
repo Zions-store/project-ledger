@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  markdown-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DavidAnson/markdownlint-cli2-action@v19
+        with:
+          globs: '**/*.md'
+
+  code-block-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check code block integrity
+        run: |
+          echo "Checking for unclosed code blocks (``` without closing)"
+          for f in $(find . -name "*.md" -not -path "./.git/*"); do
+            count=$(grep -c '```' "$f" 2>/dev/null || echo 0)
+            if [ $((count % 2)) -ne 0 ]; then
+              echo "ERROR: Unclosed code block in $f"
+              exit 1
+            fi
+          done
+          echo "All code blocks properly closed"
+
+      - name: Check for common issues
+        run: |
+          echo "Checking for TODO markers in committed files..."
+          if grep -rn "TODO\|FIXME\|HACK" --include="*.md" . | grep -v ".git/"; then
+            echo "WARNING: TODO/FIXME/HACK markers found (non-blocking)"
+          fi
+
+      - name: Check copyright headers
+        run: |
+          echo "Checking copyright headers on .md files..."
+          missing=0
+          for f in $(find . -name "*.md" -not -path "./.git/*" -not -path "./.tmp_validation/*"); do
+            if ! head -3 "$f" | grep -q "Copyright\|SPDX"; then
+              echo "MISSING: $f"
+              missing=1
+            fi
+          done
+          if [ $missing -eq 1 ]; then
+            echo "ERROR: Some files missing Copyright/SPDX headers"
+            exit 1
+          fi
+          echo "All files have copyright headers"
