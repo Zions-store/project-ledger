@@ -1,7 +1,7 @@
 ---
 name: project-onboard
-version: 1.1.1
-description: Analyze any project directory and generate AGENTS.md for AI context. Supports any language via LLM-native translation. Use when the user asks to "onboard", "analyze this project", "分析这个项目", or provides a project path. Auto-detects Unity, Unreal, Node.js, Python, Rust, Go, Java, C/C++, C#, Lua, and general projects.
+version: 1.2.0
+description: Analyze any project directory and generate AGENTS.md for AI context. Supports any language via LLM-native translation. Use when the user asks to "onboard", "analyze this project", "分析这个项目", or provides a project path. Auto-detects Unity, Unreal, MonoGame, Node.js, Python, Rust, Go, Java, C/C++, C#, Lua, and general projects.
 ---
 
 Copyright (C) 2026 ZionXiaoxiSuOGLocGo
@@ -24,7 +24,7 @@ Turn any project directory into an AGENTS.md that gives the AI agent instant pro
 ## Parameters
 
 - **path** (required): Project directory path
-- **type** (optional): Force project type, skip auto-detection. Values: `unity`, `unreal`, `nodejs`, `python`, `rust`, `go`, `java`, `cpp`, `csharp`, `lua`, `general`. If an invalid value is given, warn the user and fall back to auto-detection.
+- **type** (optional): Force project type, skip auto-detection. Values: `unity`, `unreal`, `nodejs`, `python`, `rust`, `go`, `java`, `cpp`, `csharp`, `monogame`, `lua`, `general`. If an invalid value is given, warn the user and fall back to auto-detection.
 - **output** (optional): Where to save AGENTS.md. Default: `<project_root>/AGENTS.md`
 
 ## Execution Flow
@@ -67,11 +67,23 @@ Use `glob` with pattern `*` to list top-level directory entries. Match the resul
 | `*.rockspec` or `lua_modules/` or `.luacheckrc` or `.busted` | lua | `references/lua.md` |
 | None of the above | general | `references/general.md` |
 
+**Content-based refinement (after a `csharp` match):** the top-level scan cannot
+see MonoGame's signals, which live inside `.csproj` contents or a `Content/`
+subdirectory. After matching `csharp`, read the `*.csproj`; if it references
+`MonoGame.Framework.*` **or** a `**/*.mgcb` file exists, switch the type to
+`monogame` and use `references/monogame.md`.
+
+| Refinement signature | Type | Rule Pack |
+|---|---|---|
+| `csharp` match + (`MonoGame.Framework.*` in `.csproj` OR `**/*.mgcb` present) | monogame | `references/monogame.md` |
+
 Check in order. First match wins. When multiple signatures could match (e.g., a project with both `package.json` and `CMakeLists.txt`), prefer the one that appears first in the table. If ambiguous or the detected type seems wrong after scanning, fall back to `general` or ask the user to specify `--type`.
 
 > **Ordering note**: The detection order is deliberate. Unity appears before Node.js and C# because Unity projects also contain `package.json` and `*.csproj` files in their `ProjectSettings/` directory. Do not reorder without understanding these signature overlaps.
 
 > **Sub-type detection**: Projects with `Dockerfile`, database files (`*.sql` + `migrations/`), or shader files (`.glsl`/`.hlsl`) are detected as `general` at Step 2. The `references/general.md` rule pack handles these during the deep scan.
+
+> **MonoGame refinement**: MonoGame games first match `csharp` (they have `.csproj`/`.sln` and no `Assets/`). Because their distinguishing signals (`MonoGame.Framework.*` package, `.mgcb` content files) are not visible in the top-level name scan, confirm them by reading the `.csproj` contents, then switch to the `monogame` rule pack.
 
 ### Step 3: Load the Rule Pack
 

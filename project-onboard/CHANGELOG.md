@@ -2,6 +2,24 @@ Copyright (C) 2026 ZionXiaoxiSuOGLocGo
 SPDX-License-Identifier: GPL-3.0-or-later
 # project-onboard Changelog
 
+## [1.2.0] - 2026-07-08 — MonoGame Rule Pack
+**Source**: project-ledger — dedicated game-framework support
+
+### Added
+- **MonoGame rule pack** (`references/monogame.md`): content-based sub-type
+  refinement after a `csharp` match. Detected via `MonoGame.Framework.*`
+  package reference or `**/*.mgcb` content file. Analyzes backend variant
+  (DesktopGL/WindowsDX/Android/iOS), content pipeline, `Game` lifecycle
+  (Initialize/LoadContent/Update/Draw), and 2D/3D rendering.
+
+### Changed
+- **Step 2 detection**: added a content-based refinement note + table — after
+  matching `csharp`, read the `.csproj`; if it references MonoGame or a `.mgcb`
+  exists, switch to the `monogame` rule pack.
+- **Parameters**: `--type` now accepts `monogame`.
+
+---
+
 ## [1.1.1] - 2026-07-01 — Language Auto-Detection
 **Source**: project-ledger quality improvement
 

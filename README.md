@@ -7,14 +7,14 @@ AI agent skills for project onboarding and documentation. Compatible with openco
 
 ## Skills
 
-### project-onboard (v1.1.1)
+### project-onboard (v1.2.0)
 
-Auto-detect project type and generate AGENTS.md. 11 rule packs (Unity, Unreal, Node.js, Python, Rust, Go, Java, C++, C#, Lua, General). Zero dependencies.
+Auto-detect project type and generate AGENTS.md. 12 rule packs (Unity, Unreal, MonoGame, Node.js, Python, Rust, Go, Java, C++, C#, Lua, General). Zero dependencies.
 
 - **Trigger phrases**: "onboard", "analyze this project", "generate AGENTS.md"
 - **Force type**: `--type unity`, `--type unreal`, etc.
 
-### project-docs (v1.0.0)
+### project-docs (v1.1.0)
 
 Three-document project knowledge system (`AGENTS.md` + `PROJECT_STATE.md` + `DEVLOG.md`). Auto-discovers type-specific templates.
 
