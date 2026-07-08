@@ -1,0 +1,106 @@
+Copyright (C) 2026 ZionXiaoxiSuOGLocGo
+SPDX-License-Identifier: GPL-3.0-or-later
+# {{PROJECT_NAME}} Project State
+
+> Living document — update at end of every session. Provides quick context for new AI sessions.
+
+## 1. Project Identity
+- **Framework**: MonoGame {{MONOGAME_VERSION}}
+- **Backend**: {{BACKEND}} (DesktopGL / WindowsDX / Android / iOS)
+- **Language / TargetFramework**: C# / {{TARGET_FRAMEWORK}}
+- **Rendering**: {{RENDERING}} (2D SpriteBatch / 3D BasicEffect+Model)
+- **Entry**: {{ENTRY_FILE}} → `{{GAME_CLASS}}.Run()`
+
+## 2. Directory Structure
+
+```
+{{PROJECT_ROOT}}/
+├── {{GAME_CLASS}}.cs       Game subclass (main loop)
+├── Program.cs              entry point
+├── Content/
+│   └── Content.mgcb        content pipeline manifest (compiled to .xnb)
+├── {{CSPROJ}}              project file
+├── {{SLN}}                 solution (IDE entry)
+├── bin/ obj/               build output
+```
+
+## 3. Source Code Spectrum
+<!-- Fill from AGENTS.md "Core Architecture" section. -->
+
+### {{COMPONENT_NAME}}
+
+| File/Symbol | Type | Responsibility | Location |
+|---|---|---|---|
+| `{{NAME}}` | {{TYPE}} | {{RESPONSIBILITY}} | `{{PATH}}` |
+
+### Game Lifecycle ({{GAME_CLASS}})
+
+| Method | Purpose | Current Implementation |
+|---|---|---|
+| Constructor | GraphicsDeviceManager / Content root / mouse | {{CTOR_NOTES}} |
+| `Initialize()` | one-time setup | {{INIT_NOTES}} |
+| `LoadContent()` | SpriteBatch + asset loading | {{LOAD_NOTES}} |
+| `Update(GameTime)` | per-frame logic & input | {{UPDATE_NOTES}} |
+| `Draw(GameTime)` | per-frame rendering | {{DRAW_NOTES}} |
+
+## 4. Content Pipeline (Content.mgcb)
+
+| Asset | Type | Processor | Status |
+|---|---|---|---|
+| {{ASSET_NAME}} | {{ASSET_TYPE}} | {{PROCESSOR}} | {{STATUS}} |
+
+<!-- Global properties: /platform, /profile, /compress -->
+- **platform**: {{MGCB_PLATFORM}}
+- **profile**: {{MGCB_PROFILE}}
+
+## 5. Input Map
+
+| Action | Device | Binding | Location |
+|---|---|---|---|
+| {{ACTION}} | {{DEVICE}} | {{BINDING}} | {{LOCATION}} |
+
+## 6. Architecture & Game Flow
+
+### {{FLOW_NAME}}
+```
+{{FLOW_DIAGRAM}}
+```
+
+## 7. External Dependencies
+
+| Dependency | Purpose | Config |
+|---|---|---|
+| {{DEP_NAME}} | {{PURPOSE}} | {{CONFIG}} |
+
+## 8. Key Parameters Quick Reference
+
+| Parameter | Value | Location |
+|---|---|---|
+| {{PARAM_NAME}} | {{VALUE}} | {{LOCATION}} |
+
+## 9. Build & Run
+
+### Commands
+- **Build**: `dotnet build`
+- **Run**: `dotnet run`
+- **Publish**: `dotnet publish -c Release`
+- **Content Editor**: `mgcb-editor` → open `Content/Content.mgcb`
+
+### Common Issues
+| Error | Fix |
+|---|---|
+| {{ERROR_PATTERN}} | {{FIX}} |
+
+## 10. Current Status
+
+### Done (0/N)
+<!-- "N completed out of M total" -->
+- _No items completed yet_
+
+### Todo
+| # | Item | Priority |
+|---|---|---|
+| 1 | {{TODO_ITEM}} | High/Med/Low/TBD |
+
+### Known Issues
+- None

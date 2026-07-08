@@ -1,6 +1,6 @@
 ---
 name: project-docs
-version: 1.0.0
+version: 1.1.0
 description: Initialize or update the three-document project knowledge system (AGENTS.md + PROJECT_STATE.md + DEVLOG.md). Supports any language via LLM-native translation. Use when the user says "init docs", "建立文档体系", "project-docs", "更新项目状态", or when a new project needs a living documentation framework.
 ---
 
@@ -68,7 +68,7 @@ For **non-English output**: translate section headers, labels, and placeholder d
    - **If not**: Offer to run the `project-onboard` skill first to generate AGENTS.md. Stop here.
    - **If yes**: Read AGENTS.md and extract:
      - Project name
-     - **Type** (from Basic Information — e.g., "unreal", "unity", "nodejs", "python")
+     - **Type** (from Basic Information — e.g., "unreal", "unity", "monogame", "nodejs", "python")
      - Core architecture (classes, files, roles)
 
 2. **Detect template**: Based on the extracted Type (lowercased), try to load a type-specific template. If no match, fall back to the generic template:
@@ -131,7 +131,8 @@ templates/
 ├── DEVLOG.md.tmpl              ← All types (generic)
 ├── PROJECT_STATE.md.tmpl       ← Fallback (generic)
 ├── unreal/PROJECT_STATE.md.tmpl     ← Unreal Engine
-└── unity/PROJECT_STATE.md.tmpl      ← Unity
+├── unity/PROJECT_STATE.md.tmpl      ← Unity
+└── monogame/PROJECT_STATE.md.tmpl   ← MonoGame
 ```
 
 `templates/<type>/PROJECT_STATE.md.tmpl` files are optional. The skill tries to load one matching the AGENTS.md Type; if absent, it uses the root generic template.

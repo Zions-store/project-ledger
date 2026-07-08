@@ -6,6 +6,38 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 ---
 
+## 2026-07-08
+
+### project-onboard v1.2.0 + project-docs v1.1.0 — MonoGame support
+
+- **What was done**:
+  - Added `references/monogame.md` rule pack (project-onboard): content-based
+    sub-type refinement after `csharp` match, detected via `MonoGame.Framework.*`
+    package or `**/*.mgcb`. Analyzes backend variant, content pipeline, `Game`
+    lifecycle, 2D/3D rendering.
+  - SKILL.md Step 2: added content-based refinement note + table; `--type` now
+    accepts `monogame`.
+  - Added `templates/monogame/PROJECT_STATE.md.tmpl` (project-docs): engine-oriented
+    sections (version/backend, Game lifecycle, Content.mgcb checklist, input map,
+    game-loop flow). Auto-discovered by AGENTS.md Type `monogame`.
+  - Bumped versions (onboard 1.1.1→1.2.0, docs 1.0.0→1.1.0), updated both
+    CHANGELOGs and root README (11→12 rule packs).
+
+- **Why this approach**:
+  - MonoGame is a game framework whose analysis needs differ sharply from the
+    ASP.NET/WPF/MAUI focus of the generic `csharp` rule pack.
+  - Detection is content-based (not a top-level name signature) because MonoGame's
+    signals live inside `.csproj` / `Content/` — so it refines `csharp` rather than
+    being a standalone Step 2 signature.
+
+- **What was learned / verified**:
+  - C# regression: a plain `Microsoft.NET.Sdk.Web` project without MonoGame stays
+    `csharp` (no false positive); a project with `MonoGame.Framework.DesktopGL` or
+    a `.mgcb` file routes to `monogame`. Verified with fixtures + the real
+    `Mono 2D Test` project.
+
+---
+
 ## 2026-07-01
 
 ### project-onboard v1.1.1 — Language auto-detection
