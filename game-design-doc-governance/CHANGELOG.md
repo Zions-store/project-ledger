@@ -1,4 +1,4 @@
-ï»¿Copyright (C) 2026 ZionXiaoxiSuOGLocGo
+Copyright (C) 2026 ZionXiaoxiSuOGLocGo
 SPDX-License-Identifier: GPL-3.0-or-later
 # game-design-doc-governance Changelog
 
@@ -7,7 +7,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 _Next: 0.5.0 self-contained fixtures + pytest/CI, then 0.6.0 schema validation,
 0.7.0 packaging/CLI, 0.8.0 scaffold, 0.9.0 RC, 1.0.0 stable._
 
-## [0.4.1] - 2026-07-09 â€” CI Hotfix
+## [0.4.1] - 2026-07-09 ¡ª CI Hotfix
 
 ### Fixed
 - Fixed markdownlint-cli2-action configuration by replacing unsupported extra_args
@@ -22,7 +22,7 @@ _Next: 0.5.0 self-contained fixtures + pytest/CI, then 0.6.0 schema validation,
 
 ---
 
-## [0.4.0] - 2026-07-09 â€” First public pre-1.0 release
+## [0.4.0] - 2026-07-09 ¡ª First public pre-1.0 release
 
 > **Pre-1.0 / not stable.** This is the first publicly published release on the
 > pre-1.0 track. The Profile schema, CLI, and scaffold workflow are **not yet
@@ -58,12 +58,12 @@ _Next: 0.5.0 self-contained fixtures + pytest/CI, then 0.6.0 schema validation,
 
 ---
 
-## [0.3.2] - 2026-07-09 â€” Pre-P4 Audit Robustness
+## [0.3.2] - 2026-07-09 ¡ª Pre-P4 Audit Robustness
 
 ### Fixed
-- **`modules/06` Â§2**: Pass condition now lists `--strict` / `--pedantic` /
+- **`modules/06` ¡ì2**: Pass condition now lists `--strict` / `--pedantic` /
   `--fail-on-p2` (and profile `audit.*` relaxation), matching the script.
-- **`modules/06` Â§4**: Outputs now list `issue_state.jsonl`.
+- **`modules/06` ¡ì4**: Outputs now list `issue_state.jsonl`.
 - **`SKILL.md`** quick workflow step 3: build the doc set from the genre profile's
   `recommended_docs` (+ optional), then write into `Project_Profile.yaml` `enabled_docs`
   (a genre profile has no `enabled_docs`).
@@ -71,7 +71,7 @@ _Next: 0.5.0 self-contained fixtures + pytest/CI, then 0.6.0 schema validation,
   fresh out dir / `--no-state` so prior suppression can't skew the expected P3.
 
 ### Changed
-- **Document-existenceåˆ¤æ–­ generalised (P2-4=B)**: new shared `match_versioned_doc()`;
+- **Document-existenceÅÐ¶Ï generalised (P2-4=B)**: new shared `match_versioned_doc()`;
   `find_latest()` globs `{base}*{ext}` then strictly filters via `version_pattern`
   (canonical / `(n)` / `_vN` / `.N`) ?rejecting `*_TEMPLATE/_BACKUP/_OLD`.
   `check_file_list()` and `check_links()` now reuse `find_latest`/`doc_exists`
@@ -86,7 +86,7 @@ _Next: 0.5.0 self-contained fixtures + pytest/CI, then 0.6.0 schema validation,
 
 ---
 
-## [0.3.1] - 2026-07-09 â€” Release-Consistency Fixes
+## [0.3.1] - 2026-07-09 ¡ª Release-Consistency Fixes
 
 ### Fixed
 - **README** status was stale (v0.1.0) ?updated to v0.3.1 / P3.
@@ -103,8 +103,8 @@ _Next: 0.5.0 self-contained fixtures + pytest/CI, then 0.6.0 schema validation,
 - **`link_checks.enabled` / `ignored_dirs`** are honoured.
 - **Link check** now strips `#fragment` before the `.md` test (e.g.
   `Mission_Design.md#section` is validated instead of skipped).
-- **Baseline compare** now covers P0â€“P3 only (INFO is informational, not a gate).
-- STYLE template Â§13/Â§14 document `audit/issue_state.jsonl`.
+- **Baseline compare** now covers P0¨CP3 only (INFO is informational, not a gate).
+- STYLE template ¡ì13/¡ì14 document `audit/issue_state.jsonl`.
 - Script version ?`v1.1.0-generic`.
 
 ### Verified
@@ -115,7 +115,7 @@ _Next: 0.5.0 self-contained fixtures + pytest/CI, then 0.6.0 schema validation,
 
 ---
 
-## [0.3.0] - 2026-07-09 â€” P3 Full Governance
+## [0.3.0] - 2026-07-09 ¡ª P3 Full Governance
 
 ### Added
 - **modules** 07_export_and_snapshot, 08_migration_workflow, 09_ai_collaboration_rules.
@@ -139,7 +139,7 @@ _Next: 0.5.0 self-contained fixtures + pytest/CI, then 0.6.0 schema validation,
 
 ---
 
-## [0.2.0] - 2026-07-09 â€” P2 Genre Library
+## [0.2.0] - 2026-07-09 ¡ª P2 Genre Library
 
 ### Added
 - **modules/03_genre_profiles.md** ?the two profile shapes (genre vs project
@@ -165,7 +165,7 @@ _Next: 0.5.0 self-contained fixtures + pytest/CI, then 0.6.0 schema validation,
 
 ---
 
-## [0.1.0] - 2026-07-09 â€” P1 MVP
+## [0.1.0] - 2026-07-09 ¡ª P1 MVP
 
 ### Added
 - **SKILL.md** entry point (English; Step 0 output-language selection; module index;

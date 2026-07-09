@@ -94,3 +94,17 @@ jobs:
             --out     /tmp/gdd-ci \
             --baseline game-design-doc-governance/tests/expected/sample_fixture_baseline.json \
             --no-state
+
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        run: pip install pyyaml pytest
+      - name: Run pytest
+        run: |
+          cd game-design-doc-governance/tests
+          python -m pytest -v
