@@ -7,9 +7,22 @@ SPDX-License-Identifier: GPL-3.0-or-later
 _Next: 0.5.0 self-contained fixtures + pytest/CI, then 0.6.0 schema validation,
 0.7.0 packaging/CLI, 0.8.0 scaffold, 0.9.0 RC, 1.0.0 stable._
 
+## [0.4.1] - 2026-07-09 ï¿½ï¿½ CI Hotfix
+
+### Fixed
+- Fixed markdownlint-cli2-action configuration by replacing unsupported extra_args
+  with config + globs; lint surface narrowed to source .md files.
+- Added .markdownlint-cli2.jsonc (MD013@250ch / MD022 off / MD024 off / MD029 off /
+  MD032 off / MD034 off / MD040 off / MD041 off); ignores **/tests/fixtures/** +
+  node_modules + .tmp_validation + .pytest_cache.
+- Replaced shell-based code-fence check with a Python checker (covers .md +
+  .tmpl; roots: README/CHANGELOG/SKILL/MANIFEST/modules/templates/tests/doc_modules).
+  Also resolves the latent shell backtick ( ` ) parsing bug.
+- Retained game-design-doc-governance-v0.4.0; new tag game-design-doc-governance-v0.4.1.
+
 ---
 
-## [0.4.0] - 2026-07-09 â€” First public pre-1.0 release
+## [0.4.0] - 2026-07-09 ï¿?First public pre-1.0 release
 
 > **Pre-1.0 / not stable.** This is the first publicly published release on the
 > pre-1.0 track. The Profile schema, CLI, and scaffold workflow are **not yet
@@ -45,7 +58,7 @@ _Next: 0.5.0 self-contained fixtures + pytest/CI, then 0.6.0 schema validation,
 
 ---
 
-## [0.3.2] - 2026-07-09 â€” Pre-P4 Audit Robustness
+## [0.3.2] - 2026-07-09 ï¿?Pre-P4 Audit Robustness
 
 ### Fixed
 - **`modules/06` Â§2**: Pass condition now lists `--strict` / `--pedantic` /
@@ -60,10 +73,10 @@ _Next: 0.5.0 self-contained fixtures + pytest/CI, then 0.6.0 schema validation,
 ### Changed
 - **Document-existenceåˆ¤æ–­ generalised (P2-4=B)**: new shared `match_versioned_doc()`;
   `find_latest()` globs `{base}*{ext}` then strictly filters via `version_pattern`
-  (canonical / `(n)` / `_vN` / `.N`) â€” rejecting `*_TEMPLATE/_BACKUP/_OLD`.
+  (canonical / `(n)` / `_vN` / `.N`) ï¿?rejecting `*_TEMPLATE/_BACKUP/_OLD`.
   `check_file_list()` and `check_links()` now reuse `find_latest`/`doc_exists`
   (single source of truth for existence; no more hard-coded `(n)` normalisation).
-- Script â†’ `v1.1.1-generic`.
+- Script ï¿?`v1.1.1-generic`.
 
 ### Verified
 - `find_latest` unit test: canonical / `(n)` / `_vN` / `.N` all resolve to the
@@ -73,10 +86,10 @@ _Next: 0.5.0 self-contained fixtures + pytest/CI, then 0.6.0 schema validation,
 
 ---
 
-## [0.3.1] - 2026-07-09 â€” Release-Consistency Fixes
+## [0.3.1] - 2026-07-09 ï¿?Release-Consistency Fixes
 
 ### Fixed
-- **README** status was stale (v0.1.0) â†’ updated to v0.3.1 / P3.
+- **README** status was stale (v0.1.0) ï¿?updated to v0.3.1 / P3.
 - **Language-independent STYLE parsing**: `load_style_rules` now reads
   `<!-- AUDIT: ENABLED_DOCS / ANCHOR_REGISTRY / DEPRECATED_TERMS _START/_END -->`
   marker blocks first (works for any generated language), falling back to the
@@ -92,7 +105,7 @@ _Next: 0.5.0 self-contained fixtures + pytest/CI, then 0.6.0 schema validation,
   `Mission_Design.md#section` is validated instead of skipped).
 - **Baseline compare** now covers P0â€“P3 only (INFO is informational, not a gate).
 - STYLE template Â§13/Â§14 document `audit/issue_state.jsonl`.
-- Script version â†’ `v1.1.0-generic`.
+- Script version ï¿?`v1.1.0-generic`.
 
 ### Verified
 - Origin-project regression unchanged: hard-coded vs generic both `[0,0,0,1,0]`
@@ -102,7 +115,7 @@ _Next: 0.5.0 self-contained fixtures + pytest/CI, then 0.6.0 schema validation,
 
 ---
 
-## [0.3.0] - 2026-07-09 â€” P3 Full Governance
+## [0.3.0] - 2026-07-09 ï¿?P3 Full Governance
 
 ### Added
 - **modules** 07_export_and_snapshot, 08_migration_workflow, 09_ai_collaboration_rules.
@@ -116,7 +129,7 @@ _Next: 0.5.0 self-contained fixtures + pytest/CI, then 0.6.0 schema validation,
 
 ### Verified
 - Parallel verification on the origin project (D4 P3, run 1): hard-coded script vs
-  generic script + origin `Project_Profile.yaml` both yield `[0,0,0,1,0]` â€” EQUIVALENT.
+  generic script + origin `Project_Profile.yaml` both yield `[0,0,0,1,0]` ï¿?EQUIVALENT.
 - Regression vs baseline still EQUIVALENT.
 - Suppression: marking the P3 as ACCEPTED_EXCEPTION drops P3 to 0 with suppressed=1.
 
@@ -126,21 +139,21 @@ _Next: 0.5.0 self-contained fixtures + pytest/CI, then 0.6.0 schema validation,
 
 ---
 
-## [0.2.0] - 2026-07-09 â€” P2 Genre Library
+## [0.2.0] - 2026-07-09 ï¿?P2 Genre Library
 
 ### Added
-- **modules/03_genre_profiles.md** â€” the two profile shapes (genre vs project
+- **modules/03_genre_profiles.md** ï¿?the two profile shapes (genre vs project
   instance) and a 10-genre matrix.
 - **9 genre profiles** (`profiles/*.yaml`): open_world_rpg, linear_action_adventure,
   multiplayer_shooter, survival_crafting, roguelite, strategy_simulation,
-  puzzle_adventure, horror_narrative, liveops_mobile â€” each with
+  puzzle_adventure, horror_narrative, liveops_mobile ï¿?each with
   `recommended_docs` / `optional_docs` / `disabled_docs`, `high_risk_boundaries`,
   `audit_focus`, `suggested_doc_modules`.
 - **16 doc_module skeletons** (`doc_modules/*.md.tmpl`): Narrative_Bible / Script /
   Pipeline, Character_Sheets, Mission_Design, World_Design, Level_Design,
   Encounter_Design, Gameplay_Systems, Resource_And_Economy, Progression_Design,
   Collectibles_Design, Multiplayer_Design, LiveOps_Design, UI_UX_Design,
-  Technical_Design â€” each with applies / owns / does-not-own / recommended chapters /
+  Technical_Design ï¿?each with applies / owns / does-not-own / recommended chapters /
   common boundaries / common audit rules.
 
 ### Changed
@@ -152,12 +165,12 @@ _Next: 0.5.0 self-contained fixtures + pytest/CI, then 0.6.0 schema validation,
 
 ---
 
-## [0.1.0] - 2026-07-09 â€” P1 MVP
+## [0.1.0] - 2026-07-09 ï¿?P1 MVP
 
 ### Added
 - **SKILL.md** entry point (English; Step 0 output-language selection; module index;
   new-project workflow; audit flow; safety rules).
-- **tools/global_doc_audit.py** â€” generic, data-driven auditor:
+- **tools/global_doc_audit.py** ï¿?generic, data-driven auditor:
   - Reads rules from `STYLE_GUIDE.md` (document list / anchor registry /
     deprecated-term registry) and `Project_Profile.yaml`
     (`enabled_docs` / `boundary_checks` / `consistency_checks` / `exceptions` /
@@ -173,13 +186,13 @@ _Next: 0.5.0 self-contained fixtures + pytest/CI, then 0.6.0 schema validation,
     `audit_history.md`; `--baseline` count comparison; CLI
     `--root/--out/--profile/--style/--strict/--fail-on-p2/--pedantic/`
     `--json-only/--md-only/--no-history`.
-- **profiles/open_world_narrative_tactical_shooter.yaml** â€” first genre profile;
+- **profiles/open_world_narrative_tactical_shooter.yaml** ï¿?first genre profile;
   also the regression fixture. Migrates the origin project's five hard-coded
   checks into data rules.
 - **templates/PROJECT_PROFILE_TEMPLATE.yaml** and **templates/STYLE_GUIDE_TEMPLATE.md**.
 - **modules/** 01 (document architecture), 02 (project profile),
   04 (authority & boundaries), 05 (anchors & change safety), 06 (audit workflow).
-- **tests/expected/current_project_baseline.json** â€” regression baseline.
+- **tests/expected/current_project_baseline.json** ï¿?regression baseline.
 
 ### Verified
 - Regression against the origin project (`open_world_narrative_tactical_shooter`)

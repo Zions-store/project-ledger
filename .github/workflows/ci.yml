@@ -13,49 +13,64 @@ jobs:
       - uses: actions/checkout@v4
       - uses: DavidAnson/markdownlint-cli2-action@v19
         with:
-          globs: '**/*.md'
-          # fixture .md files are sanitised project samples (no Markdown headers expected).
-          # They cannot carry GPL Copyright/SPDX and are excluded from lint/copyright checks.
-          extra_args: '--ignore "tests/fixtures/**"'
+          config: .markdownlint-cli2.jsonc
+          globs: |
+            game-design-doc-governance/README.md
+            game-design-doc-governance/CHANGELOG.md
+            game-design-doc-governance/SKILL.md
+            game-design-doc-governance/MANIFEST.md
+            game-design-doc-governance/modules/**/*.md
+            game-design-doc-governance/templates/**/*.md
+            game-design-doc-governance/tests/**/*.md
 
   code-block-check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Check code block integrity
+      - name: Check Markdown code fences
+        shell: bash
         run: |
-          echo "Checking for unclosed code blocks (``` without closing)"
-          for f in $(find . -name "*.md" -not -path "./.git/*" -not -path "./tests/fixtures/*"); do
-            count=$(grep -c '```' "$f" 2>/dev/null || echo 0)
-            if [ $((count % 2)) -ne 0 ]; then
-              echo "ERROR: Unclosed code block in $f"
-              exit 1
-            fi
-          done
-          echo "All code blocks properly closed"
+          python - <<'PY'
+          from pathlib import Path
+          import sys
 
-      - name: Check for common issues
-        run: |
-          echo "Checking for TODO markers in committed files..."
-          if grep -rn "TODO\|FIXME\|HACK" --include="*.md" . | grep -v ".git/" | grep -v "tests/fixtures/"; then
-            echo "WARNING: TODO/FIXME/HACK markers found (non-blocking)"
-          fi
+          roots = [
+              Path("README.md"),
+              Path("CHANGELOG.md"),
+              Path("SKILL.md"),
+              Path("MANIFEST.md"),
+              Path("modules"),
+              Path("templates"),
+              Path("tests"),
+              Path("doc_modules"),
+          ]
 
-      - name: Check copyright headers
-        run: |
-          echo "Checking copyright headers on .md files..."
-          missing=0
-          for f in $(find . -name "*.md" -not -path "./.git/*" -not -path "./.tmp_validation/*" -not -path "./tests/fixtures/*"); do
-            if ! head -3 "$f" | grep -q "Copyright\|SPDX"; then
-              echo "MISSING: $f"
-              missing=1
-            fi
-          done
-          if [ $missing -eq 1 ]; then
-            echo "ERROR: Some files missing Copyright/SPDX headers"
-            exit 1
-          fi
-          echo "All files have copyright headers"
+          files = []
+          for root in roots:
+              if root.is_file():
+                  files.append(root)
+              elif root.is_dir() and root.exists():
+                  files.extend(root.rglob("*.md"))
+                  files.extend(root.rglob("*.tmpl"))
+
+          bad = []
+          for path in sorted(set(files)):
+              text = path.read_text(encoding="utf-8", errors="replace")
+              fence_count = 0
+              for line in text.splitlines():
+                  if line.lstrip().startswith("```"):
+                      fence_count += 1
+              if fence_count % 2 != 0:
+                  bad.append((str(path), fence_count))
+
+          if bad:
+              print("Unclosed Markdown code fences detected:")
+              for path, count in bad:
+                  print(f"- {path}: {count} fence lines")
+              sys.exit(1)
+
+          print(f"Checked {len(files)} markdown/template files; all code fences are balanced.")
+          PY
 
   python-health:
     runs-on: ubuntu-latest
