@@ -23,6 +23,23 @@ profile:
     - camp_requests
 
 # Documents this project type maintains as authority sources.
+# `enabled_docs` is what the auditor reads (this file is also the regression
+# fixture). `recommended_docs` mirrors it so this file matches the genre-profile
+# shape used by the other profiles (see modules/03_genre_profiles.md).
+recommended_docs:
+  - Design_Document.md
+  - Narrative_Bible.md
+  - Gameplay_Systems.md
+  - Mission_Design.md
+  - World_Design.md
+  - Character_Sheets.md
+  - Narrative_Pipeline.md
+  - Narrative_Script.md
+  - Collectibles_Design.md
+  - Resource_And_Economy.md
+  - Naming.md
+  - STYLE_GUIDE.md
+
 enabled_docs:
   - Design_Document.md
   - Narrative_Bible.md
@@ -52,22 +69,33 @@ non_authority_files:
   - prompts.md
   - 人工笔记.txt
 
-authority:
-  high_risk_boundaries:
-    - GDD vs sub-documents
-    - Mission vs World
-    - Narrative Bible vs Narrative Script
-    - Character vs Gameplay
-    - Resource vs Collectibles
-    - Naming vs Fact
-  audit_focus:
-    - GDD keeps only summaries and links
-    - Mission body text does not flow back into World
-    - World truths are not scattered into Script
-    - Character docs do not maintain gameplay numbers
-    - Collectibles do not mix in ordinary resources
-    - Naming does not carry world facts
-    - No deprecated settings remain
+high_risk_boundaries:
+  - GDD vs sub-documents
+  - Mission vs World
+  - Narrative Bible vs Narrative Script
+  - Character vs Gameplay
+  - Resource vs Collectibles
+  - Naming vs Fact
+
+audit_focus:
+  - GDD keeps only summaries and links
+  - Mission body text does not flow back into World
+  - World truths are not scattered into Script
+  - Character docs do not maintain gameplay numbers
+  - Collectibles do not mix in ordinary resources
+  - Naming does not carry world facts
+  - No deprecated settings remain
+
+suggested_doc_modules:
+  - Narrative_Bible
+  - Narrative_Script
+  - Narrative_Pipeline
+  - Character_Sheets
+  - Mission_Design
+  - World_Design
+  - Gameplay_Systems
+  - Resource_And_Economy
+  - Collectibles_Design
 
 # Anchors and deprecated terms are read from the project's STYLE_GUIDE.md
 # (project-specific; not embedded here per D9). Left empty on purpose.

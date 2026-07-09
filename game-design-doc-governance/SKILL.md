@@ -1,6 +1,6 @@
 ---
 name: game-design-doc-governance
-version: 0.1.0
+version: 0.2.0
 description: Reusable governance framework for game design documentation — sets up a multi-document authority system, picks a genre profile, defines cross-document boundaries and change-safety anchors, and runs a data-driven Python audit. Use when the user says "set up design docs", "game design documentation", "doc governance", "audit design docs", "建立设计文档体系", or starts/organizes a game's GDD system.
 ---
 
@@ -85,7 +85,7 @@ python tools/global_doc_audit.py \
 |---|---|
 | `modules/01_document_architecture.md` | Document lifecycle, GDD-vs-subdoc, full-volume rule |
 | `modules/02_project_profile.md` | Project_Profile.yaml schema and how the auditor reads it |
-| `modules/03_genre_profiles.md` | Genre → document set matrix (P2) |
+| `modules/03_genre_profiles.md` | Genre → document set matrix (10 genres) |
 | `modules/04_authority_boundaries.md` | Authority matrix + cross-document boundary rules |
 | `modules/05_anchor_and_change_safety.md` | Anchors, REF usage, deprecated registry, 5-layer change safety |
 | `modules/06_audit_workflow.md` | Audit order, issue levels (P0–P3/INFO), issue states |
@@ -97,7 +97,8 @@ python tools/global_doc_audit.py \
 
 - `templates/PROJECT_PROFILE_TEMPLATE.yaml` — per-project profile skeleton.
 - `templates/STYLE_GUIDE_TEMPLATE.md` — 15-chapter document constitution, with placeholders.
-- `profiles/*.yaml` — genre profiles (the current project ships as the first one).
+- `profiles/*.yaml` — 10 genre profiles (the current project ships as the first, and as the regression fixture).
+- `doc_modules/*.md.tmpl` — 16 per-document skeletons (applies / owns / not-owns / chapters / boundaries / audit).
 - `tools/global_doc_audit.py` — the generic, data-driven auditor.
 - `tests/expected/current_project_baseline.json` — regression baseline.
 

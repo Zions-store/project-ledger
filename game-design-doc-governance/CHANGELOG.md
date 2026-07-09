@@ -4,8 +4,34 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 ## [Unreleased]
 
-_P2+ planned: remaining 9 genre profiles, 16 doc_module skeletons, genre matrix
-(module 03), export/migration/AI modules (07/08/09), full issue_state.jsonl._
+_P3+ planned: export/migration/AI modules (07/08/09), remaining templates, full
+issue_state.jsonl, P4 wiring + genre-specific doc modules._
+
+---
+
+## [0.2.0] - 2026-07-09 — P2 Genre Library
+
+### Added
+- **modules/03_genre_profiles.md** — the two profile shapes (genre vs project
+  instance) and a 10-genre matrix.
+- **9 genre profiles** (`profiles/*.yaml`): open_world_rpg, linear_action_adventure,
+  multiplayer_shooter, survival_crafting, roguelite, strategy_simulation,
+  puzzle_adventure, horror_narrative, liveops_mobile — each with
+  `recommended_docs` / `optional_docs` / `disabled_docs`, `high_risk_boundaries`,
+  `audit_focus`, `suggested_doc_modules`.
+- **16 doc_module skeletons** (`doc_modules/*.md.tmpl`): Narrative_Bible / Script /
+  Pipeline, Character_Sheets, Mission_Design, World_Design, Level_Design,
+  Encounter_Design, Gameplay_Systems, Resource_And_Economy, Progression_Design,
+  Collectibles_Design, Multiplayer_Design, LiveOps_Design, UI_UX_Design,
+  Technical_Design — each with applies / owns / does-not-own / recommended chapters /
+  common boundaries / common audit rules.
+
+### Changed
+- `open_world_narrative_tactical_shooter.yaml`: added `recommended_docs` to match the
+  genre-profile shape (`enabled_docs` retained for the auditor / regression fixture).
+
+### Verified
+- Regression against the origin project still EQUIVALENT (`P0=0 P1=0 P2=0 P3=1`).
 
 ---
 
