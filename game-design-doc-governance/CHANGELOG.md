@@ -19,8 +19,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 ---
 
-_P4 planned: NTFS junction wiring, origin-project switch to a thin wrapper (D4),
-genre-specific doc modules._
+_Next: formal 0.4.0 release preparation, self-contained fixtures, and expanded genre-specific modules._
 
 ---
 
