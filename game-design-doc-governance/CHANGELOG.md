@@ -9,7 +9,7 @@ genre-specific doc modules._
 
 ---
 
-## [0.3.2] - 2026-07-09 — Doc/Boundary Consistency
+## [0.3.2] - 2026-07-09 — Pre-P4 Audit Robustness
 
 ### Fixed
 - **`modules/06` §2**: Pass condition now lists `--strict` / `--pedantic` /

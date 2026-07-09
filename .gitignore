@@ -19,3 +19,9 @@ desktop.ini
 
 # LSP code validation temp files
 .tmp_validation/
+
+# Python local artifacts
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
