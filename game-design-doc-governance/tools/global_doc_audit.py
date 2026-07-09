@@ -335,10 +335,81 @@ def apply_exceptions(exceptions):
     issues[:] = keep
 
 
+# ─── issue state (jsonl) ───
+STATE_FILE = "issue_state.jsonl"
+HUMAN_STATES = ("FALSE_POSITIVE", "ACCEPTED_EXCEPTION")
+
+
+def load_issue_state(out_dir):
+    path = os.path.join(out_dir, STATE_FILE)
+    state = {}
+    if os.path.exists(path):
+        with open(path, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    e = json.loads(line)
+                    if e.get("issue_id"):
+                        state[e["issue_id"]] = e
+                except Exception:
+                    pass
+    return state
+
+
+def suppress_by_state(state):
+    """Move human-marked (false-positive / accepted-exception) issues out of the
+    active list so they do not re-alarm. Returns the suppressed [(issue, status)]."""
+    if not state:
+        return []
+    active, suppressed = [], []
+    for i in issues:
+        st = state.get(i.id, {}).get("status")
+        if st in HUMAN_STATES:
+            suppressed.append((i, st))
+        else:
+            active.append(i)
+    issues[:] = active
+    return suppressed
+
+
+def write_issue_state(out_dir, active_issues, suppressed, prev, when):
+    new = {}
+    for i, st in suppressed:
+        pe = prev.get(i.id, {})
+        new[i.id] = {"issue_id": i.id, "status": st, "level": i.p, "file": i.file,
+                     "msg": i.msg, "reason": pe.get("reason", ""),
+                     "updated_at": pe.get("updated_at", when)}
+    for i in active_issues:
+        pe = prev.get(i.id)
+        if pe:
+            ps = pe.get("status")
+            ns = "REOPENED" if ps == "VERIFIED" else (ps or "OPEN")
+        else:
+            ns = "OPEN"
+        new[i.id] = {"issue_id": i.id, "status": ns, "level": i.p, "file": i.file,
+                     "msg": i.msg, "reason": pe.get("reason", "") if pe else "",
+                     "updated_at": when}
+    for pid, pe in prev.items():
+        if pid in new:
+            continue
+        ps = pe.get("status")
+        if ps in HUMAN_STATES or ps == "VERIFIED":
+            new[pid] = pe
+        else:
+            e = dict(pe); e["status"] = "VERIFIED"; e["updated_at"] = when
+            new[pid] = e
+    with open(os.path.join(out_dir, STATE_FILE), "w", encoding="utf-8") as f:
+        for e in new.values():
+            f.write(json.dumps(e, ensure_ascii=False) + "\n")
+
+
 # ─── main ───
 def run_audit(root_dir, out_dir, profile_path, style_path,
               strict=False, pedantic=False, write_history=True,
-              json_only=False, md_only=False, baseline_path=None, lang="en"):
+              json_only=False, md_only=False, baseline_path=None,
+              write_state=True, lang="en"):
     global issues
     issues = []
     now = datetime.now()
@@ -386,6 +457,9 @@ def run_audit(root_dir, out_dir, profile_path, style_path,
     run_consistency_checks(texts, profile.get("consistency_checks", []), enabled_docs)
     apply_exceptions(profile.get("exceptions", []))
 
+    prev_state = load_issue_state(out_dir) if write_state else {}
+    suppressed = suppress_by_state(prev_state)
+
     buckets = {p: [i for i in issues if i.p == p] for p in ("P0", "P1", "P2", "P3", "INFO")}
     counts = {p: len(v) for p, v in buckets.items()}
 
@@ -405,6 +479,8 @@ def run_audit(root_dir, out_dir, profile_path, style_path,
           "## Summary", "", "| Level | Count |", "|-------|-------|"]
     for p in ("P0", "P1", "P2", "P3", "INFO"):
         rl.append(f"| {p} | {counts[p]} |")
+    if suppressed:
+        rl.append(f"\n_Suppressed (false-positive / accepted-exception): {len(suppressed)}_")
     for p in ("P0", "P1", "P2", "P3", "INFO"):
         if buckets[p]:
             rl.append(f"\n## {p}")
@@ -428,6 +504,7 @@ def run_audit(root_dir, out_dir, profile_path, style_path,
                  "root_dir": root_dir, "out_dir": out_dir,
                  "p0": counts["P0"], "p1": counts["P1"], "p2": counts["P2"],
                  "p3": counts["P3"], "info": counts["INFO"],
+                 "suppressed": len(suppressed),
                  "issues": [i.as_dict() for i in issues],
                  "loaded_rules": {"docs": len(enabled_docs), "anchors": len(ANCHOR_LIST),
                                   "deprecated": len(DEPRECATED_LIST),
@@ -454,6 +531,9 @@ def run_audit(root_dir, out_dir, profile_path, style_path,
             if not issues:
                 f.write("No issues.\n")
             f.write("\n---\n\n")
+
+    if write_state:
+        write_issue_state(out_dir, issues, suppressed, prev_state, audit_time)
 
     print(f"\nReport: {out_dir}\\audit_report.md | History: {out_dir}\\audit_history.md")
 
@@ -484,6 +564,7 @@ def main():
     ap.add_argument("--json-only", action="store_true")
     ap.add_argument("--md-only", action="store_true")
     ap.add_argument("--no-history", action="store_true")
+    ap.add_argument("--no-state", action="store_true", help="Do not read/write issue_state.jsonl")
     ap.add_argument("--baseline", default=None, help="Baseline JSON to compare counts against")
     args = ap.parse_args()
 
@@ -494,7 +575,7 @@ def main():
                        strict=args.strict, pedantic=args.pedantic or args.fail_on_p2,
                        write_history=not args.no_history,
                        json_only=args.json_only, md_only=args.md_only,
-                       baseline_path=args.baseline)
+                       baseline_path=args.baseline, write_state=not args.no_state)
     sys.exit(0 if passed else 1)
 
 

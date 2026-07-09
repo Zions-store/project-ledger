@@ -1,6 +1,6 @@
 ---
 name: game-design-doc-governance
-version: 0.2.0
+version: 0.3.0
 description: Reusable governance framework for game design documentation — sets up a multi-document authority system, picks a genre profile, defines cross-document boundaries and change-safety anchors, and runs a data-driven Python audit. Use when the user says "set up design docs", "game design documentation", "doc governance", "audit design docs", "建立设计文档体系", or starts/organizes a game's GDD system.
 ---
 
@@ -75,7 +75,9 @@ python tools/global_doc_audit.py \
 - STYLE_GUIDE.md provides the document list, anchor registry, deprecated-term registry.
 - Project_Profile.yaml provides `enabled_docs`, `boundary_checks`,
   `consistency_checks`, `exceptions`, thresholds.
-- Outputs `audit_report.md` + `audit_report.json` + appends `audit_history.md`.
+- Outputs `audit_report.md` + `audit_report.json` + appends `audit_history.md`;
+  tracks per-issue states in `issue_state.jsonl` (suppresses false-positive /
+  accepted-exception issues; `--no-state` opts out).
 - `--baseline <json>` compares counts to a known-good baseline (regression gate).
 - Details + issue levels/states: `modules/06_audit_workflow.md`.
 
@@ -89,9 +91,9 @@ python tools/global_doc_audit.py \
 | `modules/04_authority_boundaries.md` | Authority matrix + cross-document boundary rules |
 | `modules/05_anchor_and_change_safety.md` | Anchors, REF usage, deprecated registry, 5-layer change safety |
 | `modules/06_audit_workflow.md` | Audit order, issue levels (P0–P3/INFO), issue states |
-| `modules/07_export_and_snapshot.md` | Non-authority snapshots (.docx/.pdf) (P3) |
-| `modules/08_migration_workflow.md` | Migrating an existing GDD (P3) |
-| `modules/09_ai_collaboration_rules.md` | What the AI must/must not do when editing docs (P3) |
+| `modules/07_export_and_snapshot.md` | Non-authority snapshots (.docx/.pdf) |
+| `modules/08_migration_workflow.md` | Migrating an existing GDD |
+| `modules/09_ai_collaboration_rules.md` | What the AI must/must not do when editing docs |
 
 ## Templates & tools
 

@@ -4,8 +4,32 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 ## [Unreleased]
 
-_P3+ planned: export/migration/AI modules (07/08/09), remaining templates, full
-issue_state.jsonl, P4 wiring + genre-specific doc modules._
+_P4 planned: NTFS junction wiring, origin-project switch to a thin wrapper (D4),
+genre-specific doc modules._
+
+---
+
+## [0.3.0] - 2026-07-09 — P3 Full Governance
+
+### Added
+- **modules** 07_export_and_snapshot, 08_migration_workflow, 09_ai_collaboration_rules.
+- **templates** DESIGN_DOCUMENT_TEMPLATE.md, AUTHORITY_MATRIX_TEMPLATE.md,
+  CHANGE_CHECKLIST_TEMPLATE.md, AUDIT_HISTORY_TEMPLATE.md.
+- **Issue-state tracking** in `tools/global_doc_audit.py`: reads/writes
+  `issue_state.jsonl` with states OPEN / FIXED_PENDING_VERIFY / VERIFIED /
+  FALSE_POSITIVE / ACCEPTED_EXCEPTION / REOPENED. Human-marked FALSE_POSITIVE /
+  ACCEPTED_EXCEPTION issues are suppressed from the counts (surfaced as
+  "suppressed"); `--no-state` opts out.
+
+### Verified
+- Parallel verification on the origin project (D4 P3, run 1): hard-coded script vs
+  generic script + origin `Project_Profile.yaml` both yield `[0,0,0,1,0]` — EQUIVALENT.
+- Regression vs baseline still EQUIVALENT.
+- Suppression: marking the P3 as ACCEPTED_EXCEPTION drops P3 to 0 with suppressed=1.
+
+### Note
+- The origin project gains `Design Document/md file/Project_Profile.yaml` (D7). Its
+  own audit script is unchanged (D4: switch to thin wrapper deferred to P4).
 
 ---
 
