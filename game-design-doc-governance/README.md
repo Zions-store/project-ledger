@@ -59,7 +59,10 @@ with a fallback to heading heuristics for existing files. `--strict` and the
 profile `audit` thresholds gate pass/fail; the baseline compares P0–P3 (INFO is
 informational only).
 
-P4 (opencode junction wiring / origin-project switch to a thin wrapper) is pending.
+P4 (opencode junction wiring / origin-project switch to a thin wrapper) has been
+**verified locally** (junction discovery + 3 consecutive frozen-version equivalence
+runs + wrapper switch with legacy rollback preserved); not pushed. Package version
+stays 0.3.2; local milestone tag `v0.4.0-local-p4`.
 
 ## License
 
