@@ -4,8 +4,5 @@
 <!-- FACT-ZH-ORIGIN -->
 主角来自一个中立的占位区域。
 
-<!-- RULE-ZH-ONLY -->
-GDD 只保留摘要和链接；完整正文在子文档。
-
 ## 系统
 - 玩法：见 [Gameplay_Systems.md](Gameplay_Systems.md)

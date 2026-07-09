@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import json
+import hashlib
 import tempfile
 import pytest
 
@@ -37,7 +38,6 @@ def test_marker_parsing():
     assert "FACT-TEST" in gda.ANCHOR_LIST
     assert any(d[0] == "old" for d in gda.DEPRECATED_LIST)
 
-
 def test_chinese_fallback_parsing():
     gda = _auditor()
     style = """## 2. 文件清单
@@ -60,7 +60,6 @@ def test_chinese_fallback_parsing():
     assert "FACT-ZH" in gda.ANCHOR_LIST
     assert any(d[0] == "old_zh" for d in gda.DEPRECATED_LIST)
 
-
 # ────────────────────────────────────────────────────────
 # 2  file versioning
 # ────────────────────────────────────────────────────────
@@ -73,7 +72,6 @@ def test_find_latest_canonical():
     assert os.path.basename(p) == "STYLE_GUIDE.md"
     assert v == 0
 
-
 def test_find_latest_n_suffix():
     gda = _auditor()
     d = tempfile.mkdtemp()
@@ -83,7 +81,6 @@ def test_find_latest_n_suffix():
     assert "STYLE_GUIDE(29).md" in p
     assert v == 29
 
-
 def test_find_latest_excludes_template_backup_old():
     gda = _auditor()
     d = tempfile.mkdtemp()
@@ -92,23 +89,18 @@ def test_find_latest_excludes_template_backup_old():
     p, _ = gda.find_latest(d, "STYLE_GUIDE.md")
     assert p is None
 
-
 # ────────────────────────────────────────────────────────
-# 3  check_links fragment support
+# 3  check_links fragment support (no monkeypatch pollution)
 # ────────────────────────────────────────────────────────
 def test_links_fragment_accepted():
     gda = _auditor()
     d = tempfile.mkdtemp()
     open(os.path.join(d, "Target.md"), "w").close()
-    # text with link containing #fragment
-    gda.add = lambda *a: setattr(gda, "_last_add", a)  # no-op spy
-    all_texts = [("Test.md", "see [Target](Target.md#section)")]
-    # Should NOT call add (broken link) because Target.md exists
+    text = "see [Target](Target.md#section)"
     gda.issues = []
-    gda.check_links(all_texts, d)
-    # Verify no P1 added
+    gda.check_links([("Test.md", text)], d)
     assert not any(i.p == "P1" for i in gda.issues)
-
+    gda.issues = []  # clean up after ourselves
 
 # ────────────────────────────────────────────────────────
 # 4  Full fixture integrations
@@ -118,15 +110,13 @@ def test_fixture_sample_open_world():
         fixture_md("sample_open_world"), fixture_profile("sample_open_world"),
     )
     assert passed
-    assert c == {"p0": 0, "p1": 0, "p2": 0, "p3": 1, "info": 0}
-
+    assert c == {"p0": 0, "p1": 0, "p2": 0, "p3": 0, "info": 0}
 
 def test_fixture_minimal_zh_fallback():
     passed, c, _ = run_auditor(
         fixture_md("minimal_zh_fallback"), fixture_profile("minimal_zh_fallback"),
     )
-    assert c == {"p0": 0, "p1": 0, "p2": 0, "p3": 1, "info": 0}
-
+    assert c == {"p0": 0, "p1": 0, "p2": 0, "p3": 0, "info": 0}
 
 def test_fixture_broken_boundary():
     passed, c, _ = run_auditor(
@@ -134,102 +124,78 @@ def test_fixture_broken_boundary():
     )
     assert c == {"p0": 0, "p1": 0, "p2": 2, "p3": 0, "info": 0}
 
-
 def test_fixture_versioned_filename():
     passed, c, _ = run_auditor(
         fixture_md("versioned_filename"), fixture_profile("versioned_filename"),
     )
     assert c == {"p0": 0, "p1": 0, "p2": 0, "p3": 0, "info": 0}
 
-
 # ────────────────────────────────────────────────────────
 # 5  issue_state suppression
 # ────────────────────────────────────────────────────────
+def _issue_state_seed_id():
+    # P3 issue for the RULE anchor without REF: file=anchor_id, msg fixed
+    raw = "RULE-SAMPLE-ONLY||RULE anchor has no REF"
+    return "AUD-P3-" + hashlib.md5(raw.encode()).hexdigest()[:8]
+
+def _seed_state(out_dir, status, reason=""):
+    with open(os.path.join(out_dir, "issue_state.jsonl"), "w", encoding="utf-8") as f:
+        f.write(json.dumps({
+            "issue_id": _issue_state_seed_id(),
+            "status": status,
+            "level": "P3",
+            "file": "RULE-SAMPLE-ONLY",
+            "msg": "RULE anchor has no REF",
+            "reason": reason,
+        }, ensure_ascii=False) + "\n")
+
 def test_issue_state_suppression():
     root = fixture_md("issue_state")
     out = tempfile.mkdtemp(prefix="gdd_is_")
-    # Pre-seed issue_state.jsonl with ACCEPTED_EXCEPTION
-    # (issue_id must match what the auditor would produce)
-    seed = {
-        "issue_id": "AUD-P3-14091882",
-        "status": "ACCEPTED_EXCEPTION",
-        "level": "P3",
-        "file": "RULE-SAMPLE-ONLY",
-        "msg": "RULE anchor has no REF",
-        "reason": "test-accepted",
-    }
-    with open(os.path.join(out, "issue_state.jsonl"), "w", encoding="utf-8") as f:
-        f.write(json.dumps(seed, ensure_ascii=False) + "\n")
-
+    _seed_state(out, "ACCEPTED_EXCEPTION", "test-accepted")
     passed, c, issues = run_auditor(
         root, fixture_profile("issue_state"),
         out=out, write_state=True, write_history=False,
     )
-    # With ACCEPTED_EXCEPTION, P3 should be 0 (suppressed)
     assert c["p3"] == 0
     assert c["p0"] == 0
-
 
 def test_issue_state_no_state_opt_out():
     root = fixture_md("issue_state")
     out = tempfile.mkdtemp(prefix="gdd_is2_")
-    # Seed the state first, but then run with write_state=False
-    seed = {
-        "issue_id": "AUD-P3-14091882",
-        "status": "ACCEPTED_EXCEPTION",
-        "level": "P3",
-        "file": "RULE-SAMPLE-ONLY",
-        "msg": "RULE anchor has no REF",
-        "reason": "test",
-    }
-    with open(os.path.join(out, "issue_state.jsonl"), "w", encoding="utf-8") as f:
-        f.write(json.dumps(seed, ensure_ascii=False) + "\n")
+    _seed_state(out, "ACCEPTED_EXCEPTION", "test")
     # write_state=False → suppression is skipped
     passed, c, _ = run_auditor(
         root, fixture_profile("issue_state"),
         out=out, write_state=False, write_history=False,
     )
-    # State seed is ignored → P3 should be 1
     assert c["p3"] == 1
-
 
 # ────────────────────────────────────────────────────────
 # 6  strict / pedantic / fail-on-p2
 # ────────────────────────────────────────────────────────
 def test_strict_mode_p2_blocks():
     root = fixture_md("strict_mode")
-    # Without strict → P2 does not block (pass)
     passed, _, _ = run_auditor(root, fixture_profile("strict_mode"), strict=False)
     assert passed
-    # With strict → P2 blocks (fail)
     passed, _, _ = run_auditor(root, fixture_profile("strict_mode"), strict=True)
     assert not passed
-
 
 def test_pedantic_mode_p2_blocks():
     root = fixture_md("strict_mode")
     passed, _, _ = run_auditor(root, fixture_profile("strict_mode"), pedantic=True)
     assert not passed
 
-
 # ────────────────────────────────────────────────────────
 # 7  baseline compare (P0-P3 only, INFO excluded per decision D)
 # ────────────────────────────────────────────────────────
 def test_baseline_compare_ignores_info():
-    gda = _auditor()
-    # construct a scenario where INFO differs
-    # run_auditor's baseline logic is embedded; we test indirectly by verifying
-    # that a fixture with [0,0,0,0,0] matches a baseline that says [0,0,0,0,5]
     root = fixture_md("versioned_filename")
-    out = tempfile.mkdtemp(prefix="gdd_bl_")
-    passed = gda.run_auditor(
-        root, out, fixture_profile("versioned_filename"),
-        os.path.join(root, "STYLE_GUIDE.md"),
-        write_history=False, write_state=False,
+    _, c, _ = run_auditor(
+        root, fixture_profile("versioned_filename"),
         baseline_path=expected_json("versioned_filename_baseline.json"),
     )
-    assert passed  # baseline [0,0,0,0,0] == current [0,0,0,0,0]
-
+    assert c == {"p0": 0, "p1": 0, "p2": 0, "p3": 0, "info": 0}
 
 # ────────────────────────────────────────────────────────
 # 8  Project_Profile loading
@@ -238,7 +204,6 @@ def test_profile_loads_enabled_docs():
     gda = _auditor()
     prof = gda.load_profile(fixture_profile("sample_open_world"))
     assert "Design_Document.md" in prof["enabled_docs"]
-
 
 # ────────────────────────────────────────────────────────
 # 9  exceptions

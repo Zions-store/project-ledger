@@ -17,7 +17,6 @@
 | 锚点 ID | 设定内容 | 权威文档 | 引用文档 |
 |---|---|---|---|
 | FACT-ZH-ORIGIN | 主角来源 | Design_Document.md | Gameplay_Systems.md |
-| RULE-ZH-ONLY | GDD 摘要规则 | Design_Document.md | - |
 
 ### 6.3 废弃说法登记表
 

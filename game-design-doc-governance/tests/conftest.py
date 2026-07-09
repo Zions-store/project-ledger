@@ -24,9 +24,11 @@ def run_auditor(root, profile, style=None, out=None, **kw):
         out = tempfile.mkdtemp(prefix="gdd_test_")
     if style is None:
         style = os.path.join(root, "STYLE_GUIDE.md")
+    write_history = kw.pop("write_history", False)
+    write_state = kw.pop("write_state", False)
     passed = gda.run_audit(
         root, out, profile, style,
-        write_history=False, write_state=False,
+        write_history=write_history, write_state=write_state,
         **kw
     )
     report = os.path.join(out, "audit_report.json")

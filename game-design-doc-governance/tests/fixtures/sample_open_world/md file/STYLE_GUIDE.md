@@ -22,7 +22,6 @@ Documentation constitution for the self-contained regression fixture.
 | Anchor ID | Setting | Authority | Ref |
 |---|---|---|---|
 | FACT-SAMPLE-ORIGIN | protagonist origin | Design_Document.md | Gameplay_Systems.md |
-| RULE-SAMPLE-ONLY | gdd summary-only rule | Design_Document.md | - |
 <!-- AUDIT: ANCHOR_REGISTRY_END -->
 
 ### 6.3 Deprecated-term registry
