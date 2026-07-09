@@ -1,0 +1,21 @@
+{
+  "description": "Self-contained sanitized fixture baseline (sample_open_world). Primary regression source for the generic auditor — no dependency on any external/real project path. The fixture uses AUDIT markers, so it also covers the language-independent STYLE parsing path.",
+  "fixture": "tests/fixtures/sample_open_world",
+  "profile": "tests/fixtures/sample_open_world/md file/Project_Profile.yaml",
+  "style": "tests/fixtures/sample_open_world/md file/STYLE_GUIDE.md",
+  "p0": 0,
+  "p1": 0,
+  "p2": 0,
+  "p3": 1,
+  "info": 0,
+  "loaded_rules": {
+    "docs": 4,
+    "anchors": 2,
+    "deprecated": 1,
+    "boundary_checks": 1,
+    "consistency_checks": 1
+  },
+  "known_p3": [
+    "AUD-P3-14091882  RULE-SAMPLE-ONLY: RULE anchor has no REF"
+  ]
+}

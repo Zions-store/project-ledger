@@ -17,6 +17,13 @@ SPDX-License-Identifier: GPL-3.0-or-later
 - Kept formal release version at 0.3.2; local milestone tagged `v0.4.0-local-p4`.
   Not pushed. Formal `0.4.0` reserved for a future release.
 
+### Tests
+- Added a **self-contained sanitized fixture** `tests/fixtures/sample_open_world/`
+  (+ `expected/sample_fixture_baseline.json`) as the primary regression source, so
+  regression no longer depends on an external/real project path (release
+  requirement). Baseline `[0,0,0,1,0]`, single P3 `RULE-SAMPLE-ONLY`. The fixture
+  uses AUDIT markers, also covering the language-independent STYLE-parsing path.
+
 ---
 
 _Next: formal 0.4.0 release preparation, self-contained fixtures, and expanded genre-specific modules._
