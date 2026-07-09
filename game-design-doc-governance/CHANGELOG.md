@@ -9,6 +9,35 @@ genre-specific doc modules._
 
 ---
 
+## [0.3.1] - 2026-07-09 — Release-Consistency Fixes
+
+### Fixed
+- **README** status was stale (v0.1.0) → updated to v0.3.1 / P3.
+- **Language-independent STYLE parsing**: `load_style_rules` now reads
+  `<!-- AUDIT: ENABLED_DOCS / ANCHOR_REGISTRY / DEPRECATED_TERMS _START/_END -->`
+  marker blocks first (works for any generated language), falling back to the
+  legacy heading heuristic so existing (e.g. Chinese) STYLE files parse unchanged.
+  `STYLE_GUIDE_TEMPLATE.md` now emits those markers.
+- **`--strict` now takes effect**: strict/pedantic gate P2 via the profile's
+  `fail_on_p2_in_strict_mode`.
+- **Profile `audit` thresholds** (`fail_on_p0` / `fail_on_p1` /
+  `fail_on_p2_in_strict_mode`) now participate in pass/fail.
+- **`file_versioning.version_pattern`** is passed through to `read_doc`/`find_latest`.
+- **`link_checks.enabled` / `ignored_dirs`** are honoured.
+- **Link check** now strips `#fragment` before the `.md` test (e.g.
+  `Mission_Design.md#section` is validated instead of skipped).
+- **Baseline compare** now covers P0–P3 only (INFO is informational, not a gate).
+- STYLE template §13/§14 document `audit/issue_state.jsonl`.
+- Script version → `v1.1.0-generic`.
+
+### Verified
+- Origin-project regression unchanged: hard-coded vs generic both `[0,0,0,1,0]`
+  EQUIVALENT (D4 parallel-equivalence run 2); baseline EQUIVALENT.
+- Marker path unit-checked on an English STYLE (docs/anchors/deprecated parsed).
+- `--strict` smoke: PASS with P2=0.
+
+---
+
 ## [0.3.0] - 2026-07-09 — P3 Full Governance
 
 ### Added

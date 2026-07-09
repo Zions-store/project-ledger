@@ -49,12 +49,17 @@ Requires Python 3 and `PyYAML`.
 
 ## Status
 
-**v0.1.0 (P1 MVP).** Ships: the generic auditor, the
-`open_world_narrative_tactical_shooter` profile, PROJECT_PROFILE / STYLE_GUIDE
-templates, core modules (01/02/04/05/06), and a regression baseline reproduced
-against the first real project (`P0=0 P1=0 P2=0 P3=1`). Later phases add the
-remaining genre profiles, doc-module skeletons, export/migration/AI modules, and
-`issue_state.jsonl`.
+**v0.3.1 — P3 Full Governance (release-consistency fixes).** Ships: the generic
+data-driven auditor, 10 genre profiles, 16 doc-module skeletons, 9 modules,
+6 templates, `issue_state.jsonl` state tracking, and a regression baseline
+reproduced against the first real project (`P0=0 P1=0 P2=0 P3=1`).
+
+STYLE parsing is **language-independent** via `<!-- AUDIT: … -->` marker blocks,
+with a fallback to heading heuristics for existing files. `--strict` and the
+profile `audit` thresholds gate pass/fail; the baseline compares P0–P3 (INFO is
+informational only).
+
+P4 (opencode junction wiring / origin-project switch to a thin wrapper) is pending.
 
 ## License
 

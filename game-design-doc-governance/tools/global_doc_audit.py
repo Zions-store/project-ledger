@@ -29,7 +29,7 @@ try:
 except ImportError:
     yaml = None
 
-SCRIPT_VERSION = "v1.0.0-generic"
+SCRIPT_VERSION = "v1.1.0-generic"
 
 # ─── rule registries loaded from STYLE_GUIDE.md ───
 EXPECTED_DOCS = []
@@ -38,60 +38,118 @@ DEPRECATED_LIST = []          # list of (old_str, new_str, search_scope)
 AUTH_DOCS = set()
 
 
+ANCHOR_PREFIX = r'(FACT|TERM|RULE|PARAM|FLOW|RESOURCE|COLLECTIBLE|PROGRESSION|ECONOMY|MULTIPLAYER|LIVEOPS|UI|TECH)'
+
+
+def _marker_block(clean, key):
+    """Return the text between <!-- AUDIT: KEY_START --> and _END, or None.
+    Language-independent; the primary parse path for generated STYLE files."""
+    m = re.search(r'<!--\s*AUDIT:\s*' + re.escape(key) + r'_START\s*-->(.*?)'
+                  r'<!--\s*AUDIT:\s*' + re.escape(key) + r'_END\s*-->', clean, re.DOTALL)
+    return m.group(1) if m else None
+
+
+def _parse_docs(lines):
+    for line in lines:
+        if line.strip().startswith("|") and ".md" in line:
+            m = re.search(r'`?([A-Z][A-Za-z_]+\.md)`?', line)
+            if m and m.group(1) not in EXPECTED_DOCS:
+                EXPECTED_DOCS.append(m.group(1))
+
+
+def _parse_anchors(lines):
+    for line in lines:
+        if line.strip().startswith("|"):
+            cells = [c.strip().strip('`') for c in line.split("|")]
+            if len(cells) >= 4 and '---' not in cells[1] and cells[1]:
+                aid = cells[1]
+                if re.match(r'^' + ANCHOR_PREFIX + r'-', aid):
+                    ANCHOR_LIST[aid] = {"desc": cells[2] if len(cells) > 2 else "",
+                                        "authority": cells[3] if len(cells) > 3 else ""}
+
+
+def _parse_deprecated(lines):
+    for line in lines:
+        if line.strip().startswith("|"):
+            cells = [c.strip() for c in line.split("|")]
+            if len(cells) >= 5 and cells[1] and '---' not in cells[1] \
+                    and '废弃说法' not in cells[1] and 'Deprecated' not in cells[1]:
+                old = cells[1]; new = cells[2] if len(cells) > 2 else ""
+                sr = cells[5] if len(cells) > 5 else "*"
+                if old and not old.startswith('---'):
+                    DEPRECATED_LIST.append((old, new, sr))
+
+
 def load_style_rules(style_text):
-    """Parse the machine-readable tables inside STYLE_GUIDE.md."""
+    """Parse the machine-readable tables inside STYLE_GUIDE.md.
+
+    Language-independent path first: <!-- AUDIT: X_START/END --> markers.
+    Fallback path (no markers): the legacy title heuristic, so an existing
+    project STYLE (e.g. Chinese headings, no markers) still parses unchanged."""
     global EXPECTED_DOCS, ANCHOR_LIST, DEPRECATED_LIST, AUTH_DOCS
     EXPECTED_DOCS = []; ANCHOR_LIST = {}; DEPRECATED_LIST = []
 
     clean = re.sub(r'```.*?```', '', style_text, flags=re.DOTALL)
 
-    # §2.1 file list (stop at 2.2)
-    in_21 = False
-    for line in clean.split("\n"):
-        if "### 2.1" in line or "## 2." in line and "文件清单" in line:
-            in_21 = True; continue
-        if "### 2.2" in line or "### 2.3" in line:
-            in_21 = False; continue
-        if in_21 and line.strip().startswith("|") and ".md" in line:
-            m = re.search(r'`?([A-Z][A-Za-z_]+\.md)`?', line)
-            if m and m.group(1) not in EXPECTED_DOCS:
-                EXPECTED_DOCS.append(m.group(1))
+    # ── file list ──
+    block = _marker_block(clean, "ENABLED_DOCS")
+    if block is not None:
+        _parse_docs(block.split("\n"))
+    else:
+        in_21 = False
+        for line in clean.split("\n"):
+            if "### 2.1" in line or ("## 2." in line and "文件清单" in line):
+                in_21 = True; continue
+            if "### 2.2" in line or "### 2.3" in line:
+                in_21 = False; continue
+            if in_21 and line.strip().startswith("|") and ".md" in line:
+                m = re.search(r'`?([A-Z][A-Za-z_]+\.md)`?', line)
+                if m and m.group(1) not in EXPECTED_DOCS:
+                    EXPECTED_DOCS.append(m.group(1))
 
-    # anchor registry
-    in_anchor = False
-    for line in clean.split("\n"):
-        if "已建立锚点清单" in line or "anchor registry" in line.lower():
-            in_anchor = True; continue
-        if in_anchor:
-            if line.strip().startswith("|"):
-                cells = [c.strip().strip('`') for c in line.split("|")]
-                if len(cells) >= 4 and '---' not in cells[1] and cells[1]:
-                    aid = cells[1]
-                    if re.match(r'^(FACT|TERM|RULE|PARAM|FLOW|RESOURCE|COLLECTIBLE|PROGRESSION|ECONOMY|MULTIPLAYER|LIVEOPS|UI|TECH)-', aid):
-                        ANCHOR_LIST[aid] = {"desc": cells[2] if len(cells) > 2 else "",
-                                            "authority": cells[3] if len(cells) > 3 else ""}
-            elif not line.strip():
-                continue
-            elif line.strip().startswith("###") or line.strip().startswith("####"):
-                in_anchor = False
+    # ── anchor registry ──
+    block = _marker_block(clean, "ANCHOR_REGISTRY")
+    if block is not None:
+        _parse_anchors(block.split("\n"))
+    else:
+        in_anchor = False
+        for line in clean.split("\n"):
+            if "已建立锚点清单" in line or "anchor registry" in line.lower():
+                in_anchor = True; continue
+            if in_anchor:
+                if line.strip().startswith("|"):
+                    cells = [c.strip().strip('`') for c in line.split("|")]
+                    if len(cells) >= 4 and '---' not in cells[1] and cells[1]:
+                        aid = cells[1]
+                        if re.match(r'^' + ANCHOR_PREFIX + r'-', aid):
+                            ANCHOR_LIST[aid] = {"desc": cells[2] if len(cells) > 2 else "",
+                                                "authority": cells[3] if len(cells) > 3 else ""}
+                elif not line.strip():
+                    continue
+                elif line.strip().startswith("###") or line.strip().startswith("####"):
+                    in_anchor = False
 
-    # deprecated-term registry
-    in_dep = False
-    for line in clean.split("\n"):
-        if "废弃说法" in line and "当前正确说法" in line:
-            in_dep = True; continue
-        if in_dep:
-            if line.strip().startswith("|"):
-                cells = [c.strip() for c in line.split("|")]
-                if len(cells) >= 5 and cells[1] and '---' not in cells[1] and '废弃说法' not in cells[1]:
-                    old = cells[1]; new = cells[2] if len(cells) > 2 else ""
-                    sr = cells[5] if len(cells) > 5 else "*"
-                    if old and not old.startswith('---'):
-                        DEPRECATED_LIST.append((old, new, sr))
-            elif not line.strip():
-                continue
-            elif line.strip().startswith("登记原则"):
-                in_dep = False
+    # ── deprecated-term registry ──
+    block = _marker_block(clean, "DEPRECATED_TERMS")
+    if block is not None:
+        _parse_deprecated(block.split("\n"))
+    else:
+        in_dep = False
+        for line in clean.split("\n"):
+            if "废弃说法" in line and "当前正确说法" in line:
+                in_dep = True; continue
+            if in_dep:
+                if line.strip().startswith("|"):
+                    cells = [c.strip() for c in line.split("|")]
+                    if len(cells) >= 5 and cells[1] and '---' not in cells[1] and '废弃说法' not in cells[1]:
+                        old = cells[1]; new = cells[2] if len(cells) > 2 else ""
+                        sr = cells[5] if len(cells) > 5 else "*"
+                        if old and not old.startswith('---'):
+                            DEPRECATED_LIST.append((old, new, sr))
+                elif not line.strip():
+                    continue
+                elif line.strip().startswith("登记原则"):
+                    in_dep = False
 
     AUTH_DOCS = set(EXPECTED_DOCS)
 
@@ -142,8 +200,8 @@ def find_latest(root, name, version_pattern=r'\((\d+)\)'):
     return candidates[0], ver(candidates[0])
 
 
-def read_doc(root, name):
-    path, _ = find_latest(root, name)
+def read_doc(root, name, version_pattern=r'\((\d+)\)'):
+    path, _ = find_latest(root, name, version_pattern)
     if path is None:
         return None
     with open(path, "r", encoding="utf-8") as f:
@@ -195,13 +253,12 @@ def check_anchors(all_texts):
     if not ANCHOR_LIST:
         return
     am = defaultdict(list)
-    pref = r"(?:FACT|TERM|RULE|PARAM|FLOW|RESOURCE|COLLECTIBLE|PROGRESSION|ECONOMY|MULTIPLAYER|LIVEOPS|UI|TECH)"
     for doc_name, text in all_texts:
         c = clean_for_scan(text)
-        for m in re.finditer(r"<!--\s*(" + pref + r"-[\w-]+)\s*-->", c):
+        for m in re.finditer(r"<!--\s*(" + ANCHOR_PREFIX + r"-[\w-]+)\s*-->", c):
             if m.group(1) in ANCHOR_LIST:
                 am[m.group(1)].append("auth")
-        for m in re.finditer(r"<!--\s*REF:\s*(" + pref + r"-[\w-]+)\s*-->", c):
+        for m in re.finditer(r"<!--\s*REF:\s*(" + ANCHOR_PREFIX + r"-[\w-]+)\s*-->", c):
             if m.group(1) in ANCHOR_LIST:
                 am[m.group(1)].append("ref")
     for aid in ANCHOR_LIST:
@@ -242,7 +299,8 @@ def check_deprecated(all_texts, profile_terms):
                     break
 
 
-def check_links(all_texts, root_dir):
+def check_links(all_texts, root_dir, ignored_dirs=None):
+    ignored_dirs = ignored_dirs or []
     existing = set()
     for f in os.listdir(root_dir):
         if f.endswith(".md"):
@@ -251,12 +309,14 @@ def check_links(all_texts, root_dir):
         if doc_name == "STYLE_GUIDE.md":
             continue
         for m in re.finditer(r'\[([^\]]+)\]\(([^)]+)\)', clean_for_scan(text)):
-            t = m.group(2)
-            if not t.endswith('.md'):
+            base = m.group(2).split('#')[0]           # strip #fragment first
+            if not base.endswith('.md'):
                 continue
-            tf = t.split('#')[0].split('/')[-1]
+            if any(seg in ignored_dirs for seg in base.split('/')[:-1]):
+                continue
+            tf = base.split('/')[-1]
             if tf not in existing and tf != doc_name:
-                add("P1", doc_name, f"Broken link: [{m.group(1)}]({t})")
+                add("P1", doc_name, f"Broken link: [{m.group(1)}]({m.group(2)})")
 
 
 # ─── data-driven checks (from profile) ───
@@ -432,6 +492,7 @@ def run_audit(root_dir, out_dir, profile_path, style_path,
     non_authority = profile.get("non_authority_files",
                                 ["Design_Document.docx", "prompts.md", "人工笔记.txt"])
     audit_cfg = profile.get("audit", {})
+    ver_pat = (profile.get("file_versioning", {}) or {}).get("version_pattern", r'\((\d+)\)')
 
     if out_dir is None:
         out_dir = os.path.join(os.path.dirname(root_dir), "audit")
@@ -442,7 +503,7 @@ def run_audit(root_dir, out_dir, profile_path, style_path,
     texts = {}
     all_texts = []
     for name in enabled_docs:
-        t = read_doc(root_dir, name)
+        t = read_doc(root_dir, name, version_pattern=ver_pat)
         if t:
             texts[name] = t
             all_texts.append((name, t))
@@ -452,7 +513,9 @@ def run_audit(root_dir, out_dir, profile_path, style_path,
 
     check_anchors(all_texts)
     check_deprecated(all_texts, profile.get("deprecated_terms", []))
-    check_links(all_texts, root_dir)
+    lc = profile.get("link_checks", {}) or {}
+    if lc.get("enabled", True):
+        check_links(all_texts, root_dir, ignored_dirs=lc.get("ignored_dirs"))
     run_boundary_checks(texts, profile.get("boundary_checks", []), enabled_docs)
     run_consistency_checks(texts, profile.get("consistency_checks", []), enabled_docs)
     apply_exceptions(profile.get("exceptions", []))
@@ -486,8 +549,9 @@ def run_audit(root_dir, out_dir, profile_path, style_path,
             rl.append(f"\n## {p}")
             for it in buckets[p]:
                 rl.append(f"- [{it.id}] **{it.file}**: {it.msg}")
-    passed = counts["P0"] == 0 and counts["P1"] == 0
-    if pedantic:
+    passed = not ((audit_cfg.get("fail_on_p0", True) and counts["P0"] > 0) or
+                  (audit_cfg.get("fail_on_p1", True) and counts["P1"] > 0))
+    if (strict or pedantic) and audit_cfg.get("fail_on_p2_in_strict_mode", True):
         passed = passed and counts["P2"] == 0
     rl.append("\n## Verdict")
     rl.append(f"- Result: **{'PASS' if passed else 'FAIL'}** "
@@ -540,7 +604,7 @@ def run_audit(root_dir, out_dir, profile_path, style_path,
     if baseline_path and os.path.exists(baseline_path):
         with open(baseline_path, "r", encoding="utf-8") as f:
             base = json.load(f)
-        keys = ["p0", "p1", "p2", "p3", "info"]
+        keys = ["p0", "p1", "p2", "p3"]   # INFO is informational; not a regression gate
         cur = {"p0": counts["P0"], "p1": counts["P1"], "p2": counts["P2"],
                "p3": counts["P3"], "info": counts["INFO"]}
         eq = all(base.get(k) == cur.get(k) for k in keys)

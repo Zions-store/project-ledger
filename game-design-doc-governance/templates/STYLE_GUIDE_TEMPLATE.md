@@ -17,7 +17,9 @@ may not; full-volume first (light content OK, light structure not).
 
 ## 2. Authoritative File List
 
+<!-- AUDIT: ENABLED_DOCS_START -->
 {{ENABLED_DOCS_TABLE}}
+<!-- AUDIT: ENABLED_DOCS_END -->
 <!-- one row per enabled doc: | File | Role | Status | -->
 
 ## 3. Non-Authority Auxiliary Files
@@ -49,12 +51,16 @@ MULTIPLAYER/LIVEOPS/UI/TECH.
 
 ### 6.2 Anchor registry
 
+<!-- AUDIT: ANCHOR_REGISTRY_START -->
 {{ANCHOR_REGISTRY}}
+<!-- AUDIT: ANCHOR_REGISTRY_END -->
 <!-- | Anchor ID | Setting | Authority doc | Referencing docs | -->
 
 ### 6.3 Deprecated-term registry
 
+<!-- AUDIT: DEPRECATED_TERMS_START -->
 {{DEPRECATED_TERMS_TABLE}}
+<!-- AUDIT: DEPRECATED_TERMS_END -->
 <!-- | Deprecated | Correct now | Type | Keyword | Search scope | -->
 
 ### 6.4 Change checklist
@@ -96,13 +102,19 @@ resources in collectibles?
 
 Audit is run by `game-design-doc-governance/tools/global_doc_audit.py`, using this
 STYLE and the Project Profile as rule sources. Reports: `audit/audit_report.md` +
-`.json`; history appended to `audit/audit_history.md`. The script is a tool, not
-the design authority.
+`audit/audit_report.json`; history appended to `audit/audit_history.md`; per-issue
+states tracked in `audit/issue_state.jsonl`. The audit parses the
+`<!-- AUDIT: *_START/END -->` marker blocks in §2/§6 (language-independent), so this
+STYLE audits correctly in any generated language. The script is a tool, not the
+design authority.
 
 ## 14. Audit Records & Issue States
 
 Levels P0/P1/P2/P3/INFO. Issue IDs are stable (`AUD-{LEVEL}-{hash}`). States:
 OPEN / FIXED_PENDING_VERIFY / VERIFIED / FALSE_POSITIVE / ACCEPTED_EXCEPTION / REOPENED.
+
+- `audit/issue_state.jsonl` — per-issue state ledger. Issues marked
+  FALSE_POSITIVE / ACCEPTED_EXCEPTION are suppressed from the counts on later runs.
 
 ## 15. Legacy-Issue Handling
 
