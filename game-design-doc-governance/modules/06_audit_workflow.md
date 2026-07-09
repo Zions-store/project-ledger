@@ -30,7 +30,9 @@ flags; humans decide. It is never a design authority.
 | P3 | Advisory: traceability, naming candidates, low-risk REF suggestions | Non-blocking |
 | INFO | Informational: non-authority file present, skipped items | None |
 
-Pass = `P0 == 0 and P1 == 0` (add `P2 == 0` with `--pedantic`).
+Pass = `P0 == 0 and P1 == 0`. With `--strict` / `--pedantic` / `--fail-on-p2`,
+also require `P2 == 0` (the profile's `audit.fail_on_p2_in_strict_mode` can relax
+this; `audit.fail_on_p0` / `fail_on_p1` can relax P0/P1 gating).
 
 ## 3. Issue IDs and states
 
@@ -52,6 +54,8 @@ REOPENED              was fixed, appeared again
 - `audit_report.md` — latest snapshot (overwritten).
 - `audit_report.json` — machine result: counts, issues, loaded-rule counts.
 - `audit_history.md` — appended each run (trend over time).
+- `issue_state.jsonl` — per-issue lifecycle ledger; suppresses FALSE_POSITIVE /
+  ACCEPTED_EXCEPTION issues from the counts on later runs (`--no-state` opts out).
 
 ## 5. Regression baseline
 

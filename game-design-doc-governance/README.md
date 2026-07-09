@@ -49,7 +49,7 @@ Requires Python 3 and `PyYAML`.
 
 ## Status
 
-**v0.3.1 — P3 Full Governance (release-consistency fixes).** Ships: the generic
+**v0.3.2 — P3 Full Governance (release-consistency fixes).** Ships: the generic
 data-driven auditor, 10 genre profiles, 16 doc-module skeletons, 9 modules,
 6 templates, `issue_state.jsonl` state tracking, and a regression baseline
 reproduced against the first real project (`P0=0 P1=0 P2=0 P3=1`).

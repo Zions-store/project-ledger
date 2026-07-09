@@ -25,10 +25,14 @@ python ../tools/global_doc_audit.py \
   --style    "<origin project>/Design Document/md file/STYLE_GUIDE.md" \
   --profile  "../profiles/open_world_narrative_tactical_shooter.yaml" \
   --out      "<temp audit dir>" \
-  --baseline "expected/current_project_baseline.json"
+  --baseline "expected/current_project_baseline.json" \
+  --no-state
 ```
 
 Expected tail: `Baseline compare: EQUIVALENT`.
+
+For baseline regression, use a fresh output directory or pass `--no-state`. This
+prevents a prior `issue_state.jsonl` suppression from changing the expected P3 count.
 
 ## fixtures/
 

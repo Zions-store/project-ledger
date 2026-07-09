@@ -9,6 +9,34 @@ genre-specific doc modules._
 
 ---
 
+## [0.3.2] - 2026-07-09 — Doc/Boundary Consistency
+
+### Fixed
+- **`modules/06` §2**: Pass condition now lists `--strict` / `--pedantic` /
+  `--fail-on-p2` (and profile `audit.*` relaxation), matching the script.
+- **`modules/06` §4**: Outputs now list `issue_state.jsonl`.
+- **`SKILL.md`** quick workflow step 3: build the doc set from the genre profile's
+  `recommended_docs` (+ optional), then write into `Project_Profile.yaml` `enabled_docs`
+  (a genre profile has no `enabled_docs`).
+- **`tests/README.md`**: baseline command adds `--no-state`, with a note to use a
+  fresh out dir / `--no-state` so prior suppression can't skew the expected P3.
+
+### Changed
+- **Document-existence判断 generalised (P2-4=B)**: new shared `match_versioned_doc()`;
+  `find_latest()` globs `{base}*{ext}` then strictly filters via `version_pattern`
+  (canonical / `(n)` / `_vN` / `.N`) — rejecting `*_TEMPLATE/_BACKUP/_OLD`.
+  `check_file_list()` and `check_links()` now reuse `find_latest`/`doc_exists`
+  (single source of truth for existence; no more hard-coded `(n)` normalisation).
+- Script → `v1.1.1-generic`.
+
+### Verified
+- `find_latest` unit test: canonical / `(n)` / `_vN` / `.N` all resolve to the
+  highest version; `_TEMPLATE`/`_BACKUP`/`_OLD` excluded.
+- Origin-project regression: hard-coded vs generic both `[0,0,0,1,0]` EQUIVALENT
+  (**D4 parallel-equivalence run 3/3**); baseline EQUIVALENT (`--no-state`); 12 docs found.
+
+---
+
 ## [0.3.1] - 2026-07-09 — Release-Consistency Fixes
 
 ### Fixed

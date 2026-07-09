@@ -1,6 +1,6 @@
 ---
 name: game-design-doc-governance
-version: 0.3.1
+version: 0.3.2
 description: Reusable governance framework for game design documentation — sets up a multi-document authority system, picks a genre profile, defines cross-document boundaries and change-safety anchors, and runs a data-driven Python audit. Use when the user says "set up design docs", "game design documentation", "doc governance", "audit design docs", "建立设计文档体系", or starts/organizes a game's GDD system.
 ---
 
@@ -53,8 +53,10 @@ The audit script prints English; report language can be configured later.
 2. **Pick a Profile** from `profiles/` matching the game's genre
    (e.g. `open_world_narrative_tactical_shooter`, `multiplayer_shooter`). See
    `modules/03_genre_profiles.md`.
-3. **Create the doc set**: from the Profile's `enabled_docs`, scaffold each file
-   using `doc_modules/*.tmpl` (each has *applies / owns / does not own / sections*).
+3. **Create the doc set**: from the selected genre Profile's `recommended_docs`
+   (plus any chosen `optional_docs`), scaffold each file using `doc_modules/*.tmpl`
+   (each has *applies / owns / does not own / sections*); write the final list into
+   `Project_Profile.yaml` `enabled_docs`.
 4. **Generate `STYLE_GUIDE.md`** from `templates/STYLE_GUIDE_TEMPLATE.md`, filling
    placeholders from the Profile (file list, authority matrix, boundaries).
 5. **Generate `Project_Profile.yaml`** from `templates/PROJECT_PROFILE_TEMPLATE.yaml`.

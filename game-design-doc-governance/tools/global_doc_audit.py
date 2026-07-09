@@ -29,7 +29,7 @@ try:
 except ImportError:
     yaml = None
 
-SCRIPT_VERSION = "v1.1.0-generic"
+SCRIPT_VERSION = "v1.1.1-generic"
 
 # ─── rule registries loaded from STYLE_GUIDE.md ───
 EXPECTED_DOCS = []
@@ -188,16 +188,36 @@ def add(p, file, msg, rule=None):
 
 
 # ─── file helpers ───
+def match_versioned_doc(filename, expected_name, version_pattern=r'\((\d+)\)'):
+    """Does `filename` denote `expected_name`, either canonical or with the
+    configured version suffix? Returns (ok, version). Strict: only base.md or
+    base + <version_pattern> + .md match — so STYLE_GUIDE_TEMPLATE.md /
+    STYLE_GUIDE_BACKUP.md / STYLE_GUIDE_OLD.md are rejected."""
+    base, ext = os.path.splitext(expected_name)
+    version_re = re.compile(r'^' + re.escape(base) + r'(?:' + version_pattern + r')?' + re.escape(ext) + r'$')
+    if not version_re.match(filename):
+        return False, None
+    vm = re.search(version_pattern, filename)
+    version = int(vm.group(1)) if vm and vm.group(1) and vm.group(1).isdigit() else 0
+    return True, version
+
+
 def find_latest(root, name, version_pattern=r'\((\d+)\)'):
-    base = name.replace(".md", "")
-    candidates = glob.glob(os.path.join(root, f"{base}.md")) + \
-                 glob.glob(os.path.join(root, f"{base}(*).md"))
+    base, ext = os.path.splitext(name)
+    candidates = []
+    for path in glob.glob(os.path.join(root, f"{base}*{ext}")):
+        ok, version = match_versioned_doc(os.path.basename(path), name, version_pattern)
+        if ok:
+            candidates.append((version, path))
     if not candidates:
         return None, None
-    def ver(path):
-        m = re.search(version_pattern + r'\.md$', path); return int(m.group(1)) if m else 0
-    candidates.sort(key=ver, reverse=True)
-    return candidates[0], ver(candidates[0])
+    candidates.sort(key=lambda x: x[0], reverse=True)
+    return candidates[0][1], candidates[0][0]
+
+
+def doc_exists(root, name, version_pattern=r'\((\d+)\)'):
+    path, _ = find_latest(root, name, version_pattern)
+    return path is not None
 
 
 def read_doc(root, name, version_pattern=r'\((\d+)\)'):
@@ -219,13 +239,10 @@ def resolve_files(files, enabled_docs):
 
 
 # ─── generic checks (engine) ───
-def check_file_list(root, enabled_docs, non_authority):
-    found = set()
-    for f in os.listdir(root):
-        if f.endswith(".md"):
-            found.add(re.sub(r'\(\d+\)\.md$', '.md', f))
-    for m in set(enabled_docs) - found:
-        add("P0", m, "Missing expected authority doc")
+def check_file_list(root, enabled_docs, non_authority, version_pattern=r'\((\d+)\)'):
+    for name in enabled_docs:
+        if not doc_exists(root, name, version_pattern):
+            add("P0", name, "Missing expected authority doc")
     for n in non_authority:
         if os.path.exists(os.path.join(root, n)):
             add("INFO", n, "Non-authority file in document directory")
@@ -299,12 +316,8 @@ def check_deprecated(all_texts, profile_terms):
                     break
 
 
-def check_links(all_texts, root_dir, ignored_dirs=None):
+def check_links(all_texts, root_dir, ignored_dirs=None, version_pattern=r'\((\d+)\)'):
     ignored_dirs = ignored_dirs or []
-    existing = set()
-    for f in os.listdir(root_dir):
-        if f.endswith(".md"):
-            existing.add(re.sub(r'\(\d+\)\.md$', '.md', f))
     for doc_name, text in all_texts:
         if doc_name == "STYLE_GUIDE.md":
             continue
@@ -315,7 +328,7 @@ def check_links(all_texts, root_dir, ignored_dirs=None):
             if any(seg in ignored_dirs for seg in base.split('/')[:-1]):
                 continue
             tf = base.split('/')[-1]
-            if tf not in existing and tf != doc_name:
+            if tf != doc_name and not doc_exists(root_dir, tf, version_pattern):
                 add("P1", doc_name, f"Broken link: [{m.group(1)}]({m.group(2)})")
 
 
@@ -498,7 +511,7 @@ def run_audit(root_dir, out_dir, profile_path, style_path,
         out_dir = os.path.join(os.path.dirname(root_dir), "audit")
     os.makedirs(out_dir, exist_ok=True)
 
-    check_file_list(root_dir, enabled_docs, non_authority)
+    check_file_list(root_dir, enabled_docs, non_authority, version_pattern=ver_pat)
 
     texts = {}
     all_texts = []
@@ -515,7 +528,7 @@ def run_audit(root_dir, out_dir, profile_path, style_path,
     check_deprecated(all_texts, profile.get("deprecated_terms", []))
     lc = profile.get("link_checks", {}) or {}
     if lc.get("enabled", True):
-        check_links(all_texts, root_dir, ignored_dirs=lc.get("ignored_dirs"))
+        check_links(all_texts, root_dir, ignored_dirs=lc.get("ignored_dirs"), version_pattern=ver_pat)
     run_boundary_checks(texts, profile.get("boundary_checks", []), enabled_docs)
     run_consistency_checks(texts, profile.get("consistency_checks", []), enabled_docs)
     apply_exceptions(profile.get("exceptions", []))
