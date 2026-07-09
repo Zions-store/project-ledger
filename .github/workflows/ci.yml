@@ -14,6 +14,9 @@ jobs:
       - uses: DavidAnson/markdownlint-cli2-action@v19
         with:
           globs: '**/*.md'
+          # fixture .md files are sanitised project samples (no Markdown headers expected).
+          # They cannot carry GPL Copyright/SPDX and are excluded from lint/copyright checks.
+          extra_args: '--ignore "tests/fixtures/**"'
 
   code-block-check:
     runs-on: ubuntu-latest
@@ -22,7 +25,7 @@ jobs:
       - name: Check code block integrity
         run: |
           echo "Checking for unclosed code blocks (``` without closing)"
-          for f in $(find . -name "*.md" -not -path "./.git/*"); do
+          for f in $(find . -name "*.md" -not -path "./.git/*" -not -path "./tests/fixtures/*"); do
             count=$(grep -c '```' "$f" 2>/dev/null || echo 0)
             if [ $((count % 2)) -ne 0 ]; then
               echo "ERROR: Unclosed code block in $f"
@@ -34,7 +37,7 @@ jobs:
       - name: Check for common issues
         run: |
           echo "Checking for TODO markers in committed files..."
-          if grep -rn "TODO\|FIXME\|HACK" --include="*.md" . | grep -v ".git/"; then
+          if grep -rn "TODO\|FIXME\|HACK" --include="*.md" . | grep -v ".git/" | grep -v "tests/fixtures/"; then
             echo "WARNING: TODO/FIXME/HACK markers found (non-blocking)"
           fi
 
@@ -42,7 +45,7 @@ jobs:
         run: |
           echo "Checking copyright headers on .md files..."
           missing=0
-          for f in $(find . -name "*.md" -not -path "./.git/*" -not -path "./.tmp_validation/*"); do
+          for f in $(find . -name "*.md" -not -path "./.git/*" -not -path "./.tmp_validation/*" -not -path "./tests/fixtures/*"); do
             if ! head -3 "$f" | grep -q "Copyright\|SPDX"; then
               echo "MISSING: $f"
               missing=1
@@ -53,3 +56,26 @@ jobs:
             exit 1
           fi
           echo "All files have copyright headers"
+
+  python-health:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        run: pip install pyyaml
+      - name: Syntax check
+        run: python -m py_compile game-design-doc-governance/tools/global_doc_audit.py
+      - name: CLI smoke
+        run: python game-design-doc-governance/tools/global_doc_audit.py --help
+      - name: Fixture baseline regression
+        run: |
+          python game-design-doc-governance/tools/global_doc_audit.py \
+            --root    game-design-doc-governance/tests/fixtures/sample_open_world/md\ file \
+            --style   game-design-doc-governance/tests/fixtures/sample_open_world/md\ file/STYLE_GUIDE.md \
+            --profile game-design-doc-governance/tests/fixtures/sample_open_world/md\ file/Project_Profile.yaml \
+            --out     /tmp/gdd-ci \
+            --baseline game-design-doc-governance/tests/expected/sample_fixture_baseline.json \
+            --no-state

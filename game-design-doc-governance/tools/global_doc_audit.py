@@ -612,7 +612,8 @@ def run_audit(root_dir, out_dir, profile_path, style_path,
     if write_state:
         write_issue_state(out_dir, issues, suppressed, prev_state, audit_time)
 
-    print(f"\nReport: {out_dir}\\audit_report.md | History: {out_dir}\\audit_history.md")
+    print(f"\nReport: {os.path.join(out_dir, 'audit_report.md')} | "
+          f"History: {os.path.join(out_dir, 'audit_history.md')}")
 
     if baseline_path and os.path.exists(baseline_path):
         with open(baseline_path, "r", encoding="utf-8") as f:

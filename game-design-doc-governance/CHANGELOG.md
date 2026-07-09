@@ -4,7 +4,18 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 ## [Unreleased]
 
-### P4 local wiring (local milestone `v0.4.0-local-p4`; package version kept at 0.3.2)
+_Next: 0.5.0 self-contained fixtures + pytest/CI, then 0.6.0 schema validation,
+0.7.0 packaging/CLI, 0.8.0 scaffold, 0.9.0 RC, 1.0.0 stable._
+
+---
+
+## [0.4.0] - 2026-07-09 — First public pre-1.0 release
+
+> **Pre-1.0 / not stable.** This is the first publicly published release on the
+> pre-1.0 track. The Profile schema, CLI, and scaffold workflow are **not yet
+> frozen**; breaking changes may still occur before 1.0.0.
+
+### P4 governance wiring
 - Wired the Skill into opencode via a local NTFS junction
   (`~/.config/opencode/skills/game-design-doc-governance`); discovery verified in a new session.
 - Verified the generic auditor against the origin project for **3 consecutive
@@ -14,19 +25,23 @@ SPDX-License-Identifier: GPL-3.0-or-later
 - Origin project switched its audit entry point to a thin wrapper (repo path first,
   junction fallback) while preserving the previous engine as
   `global_doc_audit_project_v3_legacy.py` for instant rollback.
-- Kept formal release version at 0.3.2; local milestone tagged `v0.4.0-local-p4`.
-  Not pushed. Formal `0.4.0` reserved for a future release.
 
 ### Tests
 - Added a **self-contained sanitized fixture** `tests/fixtures/sample_open_world/`
   (+ `expected/sample_fixture_baseline.json`) as the primary regression source, so
-  regression no longer depends on an external/real project path (release
-  requirement). Baseline `[0,0,0,1,0]`, single P3 `RULE-SAMPLE-ONLY`. The fixture
-  uses AUDIT markers, also covering the language-independent STYLE-parsing path.
+  regression no longer depends on an external/real project path. Baseline
+  `[0,0,0,1,0]`, single P3 `RULE-SAMPLE-ONLY`. The fixture uses AUDIT markers, also
+  covering the language-independent STYLE-parsing path.
 
----
+### CI / packaging
+- CI gains a Python health job (py_compile + `--help` + fixture-baseline run) and
+  excludes `tests/fixtures/**` from the markdown/copyright checks.
+- Cross-platform: report path line uses `os.sep` instead of a hard-coded backslash.
+- Added `MANIFEST.md` (release contents / exclusions).
 
-_Next: formal 0.4.0 release preparation, self-contained fixtures, and expanded genre-specific modules._
+### Notes
+- Local milestone tag `v0.4.0-local-p4` remains; the published release tag is
+  `game-design-doc-governance-v0.4.0`.
 
 ---
 

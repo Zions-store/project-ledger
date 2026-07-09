@@ -49,20 +49,23 @@ Requires Python 3 and `PyYAML`.
 
 ## Status
 
-**v0.3.2 — P3 Full Governance (release-consistency fixes).** Ships: the generic
+**v0.4.0 — first public pre-1.0 release (NOT stable).** Ships: the generic
 data-driven auditor, 10 genre profiles, 16 doc-module skeletons, 9 modules,
-6 templates, `issue_state.jsonl` state tracking, and a regression baseline
-reproduced against the first real project (`P0=0 P1=0 P2=0 P3=1`).
+6 templates, `issue_state.jsonl` state tracking, a self-contained regression
+fixture, and P4 opencode wiring (junction + thin-wrapper).
+
+> **Pre-1.0:** the Profile schema, CLI, and scaffold workflow are **not yet frozen**;
+> breaking changes may still occur before 1.0.0. Roadmap: 0.5.0 fixtures+pytest →
+> 0.6.0 schema validation → 0.7.0 packaging/CLI → 0.8.0 scaffold → 0.9.0 RC → 1.0.0.
 
 STYLE parsing is **language-independent** via `<!-- AUDIT: … -->` marker blocks,
 with a fallback to heading heuristics for existing files. `--strict` and the
 profile `audit` thresholds gate pass/fail; the baseline compares P0–P3 (INFO is
 informational only).
 
-P4 (opencode junction wiring / origin-project switch to a thin wrapper) has been
-**verified locally** (junction discovery + 3 consecutive frozen-version equivalence
-runs + wrapper switch with legacy rollback preserved); not pushed. Package version
-stays 0.3.2; local milestone tag `v0.4.0-local-p4`.
+Primary regression is the self-contained fixture `tests/fixtures/sample_open_world/`
+(no external project dependency). Published release tag:
+`game-design-doc-governance-v0.4.0`; local P4 milestone tag `v0.4.0-local-p4`.
 
 ## License
 
