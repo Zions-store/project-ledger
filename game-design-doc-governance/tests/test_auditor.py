@@ -214,3 +214,51 @@ def test_exception_suppresses_issue():
     gda.add("P2", "Test.md", "boundary hit", rule="EX-TEST")
     gda.apply_exceptions([{"id": "EX-TEST", "file": "Test.md", "reason": "waived"}])
     assert len(gda.issues) == 0
+
+
+# ────────────────────────────────────────────────────────
+# 10  profile schema validation
+# ────────────────────────────────────────────────────────
+import glob as _glob
+try:
+    import yaml as _yaml
+except ImportError:
+    _yaml = None
+
+
+def _validate_file(path, kind):
+    """Call the validate tool programmatically. Returns list of error strings."""
+    with open(path, encoding="utf-8") as f:
+        data = _yaml.safe_load(f) if _yaml else {}
+    from tools.validate_profile import validate
+    return validate(data, kind=kind)
+
+
+def test_all_genre_profiles_valid():
+    if _yaml is None:
+        pytest.skip("yaml not available")
+    skill = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    for p in _glob.glob(os.path.join(skill, "profiles", "*.yaml")):
+        errors = _validate_file(p, "genre")
+        assert errors == [], f"{os.path.basename(p)}: {errors}"
+
+
+def test_project_profile_template_valid():
+    skill = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    p = os.path.join(skill, "templates", "PROJECT_PROFILE_TEMPLATE.yaml")
+    errors = _validate_file(p, "project")
+    assert errors == [], f"template: {errors}"
+
+
+def test_invalid_profile_detected(tmp_path):
+    p = tmp_path / "bad.yaml"
+    p.write_text("schema_version: 1\nenabled_docs: [Design_Document.md]\nunknown_field: oops\n", encoding="utf-8")
+    errors = _validate_file(str(p), "project")
+    assert errors  # should NOT be empty
+
+
+def test_missing_required_detected(tmp_path):
+    p = tmp_path / "bad.yaml"
+    p.write_text("schema_version: 1\n", encoding="utf-8")
+    errors = _validate_file(str(p), "project")
+    assert any("enabled_docs" in e.lower() for e in errors)

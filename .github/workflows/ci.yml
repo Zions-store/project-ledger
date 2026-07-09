@@ -103,7 +103,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install deps
-        run: pip install pyyaml pytest
+        run: pip install pyyaml pytest jsonschema
       - name: Run pytest
         run: |
           cd game-design-doc-governance/tests
