@@ -1,7 +1,7 @@
 # Copyright (C) 2026 ZionXiaoxiSuOGLocGo
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
-# Project_Profile.yaml — per-project profile skeleton.
+# Project_Profile.yaml -?per-project profile skeleton.
 # Copy into a project's "Design Document/md file/Project_Profile.yaml" and fill in.
 # The auditor reads this together with STYLE_GUIDE.md.
 #
@@ -10,7 +10,7 @@
 
 schema_version: 1
 
-project:
+profile:
   name: "{{PROJECT_NAME}}"
   profile_name: "{{PROFILE_NAME}}"          # e.g. open_world_narrative_tactical_shooter
   primary_type: "{{PRIMARY_TYPE}}"
@@ -63,7 +63,7 @@ boundary_checks: []
 # - id: EXAMPLE-NO-STATS
 #   description: Character docs must not carry concrete numbers.
 #   files: [Character_Sheets.md]            # or ["*"]
-#   forbid_regex: '\d+/\s*发'               # OR forbid_any: [word1, word2]
+#   forbid_regex: '\d+/\s*-?               # OR forbid_any: [word1, word2]
 #   unless_near: [Gameplay_Systems.md]
 #   near_window: 200
 #   stop_at: "[migrated]"                    # optional: scan only before this marker
