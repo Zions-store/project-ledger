@@ -91,8 +91,14 @@ jobs:
         run: |
           gdd-audit --help
           gdd-profile-validate --help
-      - name: Fixture baseline regression (console script)
+      - name: Scaffold smoke (open-world profile)
         run: |
+          gdd-scaffold --profile game-design-doc-governance/profiles/open_world_narrative_tactical_shooter.yaml \
+            --out /tmp/gdd-scaffold/md\ file --project-name "CI Smoke" --language en-US
+          gdd-audit --root /tmp/gdd-scaffold/md\ file \
+            --style /tmp/gdd-scaffold/md\ file/STYLE_GUIDE.md \
+            --profile /tmp/gdd-scaffold/md\ file/Project_Profile.yaml \
+            --out /tmp/gdd-scaffold/audit --no-state
           gdd-audit \
             --root    game-design-doc-governance/tests/fixtures/sample_open_world/md\ file \
             --style   game-design-doc-governance/tests/fixtures/sample_open_world/md\ file/STYLE_GUIDE.md \

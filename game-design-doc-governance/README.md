@@ -49,7 +49,7 @@ Requires Python 3 and `PyYAML`.
 
 ## Status
 
-**v0.7.1 --?first public pre-1.0 release (NOT stable).** Ships: the generic
+**v0.8.0 --?first public pre-1.0 release (NOT stable).** Ships: the generic
 data-driven auditor, 10 genre profiles, 16 doc-module skeletons, 9 modules,
 6 templates, `issue_state.jsonl` state tracking, a self-contained regression
 fixture, and P4 opencode wiring (junction + thin-wrapper).
@@ -64,7 +64,7 @@ informational only).
 
 Primary regression is the self-contained fixture `tests/fixtures/sample_open_world/`
 (no external project dependency). Published release tag:
-`game-design-doc-governance-v0.7.1`; local P4 milestone tag `v0.4.0-local-p4`.
+`game-design-doc-governance-v0.8.0`; local P4 milestone tag `v0.4.0-local-p4`.
 
 ## License
 

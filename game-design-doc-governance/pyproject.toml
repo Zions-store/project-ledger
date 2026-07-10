@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "game-design-doc-governance"
-version = "0.7.0"
+version = "0.8.0"
 description = "Reusable governance framework for game design documentation"
 readme = "README.md"
 license = {text = "GPL-3.0-or-later"}
@@ -19,6 +19,7 @@ dependencies = [
 [project.scripts]
 gdd-audit = "game_design_doc_governance.audit:main"
 gdd-profile-validate = "game_design_doc_governance.profile_validation:main"
+gdd-scaffold = "game_design_doc_governance.scaffold:main"
 
 [tool.setuptools.package-dir]
 "" = "src"

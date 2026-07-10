@@ -1,6 +1,6 @@
 ---
 name: game-design-doc-governance
-version: 0.7.1
+version: 0.8.0
 description: Reusable governance framework for game design documentation �?sets up a multi-document authority system, picks a genre profile, defines cross-document boundaries and change-safety anchors, and runs a data-driven Python audit. Use when the user says "set up design docs", "game design documentation", "doc governance", "audit design docs", "建立设计文档体系", or starts/organizes a game's GDD system.
 ---
 

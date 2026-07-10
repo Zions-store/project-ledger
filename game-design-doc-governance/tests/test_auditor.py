@@ -262,3 +262,25 @@ def test_missing_required_detected(tmp_path):
     p.write_text("schema_version: 1\n", encoding="utf-8")
     errors = _validate_file(str(p), "project")
     assert any("enabled_docs" in e.lower() for e in errors)
+
+
+# ────────────────────────────────────────────────────────
+# 11  scaffold
+# ────────────────────────────────────────────────────────
+def test_scaffold_and_audit(tmp_path):
+    skill = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    profile = os.path.join(skill, "profiles", "open_world_narrative_tactical_shooter.yaml")
+    out = tmp_path / "md file"
+    audit = tmp_path / "audit"
+    # Import the scaffold engine and run it programmatically
+    from tools.scaffold_project import scaffold
+    assert scaffold(profile, str(out), "test-project", "en-US")
+    # Audit the scaffolded project
+    passed, c, _ = run_auditor(
+        str(out),
+        os.path.join(str(out), "Project_Profile.yaml"),
+        os.path.join(str(out), "STYLE_GUIDE.md"),
+        out=str(audit),
+    )
+    assert c["p0"] == 0
+    assert c["p1"] == 0
