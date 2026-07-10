@@ -7,6 +7,9 @@ import pytest
 # The auditor lives one level up from tests/, inside tools/
 SKILL_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(SKILL_ROOT, "tools"))
+# Also add the skill root itself — lets tests import tools.validate_profile etc.
+if SKILL_ROOT not in sys.path:
+    sys.path.insert(0, SKILL_ROOT)
 
 FIXTURES_DIR = os.path.join(SKILL_ROOT, "tests", "fixtures")
 EXPECTED_DIR = os.path.join(SKILL_ROOT, "tests", "expected")

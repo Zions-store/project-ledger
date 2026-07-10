@@ -106,5 +106,5 @@ jobs:
         run: pip install pyyaml pytest jsonschema
       - name: Run pytest
         run: |
-          cd game-design-doc-governance/tests
-          python -m pytest -v
+          cd game-design-doc-governance
+          python -m pytest tests -v
