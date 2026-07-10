@@ -20,6 +20,7 @@ jobs:
             game-design-doc-governance/SKILL.md
             game-design-doc-governance/MANIFEST.md
             game-design-doc-governance/modules/**/*.md
+            game-design-doc-governance/docs/**/*.md
             game-design-doc-governance/templates/**/*.md
             game-design-doc-governance/tests/**/*.md
 
