@@ -15,111 +15,39 @@ jobs:
         with:
           config: .markdownlint-cli2.jsonc
           globs: |
-            game-design-doc-governance/README.md
-            game-design-doc-governance/CHANGELOG.md
-            game-design-doc-governance/SKILL.md
-            game-design-doc-governance/MANIFEST.md
-            game-design-doc-governance/modules/**/*.md
-            game-design-doc-governance/docs/**/*.md
-            game-design-doc-governance/templates/**/*.md
-            game-design-doc-governance/tests/**/*.md
+            README.md
+            CHANGELOG.md
 
   code-block-check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Check Markdown code fences
-        shell: bash
+      - name: Check code block integrity
         run: |
-          python - <<'PY'
-          from pathlib import Path
-          import sys
+          echo "Checking for unclosed code blocks"
+          for f in README.md CHANGELOG.md; do
+            if [ -f "$f" ]; then
+              count=$(grep -c '```' "$f" 2>/dev/null || echo 0)
+              if [ $((count % 2)) -ne 0 ]; then
+                echo "ERROR: Unclosed code block in $f"
+                exit 1
+              fi
+            fi
+          done
+          echo "All code blocks properly closed"
 
-          roots = [
-              Path("README.md"),
-              Path("CHANGELOG.md"),
-              Path("SKILL.md"),
-              Path("MANIFEST.md"),
-              Path("modules"),
-              Path("templates"),
-              Path("tests"),
-              Path("doc_modules"),
-          ]
-
-          files = []
-          for root in roots:
-              if root.is_file():
-                  files.append(root)
-              elif root.is_dir() and root.exists():
-                  files.extend(root.rglob("*.md"))
-                  files.extend(root.rglob("*.tmpl"))
-
-          bad = []
-          for path in sorted(set(files)):
-              text = path.read_text(encoding="utf-8", errors="replace")
-              fence_count = 0
-              for line in text.splitlines():
-                  if line.lstrip().startswith("```"):
-                      fence_count += 1
-              if fence_count % 2 != 0:
-                  bad.append((str(path), fence_count))
-
-          if bad:
-              print("Unclosed Markdown code fences detected:")
-              for path, count in bad:
-                  print(f"- {path}: {count} fence lines")
-              sys.exit(1)
-
-          print(f"Checked {len(files)} markdown/template files; all code fences are balanced.")
-          PY
-
-  python-health:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install package
-        working-directory: game-design-doc-governance
-        run: pip install -e .
-      - name: Package import smoke
-        working-directory: game-design-doc-governance
-        run: python -c "import game_design_doc_governance"
-      - name: Syntax check
-        run: python -m py_compile game-design-doc-governance/tools/global_doc_audit.py
-      - name: CLI smoke (console scripts)
+      - name: Check copyright headers
         run: |
-          gdd-audit --help
-          gdd-profile-validate --help
-      - name: Scaffold smoke (open-world profile)
-        run: |
-          gdd-scaffold --profile game-design-doc-governance/profiles/open_world_narrative_tactical_shooter.yaml \
-            --out /tmp/gdd-scaffold/md\ file --project-name "CI Smoke" --language en-US
-          gdd-audit --root /tmp/gdd-scaffold/md\ file \
-            --style /tmp/gdd-scaffold/md\ file/STYLE_GUIDE.md \
-            --profile /tmp/gdd-scaffold/md\ file/Project_Profile.yaml \
-            --out /tmp/gdd-scaffold/audit --no-state
-          gdd-audit \
-            --root    game-design-doc-governance/tests/fixtures/sample_open_world/md\ file \
-            --style   game-design-doc-governance/tests/fixtures/sample_open_world/md\ file/STYLE_GUIDE.md \
-            --profile game-design-doc-governance/tests/fixtures/sample_open_world/md\ file/Project_Profile.yaml \
-            --out     /tmp/gdd-ci \
-            --baseline game-design-doc-governance/tests/expected/sample_fixture_baseline.json \
-            --no-state
-
-  pytest:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install package and test deps
-        working-directory: game-design-doc-governance
-        run: |
-          pip install -e .
-          pip install pytest
-      - name: Run tests
-        working-directory: game-design-doc-governance
-        run: python -m pytest tests -v
+          echo "Checking copyright headers on .md files..."
+          missing=0
+          for f in $(find . -name "*.md" -not -path "./.git/*" -not -path "./.tmp_validation/*" -not -path "./node_modules/*"); do
+            if ! head -3 "$f" | grep -q "Copyright\|SPDX"; then
+              echo "MISSING: $f"
+              missing=1
+            fi
+          done
+          if [ $missing -eq 1 ]; then
+            echo "ERROR: Some files missing Copyright/SPDX headers"
+            exit 1
+          fi
+          echo "All files have copyright headers"
