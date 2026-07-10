@@ -7,7 +7,7 @@
   "required": ["schema_version", "enabled_docs"],
   "properties": {
     "schema_version": { "type": "integer", "minimum": 1, "maximum": 1 },
-    "project": {
+    "profile": {
       "type": "object",
       "properties": {
         "name": { "type": "string" },
@@ -131,5 +131,6 @@
         }
       }
     }
-  }
+  },
+  "additionalProperties": false
 }
