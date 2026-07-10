@@ -79,8 +79,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install deps
+      - name: Install package
+        working-directory: game-design-doc-governance
         run: pip install -e .
+      - name: Package import smoke
+        working-directory: game-design-doc-governance
+        run: python -c "import game_design_doc_governance"
       - name: Syntax check
         run: python -m py_compile game-design-doc-governance/tools/global_doc_audit.py
       - name: CLI smoke (console scripts)
@@ -104,9 +108,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install deps
-        run: pip install -e . pytest
-      - name: Run pytest
+      - name: Install package and test deps
+        working-directory: game-design-doc-governance
         run: |
-          cd game-design-doc-governance
-          python -m pytest tests -v
+          pip install -e .
+          pip install pytest
+      - name: Run tests
+        working-directory: game-design-doc-governance
+        run: python -m pytest tests -v
