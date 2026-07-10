@@ -25,28 +25,34 @@ jobs:
       - name: Check code block integrity
         run: |
           echo "Checking for unclosed code blocks"
-          for f in README.md CHANGELOG.md; do
-            if [ -f "$f" ]; then
-              count=$(grep -c '```' "$f" 2>/dev/null || echo 0)
-              if [ $((count % 2)) -ne 0 ]; then
-                echo "ERROR: Unclosed code block in $f"
-                exit 1
-              fi
+          while IFS= read -r -d '' f; do
+            count=$(grep -c '```' "$f" 2>/dev/null || echo 0)
+            if [ $((count % 2)) -ne 0 ]; then
+              echo "ERROR: Unclosed code block in $f"
+              exit 1
             fi
-          done
+          done < <(find ./project-onboard ./project-docs -type f -name "*.md" -print0)
           echo "All code blocks properly closed"
 
-      - name: Check copyright headers
+      - name: Copyright headers
         run: |
           echo "Checking copyright headers on .md files..."
           missing=0
-          for f in $(find . -name "*.md" -not -path "./.git/*" -not -path "./.tmp_validation/*" -not -path "./node_modules/*"); do
-            if ! head -3 "$f" | grep -q "Copyright\|SPDX"; then
-              echo "MISSING: $f"
-              missing=1
+          while IFS= read -r -d '' f; do
+            header="$(head -n 20 "$f")"
+            if ! printf '%s\n' "$header" | grep -q "Copyright (C)"; then
+              echo "MISSING copyright: $f"; missing=1; continue
             fi
-          done
-          if [ $missing -eq 1 ]; then
+            if ! printf '%s\n' "$header" | grep -q "SPDX-License-Identifier:"; then
+              echo "MISSING SPDX: $f"; missing=1; continue
+            fi
+          done < <(
+            find ./project-onboard ./project-docs \
+              -type f -name "*.md" \
+              -not -path "*/tests/fixtures/*" \
+              -print0
+          )
+          if [ "$missing" -ne 0 ]; then
             echo "ERROR: Some files missing Copyright/SPDX headers"
             exit 1
           fi
