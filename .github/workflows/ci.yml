@@ -80,14 +80,16 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install deps
-        run: pip install pyyaml
+        run: pip install -e .
       - name: Syntax check
         run: python -m py_compile game-design-doc-governance/tools/global_doc_audit.py
-      - name: CLI smoke
-        run: python game-design-doc-governance/tools/global_doc_audit.py --help
-      - name: Fixture baseline regression
+      - name: CLI smoke (console scripts)
         run: |
-          python game-design-doc-governance/tools/global_doc_audit.py \
+          gdd-audit --help
+          gdd-profile-validate --help
+      - name: Fixture baseline regression (console script)
+        run: |
+          gdd-audit \
             --root    game-design-doc-governance/tests/fixtures/sample_open_world/md\ file \
             --style   game-design-doc-governance/tests/fixtures/sample_open_world/md\ file/STYLE_GUIDE.md \
             --profile game-design-doc-governance/tests/fixtures/sample_open_world/md\ file/Project_Profile.yaml \
@@ -103,7 +105,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install deps
-        run: pip install pyyaml pytest jsonschema
+        run: pip install -e . pytest
       - name: Run pytest
         run: |
           cd game-design-doc-governance
