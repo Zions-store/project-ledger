@@ -23,7 +23,7 @@ MOJIBAKE_SNIPPETS = [
 def find_markdown_files(root):
     md_files = []
     for dirpath, dirnames, filenames in os.walk(root):
-        dirnames[:] = [d for d in dirnames if d not in ('.git', '__pycache__', 'tests')]
+        dirnames[:] = [d for d in dirnames if d not in ('.git', '__pycache__')]
         for f in filenames:
             if f.endswith('.md'):
                 md_files.append(os.path.join(dirpath, f))
@@ -85,12 +85,17 @@ def main():
             print(f"OK  {rel}")
         else:
             all_ok = False
-            status = "FIXED" if fix_mode else "FAIL"
+            if fix_mode:
+                # validate_file returns ok=True after successful fix, so we reach this
+                # branch only when fix was attempted but failed
+                status = "STILL-FAIL"
+            else:
+                status = "FAIL"
             print(f"{status} {rel}")
             for issue in issues:
                 print(f"     - {issue}")
-            if fix_mode:
-                fixed_count += 1
+        if fix_mode and issues:
+            fixed_count += 1
 
     print()
     print(f"Files checked: {len(md_files)}")

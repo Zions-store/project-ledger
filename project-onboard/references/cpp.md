@@ -43,7 +43,7 @@ priority_files:
   - README.md
 
 entry_point_patterns:
-  - 'int main('
+  - '\bint\s+main\s*\('
   - "WinMain"
   - "QApplication"
 

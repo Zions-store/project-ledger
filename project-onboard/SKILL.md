@@ -173,7 +173,17 @@ Match against the scanned directory listing. For `any_of`, each `all` sub-group 
 
 Score each candidate with evidence, counter-evidence, and confidence (high/medium/low).
 
-**Refinements:** After scoring direct signature candidates, execute any `refinements` declared in matching rule pack frontmatters (see `_common.md` §12 "Refinement Execution"). Refinements handle sub-types that require content-level evidence (e.g. C# + `MonoGame.Framework.*` -> monogame). A matching refinement may replace the parent candidate with the refined type at high confidence.
+**Refinements:** After scoring signature-based candidates from `kind: normal` rule packs, execute refinement discovery for `kind: refinement` rule packs:
+
+1. Iterate all registry entries with `kind: refinement` (e.g. `monogame`).
+2. For each refinement pack, check if its `parent` field (e.g. `csharp`) matches any current candidate, regardless of that candidate's confidence level.
+3. If the parent matches, execute the refinement's `condition`:
+   - `dependency_contains`: check the parent candidate's dependency manifest for the specified package name.
+   - `file_exists`: glob for the specified pattern (e.g. `**/*.mgcb`).
+4. If any condition matches, the refinement pack becomes the primary type at `high` confidence. The parent candidate is retained as a parent/base note in the evidence record.
+5. `kind: refinement` packs without a `parent` match are skipped — they are evaluated only when their parent is already a candidate.
+
+This ensures refinement packs without direct signatures (like MonoGame, which has `signatures: any: []`) are still discovered as long as their parent has been matched.
 
 **Fallback:** If no candidate reaches `low` confidence after signature matching and all refinements, load the rule pack with `kind: fallback` (default: `general`).
 

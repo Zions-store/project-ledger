@@ -75,7 +75,7 @@ optional_output_sections: []
 | `refinements` | No | dict or list | Content-based sub-type rules (e.g. C# -> MonoGame). Can be a dict with `parent`, `condition` for simple refinements, or a list of such dicts. |
 | `workspace_files` | No | list | Files indicating multi-project workspaces |
 | `priority_files` | Yes | list | Top 3-5 files to read first |
-| `entry_point_patterns` | No | list | POSIX extended regex patterns for finding entry points via grep. Use `.*` for "any text" (e.g. `'class.*GameManager'`), `^` for line start (e.g. `'^int main'`), `\\(` for literal parens when needed. Patterns are passed directly to the host's grep tool. Patterns containing `[ ] { } ( )` without regex intent should be treated as literals in BRE mode. |
+| `entry_point_patterns` | No | list | POSIX extended regex patterns for finding entry points via grep. Use `.*` for "any text", `^` for line start, `\b` for word boundary, `\(` to match literal parens. All patterns must be valid POSIX ERE — patterns with unescaped `()` (e.g. `fn main()`) match the function name as a substring and work in practice; patterns with unmatched `(` (e.g. bare `int main(`) are illegal. |
 | `external_reference_mechanisms` | No | list | How this ecosystem references external code |
 | `generated_paths` | No | list | Directories typically containing generated code |
 | `large_structured_files` | No | list | Glob patterns for large structured text files |

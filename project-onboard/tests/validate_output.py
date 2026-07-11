@@ -111,10 +111,12 @@ def check_sections(content):
                 issues.append(f'Empty section: {current_section}')
             current_section = line[3:].strip()
             section_empty = True
-            # Skip sections with sub-headings
-        elif line.startswith('#') or line.startswith('|') or line.startswith('-') or line.strip() == '':
-            pass
-        elif line.strip():
+        elif line.startswith('#'):
+            pass  # sub-headings don't count as content
+        elif line.strip() == '':
+            pass  # blank lines don't count as content
+        else:
+            # Any non-heading, non-blank line = content (includes | tables, - lists)
             section_empty = False
     if current_section and section_empty:
         issues.append(f'Empty section: {current_section}')
@@ -129,7 +131,8 @@ def check_markers(content):
     man_end_count = content.count(MARKER_MANUAL_END)
 
     if gen_start_count == 0 and man_start_count == 0:
-        return issues  # No markers = manual file, skip marker checks
+        issues.append('Missing project-onboard markers: generated output must contain generated/end markers')
+        return issues
 
     if gen_start_count != gen_end_count:
         issues.append(f'Mismatched generated markers: {gen_start_count} start, {gen_end_count} end')

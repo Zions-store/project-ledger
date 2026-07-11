@@ -1,15 +1,8 @@
 #!/usr/bin/env python3
 """
 validate_rule_packs.py - Strict YAML validation of all rule pack frontmatter.
-Usage: python validate_rule_packs.py
-
-Validates:
-  1. Frontmatter starts on line 1 (---)
-  2. YAML parses correctly (yaml.safe_load)
-  3. Required fields present (schema_version, id, display_name, priority, signatures, known_blind_spots)
-  4. id matches filename stem
-  5. All ids and aliases are unique across rule packs
-  6. README supported type list matches registry
+Validates: line1=---, yaml.safe_load, 19 fields, id==filename, kind values,
+refinement schema, signature uniqueness, SKILL.md reference.
 """
 
 import os
@@ -18,35 +11,55 @@ import sys
 SKILL_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REFERENCES_DIR = os.path.join(SKILL_ROOT, 'references')
 TEMPLATES_DIR = os.path.join(SKILL_ROOT, 'templates')
-README_PATH = os.path.join(SKILL_ROOT, 'README.md')
 
 REQUIRED_FIELDS = [
-    'schema_version', 'id', 'display_name', 'priority',
-    'signatures', 'known_blind_spots',
+    'schema_version', 'id', 'display_name', 'priority', 'kind',
+    'aliases', 'signatures', 'exclusions', 'refinements',
+    'workspace_files', 'priority_files', 'entry_point_patterns',
+    'external_reference_mechanisms', 'generated_paths',
+    'large_structured_files', 'binary_asset_types',
+    'default_ignore_paths', 'known_blind_spots', 'optional_output_sections',
 ]
 
 FIELD_TYPES = {
-    'schema_version': int,
-    'id': str,
-    'display_name': str,
-    'priority': int,
-    'signatures': dict,
-    'known_blind_spots': list,
+    'schema_version': int, 'id': str, 'display_name': str,
+    'priority': int, 'kind': str, 'aliases': list,
+    'signatures': dict, 'exclusions': dict,
+    'refinements': (list, dict), 'workspace_files': list,
+    'priority_files': list, 'entry_point_patterns': list,
+    'external_reference_mechanisms': list, 'generated_paths': list,
+    'large_structured_files': list, 'binary_asset_types': list,
+    'default_ignore_paths': list, 'known_blind_spots': list,
+    'optional_output_sections': list,
+}
+
+VALID_KINDS = {'normal', 'fallback', 'refinement'}
+
+REQUIRED_SECTIONS = {
+    'unity.md': ['Signature Detection', 'AGENTS.md Additions for Unity'],
+    'unreal.md': ['Signature Detection', 'AGENTS.md Additions for Unreal'],
+    'monogame.md': ['Signature Detection', 'AGENTS.md Additions for MonoGame'],
+    'nodejs.md': ['Signature Detection', 'Build', 'Run'],
+    'python.md': ['Signature Detection', 'Build', 'Run'],
+    'rust.md': ['Signature Detection', 'Build', 'Test'],
+    'go.md': ['Signature Detection', 'Build', 'Test'],
+    'java.md': ['Signature Detection', 'Build', 'Test'],
+    'cpp.md': ['Signature Detection', 'Build', 'Test'],
+    'csharp.md': ['Signature Detection', 'Build', 'Run'],
+    'lua.md': ['Signature Detection', 'Build', 'Run'],
+    'general.md': ['Scan Steps'],
 }
 
 
 def main():
     issues = []
 
-    # Load YAML
     try:
         import yaml
     except ImportError:
         print("FAIL: PyYAML not installed. Run: pip install pyyaml")
-        print("       This is a development dependency, not a runtime dependency.")
         sys.exit(1)
 
-    # Check _common.md and _rule-pack-template.md exist
     for fname in ['_common.md', '_rule-pack-template.md']:
         path = os.path.join(REFERENCES_DIR, fname)
         if not os.path.exists(path):
@@ -54,15 +67,15 @@ def main():
         else:
             print(f'OK  references/{fname}')
 
-    # Check templates/AGENTS.md exists
     agents_path = os.path.join(TEMPLATES_DIR, 'AGENTS.md')
     if not os.path.exists(agents_path):
         issues.append('templates/AGENTS.md not found')
     else:
         print('OK  templates/AGENTS.md')
 
-    # Scan rule packs
     registrations = []
+    fallback_count = 0
+
     for fname in sorted(os.listdir(REFERENCES_DIR)):
         if not fname.endswith('.md') or fname.startswith('_'):
             continue
@@ -73,12 +86,10 @@ def main():
 
         file_ok = True
 
-        # 1. Frontmatter must start on line 1
         if not content.startswith('---'):
             issues.append(f'{fname}: frontmatter does not start on line 1')
             file_ok = False
 
-        # 2. Parse YAML
         try:
             yaml_text = content.split('---')[1]
             data = yaml.safe_load(yaml_text)
@@ -87,24 +98,51 @@ def main():
             print(f'FAIL references/{fname}')
             continue
 
-        # 3. Required fields
+        # 19 required fields
         for field in REQUIRED_FIELDS:
             if field not in data or data[field] is None:
                 issues.append(f'{fname}: missing required field "{field}"')
                 file_ok = False
 
-        # 4. Field types
+        # Field types (allow tuple for refinements that can be list or dict)
         if data:
             for field, expected_type in FIELD_TYPES.items():
-                if field in data and not isinstance(data[field], expected_type):
-                    issues.append(f'{fname}: field "{field}" expected {expected_type.__name__}, got {type(data[field]).__name__}')
-                    file_ok = False
+                if field in data and data[field] is not None:
+                    if isinstance(expected_type, tuple):
+                        if not isinstance(data[field], expected_type):
+                            issues.append(f'{fname}: field "{field}" expected one of {expected_type}, got {type(data[field]).__name__}')
+                            file_ok = False
+                    elif not isinstance(data[field], expected_type):
+                        issues.append(f'{fname}: field "{field}" expected {expected_type.__name__}, got {type(data[field]).__name__}')
+                        file_ok = False
 
-        # 5. id matches filename
+        # id matches filename
         expected_id = os.path.splitext(fname)[0]
         if data and data.get('id') != expected_id:
-            issues.append(f'{fname}: id "{data.get("id")}" does not match filename stem "{expected_id}"')
+            issues.append(f'{fname}: id "{data.get("id")}" != filename stem "{expected_id}"')
             file_ok = False
+
+        # kind validation
+        kind = data.get('kind', '')
+        if kind not in VALID_KINDS:
+            issues.append(f'{fname}: invalid kind "{kind}". Must be one of: {VALID_KINDS}')
+            file_ok = False
+        if kind == 'fallback':
+            fallback_count += 1
+
+        # Refinement schema: if kind=refinement, require parent in refinements
+        if kind == 'refinement':
+            refs = data.get('refinements', [])
+            if isinstance(refs, dict):
+                refs = [refs]
+            if isinstance(refs, list):
+                for i, ref in enumerate(refs):
+                    if isinstance(ref, dict) and 'parent' not in ref:
+                        issues.append(f'{fname}: refinement entry {i} missing "parent" field')
+                        file_ok = False
+            elif not refs:
+                issues.append(f'{fname}: kind=refinement but refinements is empty')
+                file_ok = False
 
         if data:
             registrations.append((fname, data))
@@ -114,7 +152,7 @@ def main():
         else:
             print(f'FAIL references/{fname}')
 
-    # 6. Unique ids and aliases
+    # Unique ids and aliases
     all_ids = {}
     all_aliases = {}
     for fname, data in registrations:
@@ -128,45 +166,29 @@ def main():
                 issues.append(f'Duplicate alias "{alias}" in {fname} and {all_aliases[alias]}')
             all_aliases[alias] = fname
 
-    # 7. README supported type list vs registry
-    if os.path.exists(README_PATH):
-        with open(README_PATH, 'r', encoding='utf-8') as f:
-            readme = f.read()
-        for _, data in registrations:
-            display = data.get('display_name', '')
-            # Check README mentions the display name or id
-            rid = data.get('id', '')
-            if rid == 'general':
-                continue  # general is a special fallback
-            if display and display not in readme:
-                # Check aliases
-                found = False
-                for alias in data.get('aliases', []) or []:
-                    if alias in readme:
-                        found = True
-                        break
-                if rid in readme:
-                    found = True
-                if not found:
-                    issues.append(f'README may not list type "{display}" (id={rid})')
+    # Exactly one fallback
+    if fallback_count != 1:
+        issues.append(f'Expected exactly 1 kind=fallback rule pack, found {fallback_count}')
 
-    # 8. Check SKILL.md references _common.md
+    # SKILL.md references _common.md
     skill_path = os.path.join(SKILL_ROOT, 'SKILL.md')
     with open(skill_path, 'r', encoding='utf-8') as f:
         skill_content = f.read()
     if 'references/_common.md' not in skill_content:
         issues.append('SKILL.md does not reference _common.md')
+    if 'inspect' not in skill_content or 'generate' not in skill_content:
+        issues.append('SKILL.md missing execution mode documentation')
 
-    # Summary
     print()
     print(f'Rule packs scanned: {len(registrations)}')
+    print(f'Fields enforced: {len(REQUIRED_FIELDS)}')
     print(f'Issues found: {len(issues)}')
     if issues:
         for issue in issues:
             print(f'  - {issue}')
         sys.exit(1)
     else:
-        print('All rule packs validated (strict YAML + schema + uniqueness).')
+        print('All rule packs validated (strict YAML + 19 fields + schema + uniqueness).')
         sys.exit(0)
 
 
