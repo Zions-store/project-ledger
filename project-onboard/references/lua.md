@@ -1,5 +1,61 @@
+---
+schema_version: 1
+id: lua
+display_name: Lua
+priority: 55
+kind: normal
+aliases: []
+
+signatures:
+  any:
+    - "*.rockspec"
+    - lua_modules/
+    - lua/
+    - .luacheckrc
+    - .busted
+
+exclusions:
+  any: []
+
+refinements: []
+
+workspace_files: []
+
+priority_files:
+  - "*.rockspec"
+  - init.lua
+  - main.lua
+
+entry_point_patterns:
+  - '^require'
+  - '^module'
+  - 'M = \{\}'
+
+external_reference_mechanisms:
+  - Luarocks path
+  - embedded host binding
+
+generated_paths: []
+
+large_structured_files: []
+
+binary_asset_types: []
+
+default_ignore_paths:
+  - lua_modules/
+
+known_blind_spots:
+  - host-application specific behavior
+  - runtime module loading order
+
+optional_output_sections:
+  - Host Project Context
+  - Module Load Order
+---
+
 Copyright (C) 2026 ZionXiaoxiSuOGLocGo
 SPDX-License-Identifier: GPL-3.0-or-later
+
 # Lua Project Analysis Rules
 
 ## Signature Detection
@@ -13,23 +69,23 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 ### 1. Read Project Manifest
 Check in order of preference:
-1. `*.rockspec` â†?LuaRocks package (name, version, dependencies)
-2. `Makefile` â†?Common in C+Lua hybrid projects
-3. `CMakeLists.txt` â†?Embedded Lua in C/C++ projects
-4. `lua_modules/` â†?Vendored LuaRocks dependencies
+1. `*.rockspec` ->LuaRocks package (name, version, dependencies)
+2. `Makefile` ->Common in C+Lua hybrid projects
+3. `CMakeLists.txt` ->Embedded Lua in C/C++ projects
+4. `lua_modules/` ->Vendored LuaRocks dependencies
 
 Extract key frameworks from rockspec dependencies:
-- `lua >= 5.1` / `lua >= 5.4` â†?Lua version target
-- `luajit` â†?LuaJIT target
-- `busted` â†?BDD test framework
-- `luacheck` â†?Static analysis / linting
-- `luaunit` â†?Unit testing
-- `luasocket` â†?Networking
-- `lpeg` â†?Parsing expression grammar
-- `middleclass` / `classic` / `30log` â†?OOP class system
-- `lua-cjson` / `dkjson` â†?JSON handling
-- `penlight` â†?Utility library
-- `moonscript` â†?Moonscript (compiles to Lua)
+- `lua >= 5.1` / `lua >= 5.4` ->Lua version target
+- `luajit` ->LuaJIT target
+- `busted` ->BDD test framework
+- `luacheck` ->Static analysis / linting
+- `luaunit` ->Unit testing
+- `luasocket` ->Networking
+- `lpeg` ->Parsing expression grammar
+- `middleclass` / `classic` / `30log` ->OOP class system
+- `lua-cjson` / `dkjson` ->JSON handling
+- `penlight` ->Utility library
+- `moonscript` ->Moonscript (compiles to Lua)
 
 ### 2. Detect Project Type
 | Clues | Type |
@@ -67,7 +123,7 @@ Extract key frameworks from rockspec dependencies:
 grep "^require\|^module\|dofile" *.lua
 ```
 Project-type specific:
-- LÃ–VE2D: `main.lua` â†?entry point, `conf.lua` â†?config
+- LÃ–VE2D: `main.lua` ->entry point, `conf.lua` ->config
 - Neovim plugin: `after/plugin/<name>.lua` or `plugin/<name>.lua`
 - WoW Addon: `.toc` file lists loaded Lua files in order
 - OpenResty: `init.lua` or `app.lua` required from `nginx.conf`
@@ -76,25 +132,25 @@ Project-type specific:
 
 ### 5. Check Module System
 Lua has no built-in module system. Check which pattern is used:
-- `require "mod"` â†?Built-in require
-- `luarocks.loader` â†?LuaRocks loader
+- `require "mod"` ->Built-in require
+- `luarocks.loader` ->LuaRocks loader
 - `package.path` / `package.cpath` overrides
 - Custom `require` wrappers (common in game engines)
-- `import` â†?Moonscript
+- `import` ->Moonscript
 
 ### 6. Build & Run Commands
 Extract from project manifests:
 - **Test**: `busted` (BDD) or `luaunit` or `luacheck .`
 - **Install deps**: `luarocks install` or `luarocks make`
-- **Run**: Project-specific â€?check Makefile, `main.lua` entry, or README
+- **Run**: Project-specific -check Makefile, `main.lua` entry, or README
 - **LÃ–VE2D**: `love .`
 - **CI**: Check `.travis.yml` / `.github/workflows/` for test commands
 
 ### 7. Check for Config Files
-- `.luacheckrc` â†?Linting rules and globals configuration
-- `.busted` â†?Test framework config
-- `.luacov` â†?Coverage config
-- `rockspec` / `rockspecs/` â†?LuaRocks packaging
-- `Makefile` â†?Build/test commands
-- `.travis.yml` / `.github/workflows/` â†?CI/CD
-- `ldoc.lua` or `config.ld` â†?LDoc documentation config
+- `.luacheckrc` ->Linting rules and globals configuration
+- `.busted` ->Test framework config
+- `.luacov` ->Coverage config
+- `rockspec` / `rockspecs/` ->LuaRocks packaging
+- `Makefile` ->Build/test commands
+- `.travis.yml` / `.github/workflows/` ->CI/CD
+- `ldoc.lua` or `config.ld` ->LDoc documentation config

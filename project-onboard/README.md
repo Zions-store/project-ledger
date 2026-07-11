@@ -1,19 +1,40 @@
 Copyright (C) 2026 ZionXiaoxiSuOGLocGo
 SPDX-License-Identifier: GPL-3.0-or-later
 
+> [!WARNING]
+> This branch is a public audit preview of project-onboard v2.0.0.
+> It is not a stable release and should not be used in production.
+> Current candidate version: v2.0.0-rc1.
+
 # Project Onboard
 
-Auto-detect project type and generate AGENTS.md for AI coding agents. Zero dependencies.
+Auto-detect project type and generate AGENTS.md for AI coding agents. Four execution modes: inspect (read-only), generate (create), refresh (update), audit (compare). Rule packs self-register via YAML frontmatter — adding a new type requires one file.
 
 ## What It Does
 
 Give your AI agent a project path — it automatically:
 
-1. Scans directory structure to detect the project type
-2. Loads the matching rule pack
-3. Generates a concise AGENTS.md with architecture, dependencies, entry points, and core modules
+1. Discovers project topology (single, monorepo, workspace, polyglot)
+2. Scores all matching project types with evidence and confidence
+3. Performs a security-bounded, budgeted deep scan by file role
+4. Generates an evidence-tagged AGENTS.md with coverage reporting
 
-Your agent instantly understands the project without you explaining anything.
+### Execution Modes
+
+| Mode | Writes Files | Use When |
+|------|-------------|----------|
+| **inspect** | No | "What does this project do?" — read-only analysis |
+| **generate** | Yes | "Create AGENTS.md" — first-time generation |
+| **refresh** | Yes (generated sections only) | "Update AGENTS.md" — preserve manual content |
+| **audit** | No | "Is AGENTS.md still accurate?" — structured diff |
+
+### Scan Depths
+
+| Depth | Scope | Typical Output |
+|-------|-------|---------------|
+| **quick** | Manifest, entry points, key modules | 20-60 line summary |
+| **standard** | Full topology, dependencies, architecture | Complete AGENTS.md (~150-300 lines) |
+| **deep** | Sub-project graphs, asset/code relations | AGENTS.md + per-subproject summaries |
 
 ## Why Project Onboard
 
@@ -27,22 +48,27 @@ Your agent instantly understands the project without you explaining anything.
 | Auto-detection + override | ❌ | **Auto-detect or `--type` force** |
 | Composable | Standalone | **Can chain with Understand-Anything** |
 | Cross-platform | Claude Code only | **opencode / Claude Code / Codex / Cursor** |
-| Footprint | Repo + Node.js + pnpm | **14 files, ~44KB** |
+| Footprint | Repo + Node.js + pnpm | **19 files** |
+| **Execution modes** | One-size-fits-all | **inspect / generate / refresh / audit** |
+| **Rule registration** | N/A | **Self-registering (YAML frontmatter)** |
 
-## Supported Project Types
+## Bundled Rule Packs
+
+These rule packs ship with project-onboard. Additional types auto-discover from `references/*.md` YAML frontmatter — adding a new type requires only one file.
 
 | Type | Signature |
 |---|---|
 | Unity | `Assets/` + `ProjectSettings/` |
-| Unreal Engine | `Source/` + `.uproject` |
+| Unreal Engine | `*.uproject` (with or without `Source/`) |
+| MonoGame | Via C# refinement: `MonoGame.Framework.*` in `.csproj` or `**/*.mgcb` |
 | Node.js / Frontend | `package.json` (no `Assets/`) |
-| Python | `pyproject.toml` / `requirements.txt` |
+| Python | `pyproject.toml` / `requirements.txt` / `setup.py` / `Pipfile` |
 | Rust | `Cargo.toml` |
 | Go | `go.mod` |
-| Java / Maven / Gradle | `pom.xml` / `build.gradle` |
-| C / C++ | `CMakeLists.txt` |
+| Java / Maven / Gradle | `pom.xml` / `build.gradle` / `build.gradle.kts` |
+| C / C++ | `CMakeLists.txt` / `Makefile` |
 | C# / .NET | `*.csproj` / `*.sln` (non-Unity) |
-| Lua | `*.rockspec` / `lua_modules/` |
+| Lua | `*.rockspec` / `lua_modules/` / `lua/` |
 | General | Fallback for anything else |
 
 ## Installation
@@ -51,10 +77,12 @@ Copy to your skills directory:
 
 ```
 ~/.config/opencode/skills/project-onboard/SKILL.md
-~/.config/opencode/skills/project-onboard/references/*.md
+~/.config/opencode/skills/project-onboard/references/
+~/.config/opencode/skills/project-onboard/templates/
 ```
 
 Also compatible with `.claude/skills/` and `.agents/skills/`.
+The `tests/` directory is for development validation only and is not required for runtime use.
 
 ## Usage
 
@@ -75,7 +103,9 @@ onboard C:\my-unity-project
 onboard C:\my-project --type unity
 ```
 
-Output: `<project_root>/AGENTS.md`
+Output:
+- `inspect` / `audit` — results returned in conversation (no file written)
+- `generate` / `refresh` — `<project_root>/AGENTS.md`
 
 ## Multi-Language Support
 
@@ -101,9 +131,11 @@ Trigger phrases work in any language:
 
 ## Adding New Project Types
 
-1. Add a detection signature in `SKILL.md` Step 2
-2. Create `references/<name>.md` following the existing format
-3. The rule pack auto-loads on next `onboard` run
+1. Copy `references/_rule-pack-template.md` to `references/<name>.md`
+2. Fill in the YAML frontmatter (signatures, workspace files, known blind spots)
+3. Write the type-specific analysis rules following the template body
+
+The rule pack auto-discovers on next run. No modifications to SKILL.md or README are needed. The supported types list is validated against the rule pack registry by `tests/validate_rule_packs.py`.
 
 ## License
 

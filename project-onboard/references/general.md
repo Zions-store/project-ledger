@@ -1,5 +1,52 @@
+---
+schema_version: 1
+id: general
+display_name: General (Fallback)
+priority: 0
+aliases: [fallback, unknown]
+kind: fallback
+
+signatures:
+  any: []
+
+exclusions:
+  any: []
+
+refinements: []
+
+workspace_files: []
+
+priority_files:
+  - README.md
+  - Makefile
+  - Dockerfile
+  - docker-compose.yml
+
+entry_point_patterns:
+  - "main"
+  - "index.html"
+
+external_reference_mechanisms: []
+
+large_structured_files: []
+
+binary_asset_types: []
+
+default_ignore_paths: []
+
+generated_paths: []
+
+known_blind_spots:
+  - unrecognized build systems
+  - proprietary tools
+
+optional_output_sections:
+  - Sub-Type Hints
+---
+
 Copyright (C) 2026 ZionXiaoxiSuOGLocGo
 SPDX-License-Identifier: GPL-3.0-or-later
+
 # General Project Analysis Rules (Fallback)
 
 Used when no specific project type is detected.
@@ -39,11 +86,11 @@ glob **/main.* or glob **/index.* or glob **/app.* or glob **/server.*
 ```
 
 ### 4. Read Key Files
-Read these in priority order (30-80 lines each, stop after 5 files):
+Read these in priority order (30-80 lines each, within scan budget):
 1. README or README.md
 2. The main entry file found in step 3
 3. Package/dependency manifest
-4. Top-level config file (.env, config.js, settings.py)
+4. Top-level config file (config.js, settings.py, Makefile) — never read .env or secret files
 5. Directory with most files (likely the main source)
 
 ### 5. Categorize

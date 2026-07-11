@@ -1,5 +1,68 @@
+---
+schema_version: 1
+id: java
+display_name: Java
+priority: 65
+kind: normal
+aliases: [jvm]
+
+signatures:
+  any:
+    - pom.xml
+    - build.gradle
+    - build.gradle.kts
+
+exclusions:
+  any: []
+
+refinements: []
+
+workspace_files:
+  - settings.gradle
+  - settings.gradle.kts
+
+priority_files:
+  - pom.xml
+  - build.gradle
+  - build.gradle.kts
+
+entry_point_patterns:
+  - 'public static void main'
+  - '@SpringBootApplication'
+  - '@SpringBootTest'
+
+external_reference_mechanisms:
+  - includeBuild
+  - composite build
+  - local Maven dependency
+
+generated_paths:
+  - build/
+  - target/
+
+large_structured_files: []
+
+binary_asset_types:
+  - "*.jar"
+  - "*.war"
+
+default_ignore_paths:
+  - build/
+  - target/
+  - .gradle/
+
+known_blind_spots:
+  - runtime classpath resolution
+  - annotation processor output
+
+optional_output_sections:
+  - Module Graph
+  - Multi-Service Map
+---
+
 Copyright (C) 2026 ZionXiaoxiSuOGLocGo
 SPDX-License-Identifier: GPL-3.0-or-later
+
 # Java Project Analysis Rules
 
 ## Signature Detection
@@ -9,27 +72,27 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 ### 1. Read Build File
 **Maven (pom.xml)**:
-- `groupId` + `artifactId` + `version` â†?Project identity
-- `<parent>` â†?Spring Boot starter parent (if `spring-boot-starter-parent`)
-- Dependencies â†?Key frameworks:
-  - `spring-boot-starter-web` â†?Spring Boot web app
-  - `spring-boot-starter-data-jpa` â†?JPA/Hibernate
-  - `spring-boot-starter-security` â†?Spring Security
-  - `spring-boot-starter-test` â†?Testing
-  - `spring-cloud-starter-*` â†?Spring Cloud microservice
-  - `lombok` â†?Lombok boilerplate reduction
-  - `jackson-*` â†?JSON serialization
-  - `mapstruct` â†?Object mapping
-  - `hibernate-validator` â†?Bean validation
-  - `junit-jupiter` â†?JUnit 5 testing
-  - `mockito-*` â†?Mocking framework
-- `<packaging>` â†?`jar` (app) or `war` (traditional web) or `pom` (parent/multi-module)
-- `<modules>` â†?Multi-module sub-projects
+- `groupId` + `artifactId` + `version` ->Project identity
+- `<parent>` ->Spring Boot starter parent (if `spring-boot-starter-parent`)
+- Dependencies ->Key frameworks:
+  - `spring-boot-starter-web` ->Spring Boot web app
+  - `spring-boot-starter-data-jpa` ->JPA/Hibernate
+  - `spring-boot-starter-security` ->Spring Security
+  - `spring-boot-starter-test` ->Testing
+  - `spring-cloud-starter-*` ->Spring Cloud microservice
+  - `lombok` ->Lombok boilerplate reduction
+  - `jackson-*` ->JSON serialization
+  - `mapstruct` ->Object mapping
+  - `hibernate-validator` ->Bean validation
+  - `junit-jupiter` ->JUnit 5 testing
+  - `mockito-*` ->Mocking framework
+- `<packaging>` ->`jar` (app) or `war` (traditional web) or `pom` (parent/multi-module)
+- `<modules>` ->Multi-module sub-projects
 
 **Gradle (build.gradle)**:
 - Plugins: `java`, `org.springframework.boot`, `io.spring.dependency-management`
-- Dependencies block â†?same identification as above
-- `java.toolchain` â†?JDK version
+- Dependencies block ->same identification as above
+- `java.toolchain` ->JDK version
 
 ### 2. Determine Build Tool
 | Tool | Key File | Wrapper Script |
@@ -69,10 +132,10 @@ Most common: An `Application.java` or `Main.java` annotated with `@SpringBootApp
 ### 5. Read Configuration
 - `src/main/resources/application.properties` or `application.yml`
 - Key Spring Boot properties: `server.port`, `spring.datasource.url`, `spring.profiles.active`
-- Multiple profiles? â†?`application-{profile}.yml`
+- Multiple profiles? ->`application-{profile}.yml`
 
 ### 6. Identify Architecture
-- **Layered**: Controller â†?Service â†?Repository (most common in Spring Boot)
+- **Layered**: Controller ->Service ->Repository (most common in Spring Boot)
 - **Hexagonal/Ports & Adapters**: `*.port` / `*.adapter` packages
 - **DDD**: `*.domain` + `*.infrastructure` + `*.application` packages
 - **Microservice**: Dockerfile + service discovery dependencies (Eureka, Consul)

@@ -1,5 +1,64 @@
+---
+schema_version: 1
+id: monogame
+display_name: MonoGame
+priority: 10
+kind: refinement
+aliases: [mg]
+
+signatures:
+  any: []
+
+exclusions:
+  any: []
+
+refinements:
+  - parent: csharp
+    condition:
+      dependency_contains: MonoGame.Framework
+      or:
+        file_exists: "**/*.mgcb"
+
+workspace_files: []
+
+priority_files:
+  - "*.csproj"
+  - Content/Content.mgcb
+  - Program.cs
+
+entry_point_patterns:
+  - 'new .*Game()'
+  - "class.*: Game"
+
+external_reference_mechanisms:
+  - shared code project
+  - content pipeline references
+
+generated_paths:
+  - bin/
+  - obj/
+
+large_structured_files:
+  - "*.mgcb"
+
+binary_asset_types:
+  - "*.xnb"
+
+default_ignore_paths:
+  - bin/
+  - obj/
+
+known_blind_spots:
+  - per-platform content variants
+
+optional_output_sections:
+  - MonoGame Content Pipeline
+  - Rendering Dimension (2D / 3D)
+---
+
 Copyright (C) 2026 ZionXiaoxiSuOGLocGo
 SPDX-License-Identifier: GPL-3.0-or-later
+
 # MonoGame Project Analysis Rules
 
 ## Signature Detection
