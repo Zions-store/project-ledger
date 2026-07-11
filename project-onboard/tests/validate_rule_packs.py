@@ -74,6 +74,7 @@ def main():
         print('OK  templates/AGENTS.md')
 
     registrations = []
+    refinement_parent_queue = []  # (fname, i, parent_id) deferred
     fallback_count = 0
 
     for fname in sorted(os.listdir(REFERENCES_DIR)):
@@ -136,13 +137,31 @@ def main():
             if isinstance(refs, dict):
                 refs = [refs]
             if isinstance(refs, list):
+                if not refs:
+                    issues.append(f'{fname}: kind=refinement but refinements is empty')
+                    file_ok = False
                 for i, ref in enumerate(refs):
-                    if isinstance(ref, dict) and 'parent' not in ref:
-                        issues.append(f'{fname}: refinement entry {i} missing "parent" field')
-                        file_ok = False
+                    if isinstance(ref, dict):
+                        if 'parent' not in ref:
+                            issues.append(f'{fname}: refinement entry {i} missing "parent" field')
+                            file_ok = False
+                        elif ref.get('parent'):
+                            refinement_parent_queue.append((fname, i, ref['parent']))
+                        if 'condition' not in ref:
+                            issues.append(f'{fname}: refinement entry {i} missing "condition" field')
+                            file_ok = False
             elif not refs:
                 issues.append(f'{fname}: kind=refinement but refinements is empty')
                 file_ok = False
+
+        # POSIX ERE validation: reject GNU/PCRE extensions in entry_point_patterns
+        NON_POSIX_PATTERNS = [r'\b', r'\s', r'\d', r'\w', r'\B', r'\S', r'\D', r'\W',
+                              r'(?=', r'(?!', r'(?<=', r'(?<!']
+        for pattern in data.get('entry_point_patterns', []) or []:
+            for np in NON_POSIX_PATTERNS:
+                if np in str(pattern):
+                    issues.append(f'{fname}: entry_point_pattern "{pattern}" uses non-POSIX construct "{np}". Use POSIX character classes instead.')
+                    file_ok = False
 
         if data:
             registrations.append((fname, data))
@@ -165,6 +184,11 @@ def main():
             if alias in all_aliases:
                 issues.append(f'Duplicate alias "{alias}" in {fname} and {all_aliases[alias]}')
             all_aliases[alias] = fname
+
+    # Deferred refinement parent ID validation
+    for fname, i, parent_id in refinement_parent_queue:
+        if parent_id not in all_ids:
+            issues.append(f'{fname}: refinement entry {i} parent "{parent_id}" is not a registered rule pack id')
 
     # Exactly one fallback
     if fallback_count != 1:

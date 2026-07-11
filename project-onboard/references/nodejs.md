@@ -32,7 +32,7 @@ entry_point_patterns:
   - '"main":'
   - '"start":'
   - 'app.listen'
-  - 'express()'
+  - 'express[[:space:]]*\('
 
 external_reference_mechanisms:
   - "file:../shared"

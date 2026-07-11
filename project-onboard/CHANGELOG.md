@@ -17,7 +17,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 ### Changed
 - **SKILL.md**: full rewrite for v2.0.0 — Execution Modes section added as primary behavioral contract; Step 0 now resolves mode and language simultaneously; all steps are mode-aware; anti-pitfalls enforce mode contracts (inspect NEVER writes).
-- **SKILL.md version**: 1.4.0 -> 2.0.0.
+- **SKILL.md version**: 1.4.0 -> 2.0.0-rc1.
 - **README**: updated with execution mode table, scan depth table, self-registration workflow; file count updated (16->19); comparison table extended.
 - **templates/AGENTS.md**: upgraded from basic template to formal contract with markers, mode documentation, template version, and evidence-tagged sections.
 

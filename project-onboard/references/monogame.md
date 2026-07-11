@@ -27,7 +27,7 @@ priority_files:
   - Program.cs
 
 entry_point_patterns:
-  - 'new .*Game()'
+  - 'new[[:space:]]+.*Game[[:space:]]*\('
   - "class.*: Game"
 
 external_reference_mechanisms:

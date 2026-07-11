@@ -159,24 +159,45 @@ def check_markers(content):
 
     positions.sort()
 
+    # State-machine validation of marker ordering
     if positions:
-        expected_order = [MARKER_GENERATED_START, MARKER_GENERATED_END, MARKER_MANUAL_START, MARKER_MANUAL_END]
-        seen = []
+        # Verify order: gen:start -> gen:end -> [manual:start -> manual:end]
+        valid_order = [MARKER_GENERATED_START, MARKER_GENERATED_END, MARKER_MANUAL_START, MARKER_MANUAL_END]
+        order_idx = 0
         for _, marker in positions:
-            seen.append(marker)
-        # Check each expected marker appears before the next one
-        marker_set = set(m[1] for m in positions)
-        if MARKER_GENERATED_END in marker_set and MARKER_GENERATED_START in marker_set:
-            if positions[0][1] != MARKER_GENERATED_START:
-                issues.append('Markers not in expected order: generated:start must come first')
+            # Find this marker in the valid order (allow skipping absent manual markers)
+            while order_idx < len(valid_order) and valid_order[order_idx] != marker:
+                order_idx += 1
+            if order_idx >= len(valid_order):
+                issues.append(f'Marker out of expected order: {marker.strip()} appears after expected sequence')
+                break
+            order_idx += 1
 
-    # Check no markers inside other markers
-    gen_start_pos = content.find(MARKER_GENERATED_START)
-    gen_end_pos = content.find(MARKER_GENERATED_END)
-    if gen_start_pos >= 0 and gen_end_pos >= 0:
-        between = content[gen_start_pos:gen_end_pos]
-        if MARKER_MANUAL_START in between or MARKER_MANUAL_END in between:
-            issues.append('Manual markers found inside generated block')
+        # Verify no cross-over: gen contents don't contain manual markers, and vice versa
+        gen_start = content.find(MARKER_GENERATED_START)
+        gen_end = content.find(MARKER_GENERATED_END)
+        man_start = content.find(MARKER_MANUAL_START)
+        man_end = content.find(MARKER_MANUAL_END)
+
+        if gen_start >= 0 and gen_end >= 0:
+            if gen_start > gen_end:
+                issues.append('generated:start appears after generated:end')
+            gen_content = content[gen_start:gen_end]
+            if MARKER_MANUAL_START in gen_content or MARKER_MANUAL_END in gen_content:
+                issues.append('Manual markers found inside generated block')
+
+        if man_start >= 0 and man_end >= 0:
+            if man_start > man_end:
+                issues.append('manual:start appears after manual:end')
+            man_content = content[man_start:man_end]
+            if MARKER_GENERATED_START in man_content or MARKER_GENERATED_END in man_content:
+                issues.append('Generated markers found inside manual block')
+
+        # Verify each start has corresponding end before the next start
+        if gen_start >= 0 and gen_end < 0:
+            issues.append('generated:start without matching generated:end')
+        if man_start >= 0 and man_end < 0:
+            issues.append('manual:start without matching manual:end')
 
     return issues
 

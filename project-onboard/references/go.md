@@ -24,7 +24,7 @@ priority_files:
   - cmd/
 
 entry_point_patterns:
-  - 'func main()'
+  - 'func[[:space:]]+main[[:space:]]*\('
   - 'package main'
 
 external_reference_mechanisms:

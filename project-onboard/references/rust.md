@@ -24,7 +24,7 @@ priority_files:
   - src/lib.rs
 
 entry_point_patterns:
-  - 'fn main()'
+  - 'fn[[:space:]]+main[[:space:]]*\('
   - 'pub fn'
   - 'mod '
 

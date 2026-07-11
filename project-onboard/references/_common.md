@@ -182,7 +182,8 @@ vendor/
 
 ### Ignore Policy
 
-- Directory enumeration (glob listing) is allowed to confirm structure; content reading is forbidden.
+- **Hard-excluded directories** (build artifacts, caches, engine internals): directory enumeration is allowed to confirm structure; content reading is forbidden.
+- **Low-priority directories** (`bin/`, `build/`, `vendor/`): targeted metadata, manifest, and entry-point reading is allowed when structurally relevant. Do not deep-scan or enumerate contents broadly.
 - Generated directories (D-class) are recorded for the Analysis Scope report; their source is identified but contents are not scanned.
 - Rule packs may add type-specific entries under a dedicated section but must not override or remove global entries.
 
@@ -421,7 +422,11 @@ refinements:
       dependency_contains: django
 ```
 
-A refinement without a `parent` uses only the file-level conditions and can independently establish a candidate.
+**Refinement rules:**
+- `kind: refinement` packs must have a non-empty `refinements` list.
+- Each entry must contain `parent` (a registered `kind: normal` rule pack id) and `condition`.
+- The refinement matches only when the parent is a current candidate AND the condition holds.
+- Refinements without a parent match are skipped. Standalone refinement without `parent` is not supported.
 
 **Fallback activation:** If no candidate reaches `low` confidence after signature matching and all refinements, the rule pack with `kind: fallback` (default: `general`) is automatically loaded.
 
