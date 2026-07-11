@@ -1,10 +1,9 @@
 # Expected Output Baselines
 
-This directory contains expected output baselines for key test fixtures.
-Each `.expected.md` file represents the minimum expected AGENTS.md output
-for the corresponding fixture when run in `generate --depth standard` mode.
+> Human-reviewed minimum behavior baseline checklist.
+> Individual per-fixture `.expected.md` files will be created for key cases as the test suite matures.
 
-To validate: compare the generated output against the expected baseline.
+To validate: compare the generated output against the baseline description in this file.
 Differences in evidence tags or confidence levels are acceptable as long
 as the structural requirements are met. Differences in type detection,
 missing sections, or leaked secrets are failures.
@@ -72,7 +71,7 @@ missing sections, or leaked secrets are failures.
 
 ### Evidence Checks
 - [ ] pyproject.toml-based facts tagged Verified
-- [ ] Build commands tagged with source (e.g. "package.json#scripts.build")
+- [ ] Build commands tagged with source (e.g. "pyproject.toml")
 ```
 
 ### node-app.expected.md

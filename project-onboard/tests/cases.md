@@ -1,7 +1,13 @@
 # Project Onboard Test Cases
 
-> Version: 2.0.0
-> Test Suite: Manual execution cases for all four versions
+> Candidate version: 2.0.0-rc1
+> Tested commit: (to be filled by tester)
+> Host: OpenCode
+> Host version: (to be filled by tester)
+> Operating system: (to be filled by tester)
+> Model: (to be filled by tester)
+> Test start date: (to be filled by tester)
+> Test end date: (to be filled by tester)
 
 ## How to Use This File
 
@@ -13,7 +19,7 @@ Fixture: tests/fixtures/<dir>
 Prompt: "<user message>"
 Expected: mode=<inspect|generate|refresh|audit>, depth=<quick|standard|deep>,
           write=<yes|no>, key assertions...
-Result: [ ] PASS  [ ] FAIL
+Result: [ ] PASS  [ ] FAIL  [ ] BLOCKED
 Notes: ...
 ```
 
@@ -603,6 +609,63 @@ Result: [ ] PASS  [ ] FAIL
 
 ## Execution Log
 
-| Date | Cases Run | Pass | Fail | Notes |
-|------|----------|------|------|-------|
+Detailed evidence for each case is recorded in `tests/test-report-v2.0.0-rc1.md`.
+
+| Date | Cases Run | Pass | Fail | Blocked | Notes |
+|------|----------|------|------|---------|-------|
+|      |          |      |      |         |       |
+
+---
+
+## Fixture Index
+
+Each fixture directory under `tests/fixtures/` is classified as:
+
+- **CASE** — has a corresponding test case in this file
+- **HELPER** — used by other cases as supporting input (e.g. external symlink target, replace target)
+- **MISSING** — exists but has no test case defined
+
+| Fixture | Status | Case ID(s) | Notes |
+|---------|--------|-----------|-------|
+| `binary-assets` | CASE | 4.2a | |
+| `cpp-cmake` | CASE | 1.1h | |
+| `cpp-makefile-only` | CASE | 1.2b | |
+| `csharp-mg-refinement` | CASE | 1.1k | |
+| `dotnet-solution` | CASE | 2.1e | |
+| `dotnet-webapi` | CASE | 1.1g | |
+| `existing-agents` | CASE | 3.3a | |
+| `existing-agents-mixed` | CASE | 3.3b | |
+| `external-symlink` | HELPER | — | Referenced in case 2.2c; symlink target not part of fixture |
+| `generated-code` | CASE | 4.3b | |
+| `git-lfs-pointer` | CASE | 4.3a | |
+| `go-multimod` | CASE | 2.1c | |
+| `go-replace` | HELPER | — | Referenced in case 2.2d; external module example |
+| `go-service` | CASE | 1.1d | |
+| `gradle-kotlin` | CASE | 1.2c | |
+| `java-gradle-composite` | CASE | 2.1d | |
+| `java-spring` | CASE | 1.1f | |
+| `large-lockfile` | CASE | 4.1c | |
+| `large-notebook` | CASE | 4.1b | |
+| `large-unity-scene` | CASE | 4.1a | |
+| `lua-simple` | CASE | 1.2d | |
+| `malicious-readme` | CASE | 3.1a | |
+| `mixed-monorepo` | CASE | 2.2a | |
+| `node-app` | CASE | 1.1e | |
+| `node-workspace` | CASE | 2.1a | |
+| `path-traversal` | CASE | 3.3c | |
+| `polyglot-game` | CASE | 2.2b | |
+| `python-conda` | CASE | 1.2a | |
+| `python-requirements` | CASE | 1.1b | |
+| `rust-cli` | CASE | 1.1c | |
+| `rust-workspace` | CASE | 2.1b | |
+| `secret-appsettings` | CASE | 3.2b | |
+| `secret-env` | CASE | 3.2a | |
+| `secret-keyfile` | CASE | 3.2c | |
+| `tiny-python` | CASE | 1.1a | |
+| `unity-minimal` | CASE | 1.1i | |
+| `unknown-general` | CASE | 1.2f | |
+| `unreal-blueprint` | CASE | 1.2e | |
+| `unreal-cpp` | CASE | 1.1j | |
+
+**Summary:** 37 CASE / 2 HELPER (external-symlink, go-replace) / 0 MISSING = 39 fixtures
 |      |          |      |      |       |
