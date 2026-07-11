@@ -135,7 +135,7 @@ Trigger phrases work in any language:
 2. Fill in the YAML frontmatter (signatures, workspace files, known blind spots)
 3. Write the type-specific analysis rules following the template body
 
-The rule pack auto-discovers on next run. No modifications to SKILL.md or README are needed. The supported types list is validated against the rule pack registry by `tests/validate_rule_packs.py`.
+The rule pack auto-discovers on next run. No modifications to SKILL.md or README are needed. The bundled type table above is documentation only; runtime type registration is derived from rule-pack frontmatter at scan time.
 
 ## License
 

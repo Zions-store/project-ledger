@@ -176,12 +176,13 @@ Score each candidate with evidence, counter-evidence, and confidence (high/mediu
 **Refinements:** After scoring signature-based candidates from `kind: normal` rule packs, execute refinement discovery for `kind: refinement` rule packs:
 
 1. Iterate all registry entries with `kind: refinement` (e.g. `monogame`).
-2. For each refinement pack, check if its `parent` field (e.g. `csharp`) matches any current candidate, regardless of that candidate's confidence level.
-3. If the parent matches, execute the refinement's `condition`:
+2. For each refinement pack, iterate its `refinements` list. Each entry must contain `parent` and `condition`.
+3. Check if the entry's `parent` field (e.g. `csharp`) matches any current candidate, regardless of that candidate's confidence level.
+4. If the parent matches, execute the entry's `condition`:
    - `dependency_contains`: check the parent candidate's dependency manifest for the specified package name.
    - `file_exists`: glob for the specified pattern (e.g. `**/*.mgcb`).
-4. If any condition matches, the refinement pack becomes the primary type at `high` confidence. The parent candidate is retained as a parent/base note in the evidence record.
-5. `kind: refinement` packs without a `parent` match are skipped — they are evaluated only when their parent is already a candidate.
+5. If any condition matches, the refinement pack becomes the primary type at `high` confidence. The parent candidate is retained as a parent/base note in the evidence record.
+6. `kind: refinement` packs whose `refinements` entries have no matching parent are skipped.
 
 This ensures refinement packs without direct signatures (like MonoGame, which has `signatures: any: []`) are still discovered as long as their parent has been matched.
 

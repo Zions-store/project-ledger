@@ -134,10 +134,19 @@ def check_markers(content):
         issues.append('Missing project-onboard markers: generated output must contain generated/end markers')
         return issues
 
-    if gen_start_count != gen_end_count:
-        issues.append(f'Mismatched generated markers: {gen_start_count} start, {gen_end_count} end')
-    if man_start_count != man_end_count:
-        issues.append(f'Mismatched manual markers: {man_start_count} start, {man_end_count} end')
+    # Strict count enforcement: _common.md mandates exactly 1 of each marker pair
+    if gen_start_count == 0:
+        issues.append('Missing generated:start marker')
+    elif gen_start_count > 1:
+        issues.append(f'Duplicate generated:start marker ({gen_start_count} found, expected 1)')
+    if gen_end_count == 0:
+        issues.append('Missing generated:end marker')
+    elif gen_end_count > 1:
+        issues.append(f'Duplicate generated:end marker ({gen_end_count} found, expected 1)')
+    if man_start_count > 1:
+        issues.append(f'Duplicate manual:start marker ({man_start_count} found, expected at most 1)')
+    if man_end_count > 1:
+        issues.append(f'Duplicate manual:end marker ({man_end_count} found, expected at most 1)')
 
     positions = []
     for marker in [MARKER_GENERATED_START, MARKER_GENERATED_END, MARKER_MANUAL_START, MARKER_MANUAL_END]:

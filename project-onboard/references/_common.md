@@ -397,16 +397,15 @@ Refinements handle sub-types that cannot be detected from directory signatures a
 
 **Execution order (during Step 3):**
 
-1. Run signature detection for all registered rule packs.
-2. For each candidate, check if its rule pack frontmatter contains `refinements`.
-3. Execute refinements:
-   - A refinement with a `parent` refers to another rule pack. The refinement matches when both (a) the parent candidate exists at any confidence and (b) the refinement condition holds.
-   - A refinement without a `parent` is a standalone file-level check (e.g. `**/*.mgcb` alone may establish a candidate).
-4. When a refinement matches:
-   - The refined type (e.g. `monogame`) becomes the primary type with `high` confidence.
-   - The parent type (e.g. `csharp`) is retained as a parent/base evidence note.
-   - If multiple refinements match, all are scored; the highest-confidence refinement wins.
-5. If no signatures or refinements produce a candidate reaching at least `low` confidence, load the rule pack with `kind: fallback` (default: `general`). Do not rely on empty `any: []` signatures as a fallback signal.
+1. Run signature detection for all `kind: normal` rule packs.
+2. After scoring normal candidates, iterate all registry entries with `kind: refinement`.
+3. For each refinement pack, iterate its `refinements` list.
+4. For each refinement entry, check if the entry's `parent` field matches any current candidate (regardless of that candidate's confidence level).
+5. If the parent matches, execute the entry's `condition`:
+   - `dependency_contains`: check the parent candidate's dependency manifest.
+   - `file_exists`: glob for the specified pattern.
+6. If any condition matches, the refinement pack becomes the primary type with `high` confidence. The parent candidate is retained as a parent/base evidence note.
+7. If no signatures or refinements produce a candidate reaching at least `low` confidence, load the rule pack with `kind: fallback` (default: `general`). Do not rely on empty `any: []` signatures as a fallback signal.
 
 **Refinement schema:**
 

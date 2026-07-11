@@ -12,7 +12,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 - **`references/_rule-pack-template.md`**: complete template with field reference table for creating new rule packs.
 - **Formal contract template**: `templates/AGENTS.md` now includes `generated:start/end` + `manual:start/end` markers with mode-specific behaviors, template version field, and evidence-tagged output sections.
 - **Atomic write**: generate/refresh modes write to temporary file, validate, and atomically replace. No direct overwrite or in-place modification.
-- **validate_rule_packs.py**: upgraded to check frontmatter presence and required fields (schema_version, id, display_name, priority, signatures, known_blind_spots) on all 12 rule packs.
+- **validate_rule_packs.py**: upgraded to enforce all 19 fields, field types, kind values (normal/fallback/refinement), refinement schema (parent must be present in refinements entries), unique fallback check, and id/alias uniqueness.
 - **Mode-depth mapping**: inspect defaults to quick; generate/refresh/audit default to standard; user can override depth independently of mode.
 
 ### Changed
