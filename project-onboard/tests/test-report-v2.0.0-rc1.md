@@ -4,7 +4,8 @@
 - **Runtime-under-test commit:** `647afd83f740d9391918f03a288ac4a20847452f` (`647afd8` — "test: establish v2.0.0-rc1 behavior-test baseline"). This is the SKILL/rule-pack/template runtime whose behavior is being verified.
 - **Test-harness commit:** `dd5cea76002030c1a74357950b001d19d015da30` (fixtures made reproducible: symlink/junction + large-notebook setup scripts, fixture-contract CI). Behavior results verify the **runtime** commit's product behavior, executed against the **harness** commit's fixtures.
 - **Runtime artifact invariance:** aggregate SHA-256 of `SKILL.md` + `VERSION` + `references/*.md` + `templates/*` is **identical** before and after the harness commit — `1227136DBD08C9FED506B6B92BBE431B755F78DA65F88800EB81730B39F00E03` (17/17 files unchanged, 0 mismatches). The fixture repair touched only `tests/`, so no new behavior baseline is required.
-- **Evidence/report commit:** recorded on commit of this report (`test: record v2.0.0-rc1 behavior regression results`); PR merge commit may be appended after merge. This report only *records* evidence — it is not itself a behavior baseline.
+- **Evidence/report commit:** `faf4aaaa5ee7638ee7fe59043e315f14e2e77d38` (`test: record v2.0.0-rc1 behavior regression results`). This report only *records* evidence — it is not itself a behavior baseline.
+- **Merge commit:** `e26e5308341ebdbc86242d5352f2fd7c9f0865ae` — PR #1 merged into `release/v2.0.0-rc1` via a **merge commit** (parents `[647afd8, faf4aaa]`, not squash), preserving the runtime/harness/evidence commit SHAs in history. Post-merge `push` CI on `release/v2.0.0-rc1` (run #3, sha `e26e530`) passed all three checks (`static-validation (3.11)` / `static-validation (3.12)` / `fixture-contract`).
 - **Test host:** OpenCode 1.17.18
 - **Model:** deepseek/deepseek-v4-pro
 - **Operating system:** Windows 11 Pro, build 10.0.26200 (win32), PowerShell 5.1
