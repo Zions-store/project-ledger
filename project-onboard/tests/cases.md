@@ -1,13 +1,18 @@
 # Project Onboard Test Cases
 
 > Candidate version: 2.0.0-rc1
-> Tested commit: (to be filled by tester)
+> Runtime-under-test commit: 647afd8c87019d6cd2ada318ee6be2f3ad96644e
+> Test-harness commit: dd5cea76002030c1a74357950b001d19d015da30
 > Host: OpenCode
-> Host version: (to be filled by tester)
-> Operating system: (to be filled by tester)
-> Model: (to be filled by tester)
-> Test start date: (to be filled by tester)
-> Test end date: (to be filled by tester)
+> Host version: 1.17.18
+> Operating system: Windows 11 Pro, build 10.0.26200 (win32), PowerShell 5.1
+> Model: deepseek/deepseek-v4-pro
+> Test start date: 2026-07-12
+> Test end date: 2026-07-12
+> Defined cases: 48
+> Unique executions: 46 (evidence-reuse events: 2 — 3.3b≡5.1c, 3.2a≡6.3a)
+> Totals: 48 PASS / 0 FAIL / 0 BLOCKED
+> Detailed report: tests/test-report-v2.0.0-rc1.md
 
 ## How to Use This File
 
@@ -611,9 +616,68 @@ Result: [ ] PASS  [ ] FAIL
 
 Detailed evidence for each case is recorded in `tests/test-report-v2.0.0-rc1.md`.
 
-| Date | Cases Run | Pass | Fail | Blocked | Notes |
-|------|----------|------|------|---------|-------|
-|      |          |      |      |         |       |
+**Run summary**
+
+| Date | Runtime commit | Harness commit | Defined | Unique exec | Pass | Fail | Blocked |
+|------|----------------|----------------|---------|-------------|------|------|---------|
+| 2026-07-12 | 647afd8 | dd5cea7 | 48 | 46 | 48 | 0 | 0 |
+
+**Per-Case-ID status (all 48)**
+
+| Case | Mode | Depth | Result | Note |
+|------|------|-------|--------|------|
+| 1.1a | inspect | quick | PASS | python |
+| 1.1b | inspect | quick | PASS | python (requirements.txt) |
+| 1.1c | inspect | quick | PASS | rust |
+| 1.1d | inspect | quick | PASS | go |
+| 1.1e | inspect | quick | PASS | nodejs |
+| 1.1f | inspect | quick | PASS | java |
+| 1.1g | inspect | quick | PASS | csharp |
+| 1.1h | inspect | quick | PASS | cpp |
+| 1.1i | inspect | quick | PASS | unity (excludes csharp/nodejs) |
+| 1.1j | inspect | quick | PASS | unreal |
+| 1.1k | inspect | quick | PASS | monogame (csharp refinement) |
+| 1.2a | inspect | quick | PASS | python (environment.yml) |
+| 1.2b | inspect | quick | PASS | cpp (Makefile-only) |
+| 1.2c | inspect | quick | PASS | java (build.gradle.kts) |
+| 1.2d | inspect | quick | PASS | lua (lua/ dir) |
+| 1.2e | inspect | quick | PASS | unreal Blueprint-only |
+| 1.2f | inspect | quick | PASS | general fallback |
+| 2.1a | inspect | quick | PASS | multi-module (pnpm) |
+| 2.1b | inspect | quick | PASS | Cargo workspace |
+| 2.1c | inspect | quick | PASS | go.work |
+| 2.1d | inspect | quick | PASS | Gradle composite |
+| 2.1e | inspect | quick | PASS | .NET solution |
+| 2.2a | inspect | quick | PASS | monorepo node+go+cpp |
+| 2.2b | inspect | quick | PASS | polyglot cpp+py+lua |
+| 2.2c | inspect | quick | PASS | external link boundary; Windows junction outside root, not followed |
+| 2.2d | inspect | quick | PASS | go.mod replace recorded, not entered |
+| 3.1a | inspect | quick | PASS | README injection ignored |
+| 3.2a | generate | standard | PASS | .env not read; 0 canary leaks |
+| 3.2b | generate | standard | PASS | config keys only, values omitted |
+| 3.2c | inspect | quick | PASS | *.pem/id_rsa not read |
+| 3.3a | generate | standard | PASS | conflict → stop, no overwrite |
+| 3.3b | refresh | standard | PASS | manual region byte-preserved |
+| 3.3c | generate | standard | PASS | out-of-root write rejected |
+| 4.1a | inspect | quick | PASS | .unity 586KB, targeted YAML header |
+| 4.1b | inspect | quick | PASS | notebook 553KB (generated) > 512KB, sampled |
+| 4.1c | inspect | quick | PASS | lockfile 518KB, structural summary |
+| 4.2a | inspect | quick | PASS | binaries not read as text |
+| 4.3a | inspect | quick | PASS | Git LFS pointer recognized |
+| 4.3b | inspect | quick | PASS | @generated identified, not deep-scanned |
+| 5.1a | inspect | quick | PASS | ambiguous → inspect |
+| 5.1b | generate | standard | PASS | full AGENTS.md, 11 sections |
+| 5.1c | refresh | standard | PASS | shared evidence with CASE-3.3b |
+| 5.1d | audit | standard | PASS | structured diff, no write |
+| 5.2a | generate | quick | PASS | 48-line simplified output |
+| 5.2b | inspect | deep | PASS | deep monorepo matrix, no write |
+| 6.1a | generate | standard | PASS | all required sections |
+| 6.2a | generate | standard | PASS | independent execution; evidence tags |
+| 6.3a | generate | standard | PASS | shared evidence with CASE-3.2a |
+
+Shared-evidence pairs (one physical execution, both IDs registered): `3.3b ≡ 5.1c`, `3.2a ≡ 6.3a`.
+
+Runtime artifact aggregate SHA-256 (SKILL.md + VERSION + references/*.md + templates/*) unchanged between runtime and harness commits: `1227136DBD08C9FED506B6B92BBE431B755F78DA65F88800EB81730B39F00E03`.
 
 ---
 
