@@ -7,24 +7,22 @@ on:
       - "project-onboard/**"
       - ".github/workflows/project-onboard-validate.yml"
   pull_request:
-    branches: [master]
+    branches: [master, "release/**"]
     paths:
       - "project-onboard/**"
       - ".github/workflows/project-onboard-validate.yml"
   workflow_dispatch:
 
-defaults:
-  run:
-    working-directory: project-onboard/tests
-
 jobs:
-  validate:
+  static-validation:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ["3.11", "3.12"]
       fail-fast: false
-
+    defaults:
+      run:
+        working-directory: project-onboard/tests
     steps:
       - uses: actions/checkout@v4
 
@@ -47,3 +45,21 @@ jobs:
 
       - name: Rule pack validation
         run: python validate_rule_packs.py
+
+  fixture-contract:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: project-onboard/tests
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # Verifies fixtures materialize to their intended on-disk shape.
+      # This is a fixture *contract* check, NOT an OpenCode behavior test.
+      - name: Fixture contract (link boundary + large notebook)
+        run: python fixture_contract_check.py
