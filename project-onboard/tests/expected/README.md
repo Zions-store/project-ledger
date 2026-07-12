@@ -29,6 +29,7 @@ missing sections, or leaked secrets are failures.
 - [ ] Configuration Keys
 - [ ] Known Pitfalls
 - [ ] Confidence and Gaps
+- [ ] Evidence Sources
 
 ### Security Checks
 - [ ] No credential values
@@ -64,6 +65,7 @@ missing sections, or leaked secrets are failures.
 - [ ] Configuration Keys
 - [ ] Known Pitfalls
 - [ ] Confidence and Gaps
+- [ ] Evidence Sources
 
 ### Security Checks
 - [ ] No credential values (no .env in fixture, should be clean)
@@ -93,6 +95,7 @@ missing sections, or leaked secrets are failures.
 - [ ] Configuration Keys
 - [ ] Known Pitfalls
 - [ ] Confidence and Gaps
+- [ ] Evidence Sources
 
 ### Security Checks
 - [ ] No credential values
@@ -123,6 +126,7 @@ missing sections, or leaked secrets are failures.
 - [ ] Configuration Keys
 - [ ] Known Pitfalls
 - [ ] Confidence and Gaps
+- [ ] Evidence Sources
 
 ### Critical Checks
 - [ ] NOT detected as single Node.js project (v1.4.0 fix: no first match wins)
