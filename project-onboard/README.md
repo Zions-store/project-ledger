@@ -1,11 +1,6 @@
 Copyright (C) 2026 ZionXiaoxiSuOGLocGo
 SPDX-License-Identifier: GPL-3.0-or-later
 
-> [!WARNING]
-> This branch is a public audit preview of project-onboard v2.0.0.
-> It is not a stable release and should not be used in production.
-> Current candidate version: v2.0.0-rc1.
-
 # Project Onboard
 
 Auto-detect project type and generate AGENTS.md for AI coding agents. Four execution modes: inspect (read-only), generate (create), refresh (update), audit (compare). Rule packs self-register via YAML frontmatter — adding a new type requires one file.
@@ -47,8 +42,8 @@ Give your AI agent a project path — it automatically:
 | Engine awareness | Basic | **Unity .meta/prefab, UE .Build.cs, etc.** |
 | Auto-detection + override | ❌ | **Auto-detect or `--type` force** |
 | Composable | Standalone | **Can chain with Understand-Anything** |
-| Cross-platform | Claude Code only | **opencode / Claude Code / Codex / Cursor** |
-| Footprint | Repo + Node.js + pnpm | **19 files** |
+| Cross-platform | Claude Code only | **OpenCode (tested); Claude Code / Codex / Cursor (designed-compatible)** |
+| Footprint | Repo + Node.js + pnpm | **16 files (runtime)** |
 | **Execution modes** | One-size-fits-all | **inspect / generate / refresh / audit** |
 | **Rule registration** | N/A | **Self-registering (YAML frontmatter)** |
 
@@ -70,6 +65,17 @@ These rule packs ship with project-onboard. Additional types auto-discover from 
 | C# / .NET | `*.csproj` / `*.sln` (non-Unity) |
 | Lua | `*.rockspec` / `lua_modules/` / `lua/` |
 | General | Fallback for anything else |
+
+## Host Compatibility
+
+| Host | Status |
+|------|--------|
+| OpenCode 1.17.18 | Tested (48/48 behavior cases passed) |
+| Claude Code | Designed to be compatible |
+| Codex | Designed to be compatible |
+| Cursor | Designed to be compatible |
+
+The skill uses only host-agnostic capabilities (read-only file access, glob/grep, single-file write). Only OpenCode has formal behavior evidence for this release; other hosts are expected to work but are not yet independently verified.
 
 ## Installation
 

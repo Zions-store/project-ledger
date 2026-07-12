@@ -2,6 +2,26 @@ Copyright (C) 2026 ZionXiaoxiSuOGLocGo
 SPDX-License-Identifier: GPL-3.0-or-later
 # project-onboard Changelog
 
+## [2.0.0] - 2026-07-12 — Stable Release
+**Source**: v2.0.0-rc1 finalization
+
+### Release validation
+- 48/48 behavior cases passed (46 unique OpenCode executions).
+- 0 failures and 0 blocked cases.
+- Static validation passed on Python 3.11 and 3.12.
+- Fixture contracts passed on Linux.
+- Tested host: OpenCode 1.17.18.
+
+### Changed
+- Version promoted from 2.0.0-rc1 to 2.0.0 (SKILL.md, VERSION, templates/AGENTS.md).
+- README: removed release-candidate warning; added host compatibility matrix; corrected runtime footprint to 16 files.
+- Root README: updated project-onboard entry to v2.0.0 with host verification status.
+- CI: upgraded `actions/checkout` to v5 and `actions/setup-python` to v6.
+
+No runtime behavior changes from 2.0.0-rc1; this release promotes the version and aligns public documentation.
+
+---
+
 ## [2.0.0-rc1] - 2026-07-11 — Execution Modes & Plugin Architecture
 **Source**: project-onboard P0 behavior contract + P1 self-registration
 

@@ -3,14 +3,15 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 # Project Ledger
 
-AI agent skills for project onboarding and documentation. Compatible with opencode, Claude Code, Codex, Cursor, and other Copilot-compatible agents.
+AI agent skills for project onboarding and documentation. OpenCode: tested. Claude Code, Codex, Cursor, and other Copilot-compatible agents: designed to be compatible.
 
 ## Skills
 
-### project-onboard (v1.2.0)
+### project-onboard (v2.0.0)
 
-Auto-detect project type and generate AGENTS.md. 12 rule packs (Unity, Unreal, MonoGame, Node.js, Python, Rust, Go, Java, C++, C#, Lua, General). Zero dependencies.
+Auto-detect project type and generate AGENTS.md for AI agents. Four execution modes (inspect / generate / refresh / audit). 12 self-registering rule packs (Unity, Unreal, MonoGame, Node.js, Python, Rust, Go, Java, C++, C#, Lua, General). Zero dependencies.
 
+- **Hosts**: OpenCode 1.17.18 (tested); Claude Code / Codex / Cursor (designed-compatible)
 - **Trigger phrases**: "onboard", "analyze this project", "generate AGENTS.md"
 - **Force type**: `--type unity`, `--type unreal`, etc.
 
