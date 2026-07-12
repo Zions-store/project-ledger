@@ -25,3 +25,6 @@ __pycache__/
 *.pyc
 .venv/
 .pytest_cache/
+
+# project-onboard behavior-test workspaces (regenerable sandbox, not a test asset)
+/project-onboard/tests/work/
