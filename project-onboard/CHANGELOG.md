@@ -206,3 +206,5 @@ No runtime behavior changes from 2.0.0-rc1; this release promotes the version an
 - AGENTS.md optimized for AI agent consumption (tables + bullet lists, 200-400 lines), not human documentation.
 - Zero external dependencies — uses only opencode built-in tools (`glob`/`grep`/`read`).
 - Auto-detection first, with optional `--type` override.
+
+<!-- CI: code-block-check renamed to markdown-integrity post-release -->
