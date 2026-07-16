@@ -2,7 +2,7 @@ Copyright (C) 2026 ZionXiaoxiSuOGLocGo
 SPDX-License-Identifier: GPL-3.0-or-later
 # project-onboard Changelog
 
-## [2.0.0] - Unreleased
+## [2.0.0] - 2026-07-17
 **Source**: v2.0.0-rc1 finalization
 
 ### Release validation
