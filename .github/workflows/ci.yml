@@ -18,7 +18,7 @@ jobs:
             README.md
             CHANGELOG.md
 
-  code-block-check:
+  markdown-integrity:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
