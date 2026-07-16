@@ -1,0 +1,65 @@
+name: project-onboard Validate
+
+on:
+  push:
+    branches: [master, "release/**"]
+    paths:
+      - "project-onboard/**"
+      - ".github/workflows/project-onboard-validate.yml"
+  pull_request:
+    branches: [master, "release/**"]
+    paths:
+      - "project-onboard/**"
+      - ".github/workflows/project-onboard-validate.yml"
+  workflow_dispatch:
+
+jobs:
+  static-validation:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+      fail-fast: false
+    defaults:
+      run:
+        working-directory: project-onboard/tests
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install test dependencies
+        run: pip install -r requirements.txt
+
+      - name: Compile check Python files
+        run: python -m compileall -q ..
+
+      - name: UTF-8 validation
+        run: python validate_utf8.py
+
+      - name: Frontmatter validation
+        run: python validate_frontmatter.py
+
+      - name: Rule pack validation
+        run: python validate_rule_packs.py
+
+  fixture-contract:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: project-onboard/tests
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      # Verifies fixtures materialize to their intended on-disk shape.
+      # This is a fixture *contract* check, NOT an OpenCode behavior test.
+      - name: Fixture contract (link boundary + large notebook)
+        run: python fixture_contract_check.py

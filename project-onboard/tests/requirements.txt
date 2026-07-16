@@ -1,0 +1,4 @@
+# project-onboard test/development dependencies
+# These are NOT runtime dependencies.
+
+PyYAML>=6.0

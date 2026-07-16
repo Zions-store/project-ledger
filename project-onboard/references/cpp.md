@@ -1,5 +1,86 @@
+---
+schema_version: 1
+id: cpp
+display_name: C / C++
+priority: 60
+kind: normal
+aliases: [c, c++]
+
+signatures:
+  any_of:
+    - all:
+        - CMakeLists.txt
+    - all:
+        - Makefile
+        - "*.cpp"
+    - all:
+        - Makefile
+        - "*.c"
+    - all:
+        - Makefile
+        - "*.h"
+    - all:
+        - Makefile
+        - "*.cc"
+    - all:
+        - Makefile
+        - "*.cxx"
+    - all:
+        - Makefile
+        - "*.hpp"
+
+exclusions:
+  any: []
+
+refinements: []
+
+workspace_files:
+  - CMakeLists.txt
+
+priority_files:
+  - CMakeLists.txt
+  - Makefile
+  - README.md
+
+entry_point_patterns:
+  - '(^|[^[:alnum:]_])int[[:space:]]+main[[:space:]]*\('
+  - "WinMain"
+  - "QApplication"
+
+external_reference_mechanisms:
+  - add_subdirectory
+  - FetchContent
+  - ExternalProject
+  - git submodule
+
+generated_paths:
+  - build/
+
+large_structured_files:
+  - compile_commands.json
+
+binary_asset_types:
+  - "*.so"
+  - "*.dll"
+  - "*.a"
+  - "*.lib"
+
+default_ignore_paths:
+  - build/
+  - third_party/
+
+known_blind_spots:
+  - preprocessor conditional compilation
+  - template instantiation
+
+optional_output_sections:
+  - CMake Target Graph
+  - Platform-Specific Notes
+---
+
 Copyright (C) 2026 ZionXiaoxiSuOGLocGo
 SPDX-License-Identifier: GPL-3.0-or-later
+
 # C/C++ Project Analysis Rules
 
 ## Signature Detection
@@ -10,23 +91,23 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 ### 1. Read Build System
 
-**CMake (CMakeLists.txt)** â€?preferred, most common:
-- `cmake_minimum_required(VERSION ...)` â†?CMake version
-- `project(<name> VERSION ... LANGUAGES CXX C)` â†?Project identity
-- `add_executable(...)` â†?Binary targets
-- `add_library(...)` â†?Library targets
-- `find_package(...)` â†?External dependencies. Key packages:
-  - `Qt5` / `Qt6` â†?Qt GUI framework
-  - `OpenGL`, `Vulkan`, `SDL2`, `GLFW` â†?Graphics/game
-  - `Boost`, `OpenCV`, `Eigen` â†?Scientific/compute
-  - `protobuf`, `gRPC` â†?API/RPC
-  - `CURL`, `OpenSSL` â†?Networking
-  - `Doxygen` â†?Documentation generator
-- `target_link_libraries(...)` â†?Which libs link to what
+**CMake (CMakeLists.txt)** -preferred, most common:
+- `cmake_minimum_required(VERSION ...)` ->CMake version
+- `project(<name> VERSION ... LANGUAGES CXX C)` ->Project identity
+- `add_executable(...)` ->Binary targets
+- `add_library(...)` ->Library targets
+- `find_package(...)` ->External dependencies. Key packages:
+  - `Qt5` / `Qt6` ->Qt GUI framework
+  - `OpenGL`, `Vulkan`, `SDL2`, `GLFW` ->Graphics/game
+  - `Boost`, `OpenCV`, `Eigen` ->Scientific/compute
+  - `protobuf`, `gRPC` ->API/RPC
+  - `CURL`, `OpenSSL` ->Networking
+  - `Doxygen` ->Documentation generator
+- `target_link_libraries(...)` ->Which libs link to what
 
-**Makefile** â€?simpler, less structured:
+**Makefile** -simpler, less structured:
 - Look for `CC`, `CXX`, `CFLAGS`, `LDFLAGS`
-- `all:` target â†?what gets built by default
+- `all:` target ->what gets built by default
 
 ### 2. Determine Project Type
 | Clues | Type |
@@ -46,33 +127,33 @@ Common C++ project layouts:
 
 **Classic (many projects):**
 ```
-src/          â†?Source files (.cpp, .c)
-include/      â†?Public headers (.h, .hpp)
-lib/          â†?External libraries
-test/         â†?Test code
-build/        â†?Build output (ignore for analysis)
-third_party/  â†?Vendored dependencies
-docs/         â†?Documentation
+src/          ->Source files (.cpp, .c)
+include/      ->Public headers (.h, .hpp)
+lib/          ->External libraries
+test/         ->Test code
+build/        ->Build output (ignore for analysis)
+third_party/  ->Vendored dependencies
+docs/         ->Documentation
 ```
 
 **Modern CMake (header-only or module):**
 ```
 libs/<name>/
-  include/<name>/  â†?Public headers
-  src/              â†?Implementation
-  CMakeLists.txt    â†?Library build
+  include/<name>/  ->Public headers
+  src/              ->Implementation
+  CMakeLists.txt    ->Library build
 apps/<name>/
-  src/              â†?Application
-  CMakeLists.txt    â†?App build
+  src/              ->Application
+  CMakeLists.txt    ->App build
 ```
 
 **Game/Graphics engine:**
 ```
-Source/        â†?Engine core
-Editor/        â†?Editor code (separate target)
-Shaders/       â†?GLSL/HLSL files
-Assets/        â†?Game assets
-Config/        â†?Engine config
+Source/        ->Engine core
+Editor/        ->Editor code (separate target)
+Shaders/       ->GLSL/HLSL files
+Assets/        ->Game assets
+Config/        ->Engine config
 ```
 
 ### 4. Find Entry Points
@@ -93,12 +174,12 @@ For Qt: look for `QApplication` + `exec()` call.
 - **Observer pattern**: Callback lists, signals/slots (especially Qt)
 
 ### 6. Check Config Files
-- `.clang-format` â†?Code formatting rules
-- `.clang-tidy` â†?Static analysis rules
-- `Doxyfile` â†?Documentation config
-- `conanfile.txt` or `vcpkg.json` â†?Package manager
-- `.github/workflows/` â†?CI configuration
-- `.editorconfig` â†?Editor settings
+- `.clang-format` ->Code formatting rules
+- `.clang-tidy` ->Static analysis rules
+- `Doxyfile` ->Documentation config
+- `conanfile.txt` or `vcpkg.json` ->Package manager
+- `.github/workflows/` ->CI configuration
+- `.editorconfig` ->Editor settings
 
 ### 7. Build & Test Commands
 **CMake:**
@@ -122,4 +203,4 @@ make clean    # clean
 C/C++ typically separates declaration (`.h`/`.hpp`) from implementation (`.c`/`.cpp`). This is important for the AI agent to know when analyzing the codebase:
 - Read headers to understand the API contract
 - Read sources to understand implementation details
-- `.cppm` files â†?C++20 modules (new, less common)
+- `.cppm` files ->C++20 modules (new, less common)

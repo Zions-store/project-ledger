@@ -1,5 +1,60 @@
+---
+schema_version: 1
+id: go
+display_name: Go
+priority: 70
+kind: normal
+aliases: [golang]
+
+signatures:
+  any:
+    - go.mod
+
+exclusions:
+  any: []
+
+refinements: []
+
+workspace_files:
+  - go.work
+
+priority_files:
+  - go.mod
+  - main.go
+  - cmd/
+
+entry_point_patterns:
+  - 'func[[:space:]]+main[[:space:]]*\('
+  - 'package main'
+
+external_reference_mechanisms:
+  - "go.mod replace"
+  - "go.work use"
+
+generated_paths:
+  - vendor/
+  - "*.pb.go"
+
+large_structured_files:
+  - go.sum
+
+binary_asset_types: []
+
+default_ignore_paths:
+  - vendor/
+
+known_blind_spots:
+  - CGo dependencies
+  - //go:embed content
+
+optional_output_sections:
+  - Module Graph
+  - Multi-Binary Map
+---
+
 Copyright (C) 2026 ZionXiaoxiSuOGLocGo
 SPDX-License-Identifier: GPL-3.0-or-later
+
 # Go Project Analysis Rules
 
 ## Signature Detection
@@ -9,21 +64,21 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 ### 1. Read go.mod
 Extract:
-- `module` â€?Module path (e.g. `github.com/user/project`)
-- `go` â€?Go version
-- `require` â€?Direct dependencies. Key packages to identify:
-  - `github.com/gin-gonic/gin`, `github.com/labstack/echo`, `github.com/gorilla/mux` â†?Web framework/router
-  - `github.com/go-chi/chi` â†?Lightweight router
-  - `gorm.io/gorm`, `github.com/jmoiron/sqlx` â†?ORM/database
-  - `github.com/spf13/cobra`, `github.com/urfave/cli` â†?CLI tool
-  - `github.com/grpc/grpc-go` â†?gRPC
-  - `github.com/hashicorp/terraform` â†?Infrastructure tool
-  - `go.mongodb.org/mongo-driver` â†?MongoDB
-  - `github.com/redis/go-redis` â†?Redis
-  - `github.com/gorilla/websocket` â†?WebSocket
-  - `github.com/stretchr/testify` â†?Testing helpers
-  - `google.golang.org/api` â†?Google Cloud APIs
-  - `github.com/aws/aws-sdk-go-v2` â†?AWS SDK
+- `module` -Module path (e.g. `github.com/user/project`)
+- `go` -Go version
+- `require` -Direct dependencies. Key packages to identify:
+  - `github.com/gin-gonic/gin`, `github.com/labstack/echo`, `github.com/gorilla/mux` ->Web framework/router
+  - `github.com/go-chi/chi` ->Lightweight router
+  - `gorm.io/gorm`, `github.com/jmoiron/sqlx` ->ORM/database
+  - `github.com/spf13/cobra`, `github.com/urfave/cli` ->CLI tool
+  - `github.com/grpc/grpc-go` ->gRPC
+  - `github.com/hashicorp/terraform` ->Infrastructure tool
+  - `go.mongodb.org/mongo-driver` ->MongoDB
+  - `github.com/redis/go-redis` ->Redis
+  - `github.com/gorilla/websocket` ->WebSocket
+  - `github.com/stretchr/testify` ->Testing helpers
+  - `google.golang.org/api` ->Google Cloud APIs
+  - `github.com/aws/aws-sdk-go-v2` ->AWS SDK
 
 ### 2. Identify Project Type
 | Clue | Type |
@@ -58,9 +113,9 @@ glob cmd/*/main.go
 Read `main.go` for server startup, dependency wiring, router setup.
 
 ### 5. Read Key Files (Priority Order)
-1. `main.go` or `cmd/<name>/main.go` â€?50 lines
-2. `internal/<name>/` â€?Core logic directory
-3. `.env.example` or `config.yaml` â€?Configuration schema
+1. `main.go` or `cmd/<name>/main.go` -50 lines
+2. `internal/<name>/` -Core logic directory
+3. `.env.example` or `config.yaml` -Configuration schema
 
 ### 6. Identify Architecture Patterns
 Go idioms to look for:

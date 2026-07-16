@@ -1,5 +1,67 @@
+---
+schema_version: 1
+id: csharp
+display_name: C# / .NET
+priority: 60
+kind: normal
+aliases: [cs, dotnet]
+
+signatures:
+  any:
+    - "*.csproj"
+    - "*.sln"
+
+exclusions:
+  all:
+    - Assets/
+    - ProjectSettings/
+
+refinements: []
+
+workspace_files:
+  - "*.sln"
+
+priority_files:
+  - "*.csproj"
+  - "*.sln"
+  - Program.cs
+
+entry_point_patterns:
+  - "static.*Main"
+  - "WebApplication.CreateBuilder"
+  - "CreateHostBuilder"
+  - "Application.Run"
+
+external_reference_mechanisms:
+  - ProjectReference
+  - Directory.Build.props
+
+generated_paths:
+  - bin/
+  - obj/
+
+large_structured_files: []
+
+binary_asset_types:
+  - "*.dll"
+  - "*.exe"
+
+default_ignore_paths:
+  - bin/
+  - obj/
+
+known_blind_spots:
+  - source generator output
+  - runtime assembly loading
+
+optional_output_sections:
+  - Solution Graph
+  - Multi-Target Frameworks
+---
+
 Copyright (C) 2026 ZionXiaoxiSuOGLocGo
 SPDX-License-Identifier: GPL-3.0-or-later
+
 # C# Project Analysis Rules
 
 ## Signature Detection
@@ -13,11 +75,11 @@ SPDX-License-Identifier: GPL-3.0-or-later
 read *.csproj (or the main .csproj file)
 ```
 Extract:
-- `<TargetFramework>` â†?.NET version (net6.0, net8.0, etc.)
-- `<OutputType>` â†?Exe, Library, WinExe
-- `<PackageReference>` â†?NuGet dependencies
-- `<ProjectReference>` â†?Internal project references
-- `<RootNamespace>` â†?Default namespace
+- `<TargetFramework>` ->.NET version (net6.0, net8.0, etc.)
+- `<OutputType>` ->Exe, Library, WinExe
+- `<PackageReference>` ->NuGet dependencies
+- `<ProjectReference>` ->Internal project references
+- `<RootNamespace>` ->Default namespace
 
 If `.sln` exists, read it for multi-project structure:
 ```bash
@@ -72,20 +134,20 @@ read appsettings.json
 read appsettings.Development.json (if exists)
 ```
 Extract:
-- Connection strings
-- API keys / service URLs (not secret values)
-- Logging configuration
-- Feature flags
+- Configuration key paths only â€” omit all values
+- Logging configuration keys
+- Feature flag names
+- Never extract connection strings or API key values
 
 ### 6. Check for Config Files
-- `appsettings.json` / `appsettings.*.json` â†?Application configuration
-- `Properties/launchSettings.json` â†?Debug profiles
-- `Dockerfile` â†?Container deployment
-- `docker-compose.yml` â†?Multi-service setup
-- `nuget.config` â†?NuGet source configuration
-- `.editorconfig` â†?Code style rules
-- `Directory.Build.props` â†?MSBuild shared properties
-- `.github/workflows/` â†?CI/CD
+- `appsettings.json` / `appsettings.*.json` ->Application configuration
+- `Properties/launchSettings.json` ->Debug profiles
+- `Dockerfile` ->Container deployment
+- `docker-compose.yml` ->Multi-service setup
+- `nuget.config` ->NuGet source configuration
+- `.editorconfig` ->Code style rules
+- `Directory.Build.props` ->MSBuild shared properties
+- `.github/workflows/` ->CI/CD
 
 ### 7. Build & Run Commands
 Extract from the project:
