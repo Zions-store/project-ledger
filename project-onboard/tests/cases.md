@@ -1,5 +1,8 @@
 # Project Onboard Test Cases
 
+Copyright (C) 2026 ZionXiaoxiSuOGLocGo
+SPDX-License-Identifier: GPL-3.0-or-later
+
 > Candidate version: 2.0.0-rc1
 > Runtime-under-test commit: 647afd83f740d9391918f03a288ac4a20847452f
 > Test-harness commit: dd5cea76002030c1a74357950b001d19d015da30
