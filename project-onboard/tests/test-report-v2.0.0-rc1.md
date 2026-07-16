@@ -1,5 +1,8 @@
 # Project Onboard — Behavior Regression Test Report
 
+Copyright (C) 2026 ZionXiaoxiSuOGLocGo
+SPDX-License-Identifier: GPL-3.0-or-later
+
 - **Candidate version:** 2.0.0-rc1
 - **Runtime-under-test commit:** `647afd83f740d9391918f03a288ac4a20847452f` (`647afd8` — "test: establish v2.0.0-rc1 behavior-test baseline"). This is the SKILL/rule-pack/template runtime whose behavior is being verified.
 - **Test-harness commit:** `dd5cea76002030c1a74357950b001d19d015da30` (fixtures made reproducible: symlink/junction + large-notebook setup scripts, fixture-contract CI). Behavior results verify the **runtime** commit's product behavior, executed against the **harness** commit's fixtures.

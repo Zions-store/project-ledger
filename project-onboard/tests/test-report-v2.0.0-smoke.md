@@ -1,5 +1,8 @@
 # Project Onboard — v2.0.0 Release Smoke Report
 
+Copyright (C) 2026 ZionXiaoxiSuOGLocGo
+SPDX-License-Identifier: GPL-3.0-or-later
+
 - **Candidate version:** 2.0.0
 - **Candidate commit:** `400ce2510254bd359b353a27c655b1c0386631c1` (`400ce25` — "release: prepare project-onboard v2.0.0"). This commit contains the version promotion and documentation alignment, with 7 files changed and no runtime behavior changes from 2.0.0-rc1.
 - **RC1 baseline commit:** `21ac40736b17021b364dbea5063ef1c4b080da08` (`21ac407` — "docs(test): align v2.0.0-rc1 release evidence"). RC1 behavior regression was fully validated in a prior 48/48 Case ID pass.
@@ -26,7 +29,7 @@ The after value differs from before because `SKILL.md`, `VERSION`, and `template
 
 ## Execution Scope
 
-- **Coverage:** 4 targeted smoke cases covering the four execution modes (inspect, generate, refresh, generate-with-secrets).
+- **Coverage:** 4 targeted smoke cases covering four essential release paths (inspect, generate, refresh, generate-with-secrets).
 - **Physical executions:** 4 (all independent, no shared evidence).
 - **Isolation:** each case was copied from `tests/fixtures/<name>/` to `tests/work/smoke-<N>-<description>/` and executed only on the copy. Original fixtures were never modified.
 - **Change evidence:** SHA-256 hash manifests were captured before and after each execution. `tests/work/` is gitignored, so `git status --short` remained empty throughout.

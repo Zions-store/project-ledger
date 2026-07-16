@@ -21,7 +21,7 @@ jobs:
   code-block-check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Check code block integrity
         run: |
           echo "Checking for unclosed code blocks"
@@ -34,26 +34,6 @@ jobs:
           done < <(find ./project-onboard ./project-docs -type f -name "*.md" -print0)
           echo "All code blocks properly closed"
 
-      - name: Copyright headers
+      - name: Check markdown headers (Copyright/SPDX / YAML frontmatter-aware)
         run: |
-          echo "Checking copyright headers on .md files..."
-          missing=0
-          while IFS= read -r -d '' f; do
-            header="$(head -n 20 "$f")"
-            if ! printf '%s\n' "$header" | grep -q "Copyright (C)"; then
-              echo "MISSING copyright: $f"; missing=1; continue
-            fi
-            if ! printf '%s\n' "$header" | grep -q "SPDX-License-Identifier:"; then
-              echo "MISSING SPDX: $f"; missing=1; continue
-            fi
-          done < <(
-            find ./project-onboard ./project-docs \
-              -type f -name "*.md" \
-              -not -path "*/tests/fixtures/*" \
-              -print0
-          )
-          if [ "$missing" -ne 0 ]; then
-            echo "ERROR: Some files missing Copyright/SPDX headers"
-            exit 1
-          fi
-          echo "All files have copyright headers"
+          python tools/validate_markdown_headers.py project-onboard project-docs

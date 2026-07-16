@@ -1,5 +1,8 @@
 # Expected Output Baselines
 
+Copyright (C) 2026 ZionXiaoxiSuOGLocGo
+SPDX-License-Identifier: GPL-3.0-or-later
+
 > Human-reviewed minimum behavior baseline checklist.
 > Individual per-fixture `.expected.md` files will be created for key cases as the test suite matures.
 
