@@ -31,13 +31,26 @@ def main() -> int:
         "manual:start",
         "structured diff",
         "atomically replace",
+        "validate_output.py",
     ]:
         require(skill, needle, "SKILL.md", failures)
 
     if "{{CONFIG_VALUE}}" in template:
         failures.append("generic template: contains forbidden {{CONFIG_VALUE}} placeholder")
-    for needle in ["Configuration key", "Description", "Source", "{{CONFIG_DESCRIPTION}}", "{{CONFIG_KEYS}}"]:
+    if "Every session end" in (SKILL_ROOT / "maintenance-spec.md").read_text(encoding="utf-8"):
+        failures.append("maintenance spec: retains automatic every-session status update")
+    for needle in ["Configuration key", "Description", "Source", "{{CONFIG_DESCRIPTION}}", "{{CONFIG_KEYS}}", "Public default"]:
         require(template, needle, "generic template", failures)
+    for path in sorted((SKILL_ROOT / "templates").rglob("PROJECT_STATE.md.tmpl")):
+        text = path.read_text(encoding="utf-8")
+        if "| Dependency | Purpose | Config |" in text:
+            failures.append(f"{path.relative_to(SKILL_ROOT)}: retains ambiguous Config column")
+        if "| Parameter | Value | Location |" in text:
+            failures.append(f"{path.relative_to(SKILL_ROOT)}: retains unqualified Value column")
+    if not (SKILL_ROOT / "tests" / "validate_output.py").is_file():
+        failures.append("tests/validate_output.py is missing")
+    if not (SKILL_ROOT / "tests" / "cases.md").is_file():
+        failures.append("tests/cases.md is missing")
     managed_templates = [(devlog_template, "DEVLOG template")]
     managed_templates.extend(
         (path.read_text(encoding="utf-8"), str(path.relative_to(SKILL_ROOT)))
