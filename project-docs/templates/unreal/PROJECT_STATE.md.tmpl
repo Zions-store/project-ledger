@@ -11,7 +11,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 - **Engine**: {{ENGINE_VERSION}}
 - **Template**: {{TEMPLATE_ORIGIN}}
 - **Module**: {{MODULE_NAME}}<!-- The primary Unreal module (e.g. "MyProject"). Maps to AGENTS.md "Entry Points" or "Core Architecture" -->
-- **Build**: {{BUILD_CONFIG}}
+- **Build**: {{PUBLIC_BUILD_CONFIG}}
 
 ## 2. Directory Structure
 <!-- Fill from AGENTS.md "Repository / Subproject Map" (v2) or "Directory Structure" (v1). -->
@@ -40,9 +40,9 @@ Source/{{MODULE_NAME}}/
 ## 4. Blueprint Asset Checklist
 
 ### {{BP_NAME}} (Parent: {{CLASS_NAME}})
-| Property | Value | Location |
+| Property | Public value / redacted | Location |
 |---|---|---|
-| Mesh | `{{MESH_ASSET}}` | Components → Mesh |
+| Mesh | `{{PUBLIC_MESH_ASSET_OR_REDACTED}}` | Components → Mesh |
 
 ## 5. Input System Map
 
@@ -61,15 +61,15 @@ Source/{{MODULE_NAME}}/
 ## 7. Level Config
 
 ### {{LEVEL_NAME}} Required Actors
-| Actor | Type | Config Notes |
+| Actor | Type | Non-sensitive notes |
 |---|---|---|
-| {{ACTOR_NAME}} | `{{ACTOR_TYPE}}` | {{CONFIG_NOTES}} |
+| {{ACTOR_NAME}} | `{{ACTOR_TYPE}}` | {{NON_SENSITIVE_NOTES}} |
 
 ## 8. Key Parameters Quick Reference
 
-| Parameter | Value | Location |
+| Parameter | Public default | Location |
 |---|---|---|
-| {{PARAM_NAME}} | {{VALUE}} | {{LOCATION}} |
+| {{PARAM_NAME}} | {{PUBLIC_DEFAULT}} | {{LOCATION}} |
 
 ## 9. Compilation & Build
 

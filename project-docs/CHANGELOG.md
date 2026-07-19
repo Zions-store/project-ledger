@@ -8,6 +8,19 @@ _No unreleased changes yet._
 
 ---
 
+## [1.3.0] - 2026-07-19 — Output Validation and Regression Coverage
+
+### Added
+- `tests/validate_output.py` for strict UTF-8, sensitive-data, unresolved-placeholder, and marker-order validation of generated documents.
+- Host regression cases for v1/v2 AGENTS.md, manual documents, path traversal, secret files, repeated initialization, and output rejection.
+
+### Changed
+- All templates now label values and notes as public or non-sensitive where applicable.
+- PROJECT_STATE.md §10 updates only after a user-requested, confirmed diff.
+- Generic Markdown lint now includes project-docs Markdown files.
+
+---
+
 ## [1.2.0] - 2026-07-19 — Safety and Compatibility Hardening
 
 ### Added
