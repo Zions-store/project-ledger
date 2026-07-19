@@ -2,9 +2,10 @@ Copyright (C) 2026 ZionXiaoxiSuOGLocGo
 SPDX-License-Identifier: GPL-3.0-or-later
 # project-docs Changelog
 
-## [Unreleased]
+## [1.3.1] - 2026-07-19
 
-_No unreleased changes yet._
+### Changed
+- Language selection now auto-detects from the user's message (aligned with project-onboard v2.0.0). User is only asked when the message language is unclear or mixed. Previously always asked before every initialization.
 
 ---
 
