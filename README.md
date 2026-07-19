@@ -15,7 +15,7 @@ Auto-detect project type and generate AGENTS.md for AI agents. Four execution mo
 - **Trigger phrases**: "onboard", "analyze this project", "generate AGENTS.md"
 - **Force type**: `--type unity`, `--type unreal`, etc.
 
-### project-docs (v1.3.0)
+### project-docs (v1.3.1)
 
 Three-document project knowledge system (`AGENTS.md` + `PROJECT_STATE.md` + `DEVLOG.md`). Auto-discovers type-specific templates. Safety-hardened: trust boundary, secret exclusion, diff-first writes with managed markers.
 
