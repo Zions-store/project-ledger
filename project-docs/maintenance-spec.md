@@ -8,7 +8,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 ## Document Responsibilities
 
 | File | Role | Content Boundary | Audience |
-|------|------|-----------------|----------|
+| ------ | ------ | ----------------- | ---------- |
 | **AGENTS.md** | Project overview | Project identity, directory structure, class architecture, entry points, dependencies, Notes | Agent startup first impression |
 | **PROJECT_STATE.md** | Living document | Full source spectrum (with params), configuration checklist, system flows, done/todo list | New session context recovery |
 | **DEVLOG.md** | Development log | Timeline entries — what was done, why, what was learned | Review / traceability |
@@ -48,7 +48,7 @@ Per major milestone (~every 3-5 new files/classes, or weekly).
 Sections adapt to project type. Unreal and Unity have engine-specific sections; all other types use the generic template. See SKILL.md "Template Selection" for auto-discovery rules.
 
 | Section (generic / game-engine) | Frequency | Trigger |
-|---------|-----------|---------|
+| --------- | ----------- | --------- |
 | §2 Directory Structure | Low | New/deleted subdirectory |
 | §3 Source/Script Spectrum | Medium | New file / class / new key member |
 | §4 Configuration & Environment / Prefab & Asset Checklist | High | Any non-sensitive config key or public default change |
@@ -57,9 +57,10 @@ Sections adapt to project type. Unreal and Unity have engine-specific sections; 
 | §7 Dependencies & Services / Scene/Level Config | Medium | New service, new actor, new external dependency |
 | §8 Key Parameters Quick Reference | High | Any numeric parameter change |
 | §9 Build & Run / Build Settings | Very low | New compile errors, build command changes |
-| §10 Current Status | **Every session end** | Done list, todo list, known issues |
+| §10 Current Status | When the user requests an update and confirms the proposed diff | Done list, todo list, known issues |
 
 ### Done/Todo Entry Template
+
 ```
 ### Done (N/M)
 <!-- "N completed out of M total" — update the ratio when items move. -->
@@ -73,6 +74,7 @@ Sections adapt to project type. Unreal and Unity have engine-specific sections; 
 ## DEVLOG.md Update Rules
 
 ### Entry format
+
 ```markdown
 ## YYYY-MM-DD
 ### <brief title>
@@ -92,7 +94,7 @@ One entry per **day** or per **feature milestone**. Do not record every minor ed
 
 ## Consistency Checklist
 
-Run after every STATE update:
+Run after every approved STATE update:
 
 - [ ] AGENTS directory structure entries all have counterparts in STATE
 - [ ] STATE §8 parameter values match actual non-sensitive source/code defaults (e.g., `.h` defaults or class overrides; never credential-like configuration values)
