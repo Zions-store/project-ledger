@@ -6,6 +6,68 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 ---
 
+## 2026-07-19
+
+### project-docs v1.3.0 — Output validation, regression coverage, safety hardening
+
+- **What was done**:
+  - Full audit of project-docs at master (f747df1): identified 4 P0 (encoding corruption, missing trust boundary, no write protection, v2 interface drift) and multiple P1 issues.
+  - Phase 1: Fixed UTF-8 corruption in 5 files (CHANGELOG.md, maintenance-spec.md, 3 templates) — E2 80 3F → E2 80 94 (em-dash), U+FFFD restoration for Japanese/Korean.
+  - Phase 2: Added Security Foundation to SKILL.md (repository trust boundary, secret exclusion, key-names-only config, atomic writes).
+  - Phase 3: Added write protection (managed markers `<!-- project-docs:managed:start/end -->`, diff-first writes, confirmation before modifying user-owned documents, v2 manual region awareness).
+  - Phase 4: Aligned with project-onboard v2 interface (Technology Stack → Basic Information fallback, Development Workflows → Build & Run fallback, Type path validation).
+  - Added `tests/validate_output.py` (UTF-8, secrets, placeholders, marker order), `tests/validate_utf8.py`, `tests/validate_contract.py`, 7 host regression cases.
+  - Created dedicated CI workflow (`project-docs-validate.yml`).
+  - Version: 1.1.0 → 1.2.0 (safety) → 1.3.0 (validation + regression).
+
+- **Why this approach**:
+  - Encoding fixes followed same pattern as project-onboard v1.2.1 (E2-xx-3F corruption, same root cause).
+  - Security hardening mirrored project-onboard v1.3.0's _common.md patterns — trust boundary, secret exclusion, key-names-only.
+  - Write protection used project-onboard v2.0.0's marker system as precedent — managed:start/end markers ensure user content preservation.
+  - v2 interface alignment was necessary because project-onboard v2.0.0 renamed output sections (Basic Information → Technology Stack, Build & Run → Development Workflows).
+
+- **What was learned / verified**:
+  - Same UTF-8 corruption pattern across both skills confirms systematic encoding issue in the development toolchain.
+  - Single-file rule pack registration (project-onboard) and single-file template registration (project-docs) share the same auto-discovery philosophy.
+  - Cross-skill field mapping contracts must be validated when either skill changes output structure.
+
+### project-onboard v2.0.0 — Full release with behavior regression
+
+- **What was done**:
+  - Completed v1.2.1 (UTF-8 hotfix) → v1.3.0 (security foundation + scan kernel) → v1.4.0 (topology + workspace) → v2.0.0 (execution modes + plugin architecture) in four sequential releases.
+  - v2.0.0-rc1 underwent three rounds of static audit with iterative fixes (refinement discovery, POSIX ERE, validator hardening, template alignment).
+  - 48-case behavior regression suite executed on OpenCode 1.17.18: P0-A security (6), P0-B write protection (2), P0-C four modes (8), P1-A type detection (12), P1-B topology (9), P2 edge cases (6).
+  - Result: 48/48 PASS, 0 FAIL, 0 BLOCKED (46 physical executions, 2 shared evidence pairs).
+  - 4 smoke tests on finalize/v2.0.0 branch: inspect, generate, refresh, secret safety — all PASS.
+  - Branch protection configured (5 required checks on master), annotated tag v2.0.0 created, GitHub Release published.
+
+- **Why this approach**:
+  - Sequential version delivery allowed security patches (v1.3.0) to ship before feature work (v1.4.0, v2.0.0).
+  - Three-session release model (evidence alignment → version conversion → smoke/merge/tag) prevented mixed responsibilities.
+  - Behavior regression used full fixture isolation (tests/work/<case-id>/) to prevent cross-contamination.
+  - Annotated tag + merge commit preservation ensures full audit trail.
+
+- **What was learned / verified**:
+  - Windows junction behavior for external symlink tests differs from Linux symlinks — dual evidence strategy (Windows OpenCode behavior + Linux CI fixture contract) is necessary.
+  - `gh` CLI unauthenticated on Windows — web UI fallback for PRs/releases is reliable but slower.
+  - Branch protection ruleset names must exactly match workflow job names (static-validation (3.11)/(3.12), fixture-contract).
+  - Release candidate iteration with public audit produces higher confidence than single-shot release.
+
+### project-ledger self-onboarding — Dogfooding the skills
+
+- **What was done**:
+  - Used project-onboard v2.0.0 to analyze the project-ledger monorepo itself and generate AGENTS.md.
+  - Used project-docs v1.3.0 to initialize PROJECT_STATE.md with current status.
+  - Updated DEVLOG.md with v1.3.0→v2.0.0 development history.
+  - Updated root README and org profile README with current versions and descriptions.
+
+- **Why this approach**:
+  - The monorepo had DEVLOG.md but no AGENTS.md or PROJECT_STATE.md — missing the foundational documents its own skills generate.
+  - Self-onboarding validates the skills work on their own development environment.
+  - Enables future sessions to quickly recover context by reading AGENTS.md + PROJECT_STATE.md + DEVLOG.md.
+
+---
+
 ## 2026-07-08
 
 ### project-onboard v1.2.0 + project-docs v1.1.0 — MonoGame support
