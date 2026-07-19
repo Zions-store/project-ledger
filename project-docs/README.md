@@ -1,9 +1,9 @@
 Copyright (C) 2026 ZionXiaoxiSuOGLocGo
 SPDX-License-Identifier: GPL-3.0-or-later
 
-# Project Docs
+# Project Docs (v1.3.0)
 
-Initialize and maintain a three-document project knowledge system that gives AI agents persistent project context across sessions.
+Initialize and safely maintain a three-document project knowledge system that gives AI agents persistent project context across sessions.
 
 ## What It Does
 
