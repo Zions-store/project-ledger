@@ -5,11 +5,13 @@ on:
     branches: [master, "release/**"]
     paths:
       - "project-onboard/**"
+      - "project-docs/**"
       - ".github/workflows/project-onboard-validate.yml"
   pull_request:
     branches: [master, "release/**"]
     paths:
       - "project-onboard/**"
+      - "project-docs/**"
       - ".github/workflows/project-onboard-validate.yml"
   workflow_dispatch:
 
