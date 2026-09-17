@@ -114,10 +114,10 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 ## 2026-06-30
 
-### 47/47 audit bugs resolved �?manuals v2.2.1 / v2.1.1
+### 47/47 audit bugs resolved — manuals v2.2.1 / v2.1.1
 
 - **What was done**:
-  - Two-round comprehensive audit of unreal-manual (15 issues) and unity-manual (32 issues) �?all resolved.
+  - Two-round comprehensive audit of unreal-manual (15 issues) and unity-manual (32 issues) — all resolved.
   - HIGH: fixed 2 C++ compile errors, 1 ObjectPool crash, 1 Rigidbody anti-pattern example, 5 missing declarations, 2 false version claims, 1 fictitious file path.
   - MEDIUM: removed 3 duplicate content sections, fixed 5 incorrect property/version/cross-reference items, corrected 3 misleading advice items.
   - LOW: 13 polish items (typos, code block tags, README counts, SafeArea, ContextMenu).
@@ -130,7 +130,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
   - LSP validation via temp files catches ~25% of bugs; grep + manual review + coverage checklist cover the rest.
   - Single-source-of-truth for version numbers prevents sync failures.
 
-### Manuals integrated �?unreal-manual (v2.2.0), unity-manual (v2.1.0)
+### Manuals integrated — unreal-manual (v2.2.0), unity-manual (v2.1.0)
 
 - **What was done**:
   - Added unreal-manual/ and unity-manual/ to monorepo with LICENSE + README.
@@ -157,11 +157,11 @@ SPDX-License-Identifier: GPL-3.0-or-later
   - Replaced hardcoded `Template Selection by Project Type` table with auto-discovery: `templates/<type>/PROJECT_STATE.md.tmpl`.
   - Mirrors project-onboard's rule pack auto-discovery pattern. Zero code changes to add new engine types.
 
-### Comprehensive two-round audit �?28 issues found, all resolved
+### Comprehensive two-round audit — 28 issues found, all resolved
 
 - **What was done**:
-  - Round 1 (format): 12 issues �?copyright notices, template placeholders, CHANGELOG formatting (9 fixed, 3 deferred).
-  - Round 2 (content): 28 issues �?type-specific templates, AGENTS-to-STATE field mapping, complete update workflow, Build & Test sections in 6 rule packs, edge cases, version metadata.
+  - Round 1 (format): 12 issues — copyright notices, template placeholders, CHANGELOG formatting (9 fixed, 3 deferred).
+  - Round 2 (content): 28 issues — type-specific templates, AGENTS-to-STATE field mapping, complete update workflow, Build & Test sections in 6 rule packs, edge cases, version metadata.
   - All 28 issues resolved.
 
 ### Project ledger repository established
@@ -170,8 +170,18 @@ SPDX-License-Identifier: GPL-3.0-or-later
   - Created GitHub organization `Zions-store`.
   - Set up `project-ledger` monorepo with project-onboard + project-docs skills.
   - Deprecated old standalone `ZionXiaoxiSuOGLocGo/project-onboard` (4 stars preserved), added [DEPRECATED] redirect.
-  - Established Junction-based local dev workflow: `projects\Zion's Store\project-ledger\` �?`.config\opencode\skills\`.
+  - Established Junction-based local dev workflow: `projects\Zion's Store\project-ledger\` → `.config\opencode\skills\`.
   - Cleaned up legacy `OpenCode_skills\` directory.
+
+---
+
+### Character encoding repair (mojibake cleanup)
+
+- **What was done**:
+  - Traced U+FFFD mojibake in DEVLOG.md, both manuals' CHANGELOG.md and URP references to the 2026-06-30 `security: add copyright/SPDX headers` commit, whose re-encoding pass corrupted every non-ASCII character (em-dash U+2014, arrow U+2192) into `U+FFFD + ?` two-char sequences.
+  - Restored 7 corrupted DEVLOG.md characters from the pristine e732ad2 baseline (6 em-dashes + 1 arrow, trailing spaces included); verified all 7 lines byte-identical to the pre-damage version.
+  - Restored unity-manual/unreal-manual CHANGELOG.md and references/*.md from initial-commit baselines with copyright headers re-applied; verified bodies byte-identical.
+  - Full-tree U+FFFD scan now returns zero (except one legitimate U+FFFD inside a scripting-api API doc, which documents the C# `EncoderReplacementFallback("\uFFFD")` literal).
 
 ---
 
