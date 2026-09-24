@@ -1,7 +1,7 @@
 ---
 name: project-onboard
 version: 2.0.0
-description: "Analyze any project directory and generate AGENTS.md for AI context. Supports four execution modes: inspect (read-only analysis), generate (create AGENTS.md), refresh (incremental update), audit (compare existing vs. current state). Auto-detects Unity, Unreal, MonoGame, Node.js, Python, Rust, Go, Java, C/C++, C#, Lua, and general projects. Rule packs self-register via frontmatter."
+description: "Use when the user wants AI project context or onboarding - 'onboard this project', 'analyze this project', '分析这个项目', 'generate AGENTS.md', 'refresh AGENTS.md', 'audit AGENTS.md', 'is AGENTS.md still accurate?'. Analyzes any project directory and generates AGENTS.md with four execution modes (inspect, generate, refresh, audit). Auto-detects Unity, Unreal, MonoGame, Node.js, Python, Rust, Go, Java, C/C++, C#, Lua, and general projects. Rule packs self-register via frontmatter."
 ---
 
 Copyright (C) 2026 ZionXiaoxiSuOGLocGo
