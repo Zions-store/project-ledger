@@ -70,7 +70,7 @@ These rule packs ship with project-onboard. Additional types auto-discover from 
 
 | Host | Status |
 |------|--------|
-| OpenCode 1.17.18 | Tested (48/48 behavior cases passed) |
+| OpenCode 1.17.18–1.18.31 | Tested (48/48 behavior cases passed) |
 | Claude Code | Designed to be compatible |
 | Codex | Designed to be compatible |
 | Cursor | Designed to be compatible |

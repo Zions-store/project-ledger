@@ -77,7 +77,7 @@ This file. Tracks current status, done/todo, known issues for the monorepo.
 | `~\.config\opencode\skills\project-docs` | Junction to dev directory | Windows junction |
 | `master` branch protection | Require PR + 5 status checks | GitHub Rulesets |
 | `release/v2.0.0-rc1` branch protection | Require PR + specific checks | GitHub Rulesets |
-| `gh` CLI | Installed v2.95.0, not authenticated | Local environment |
+| `gh` CLI | Installed v2.95.0, authenticated (keyring) | Local environment |
 
 ## 6. CI Workflows
 
@@ -137,7 +137,6 @@ This file. Tracks current status, done/todo, known issues for the monorepo.
 | 3 | Add monorepo fixture to project-onboard test suite | Low |
 
 ### Known Issues
-- `gh` CLI not authenticated — web UI fallback required for GitHub operations
-- DEVLOG.md is stale (last entry 2026-07-08) — updated this session
+- None open. (Historical: `gh` CLI auth gap resolved 2026-09; DEVLOG refresh cadence fixed 2026-07.)
 
 <!-- project-docs:managed:end -->

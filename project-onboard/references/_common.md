@@ -321,6 +321,9 @@ Replace the fixed "50 file limit" with multi-dimensional budgets.
 - When contradictory evidence is found, append targeted reads.
 - When all key conclusions are verified, stop regardless of remaining budget.
 - Deep mode doubles all default budget values.
+- **Quick mode halves all default budget values** (≈25 full reads, 1-2 MB total, 1-2 enumeration levels)
+  and skips the Test+CI and Docs type quotas — enough to confirm type, entry points, and top-level structure
+  for the 20–60 line summary, no more.
 
 ---
 

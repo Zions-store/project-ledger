@@ -1,6 +1,6 @@
 ---
 name: project-docs
-version: 1.3.1
+version: 1.4.0
 description: Initialize or safely update the three-document project knowledge system (AGENTS.md + PROJECT_STATE.md + DEVLOG.md). Use when the user says "init docs", "建立文档体系", "project-docs", "更新项目状态", or when a project needs a living documentation framework.
 ---
 
@@ -116,7 +116,7 @@ For non-English output, translate headers, labels, and placeholder descriptions 
    - A document without project-docs markers is manual. Generate a diff suggestion and require explicit confirmation before changing it.
 3. Propose changes to only the affected sections. Never automatically update §10 or append DEVLOG entries without user-provided completion information.
 4. Remove or redact sensitive values before producing the diff.
-5. Validate the temporary output before replacement. After confirmation, apply validated atomic writes. Never modify project-onboard's generated AGENTS.md block; use the project-docs link block in its manual region instead.
+5. Validate the temporary output before replacement. After confirmation, apply validated atomic writes. Never modify project-onboard's generated AGENTS.md block; use the project-docs link block in its manual region instead. **Handoff rule:** when a user-confirmed architecture change calls for updating the generated region itself (structure, entry points, dependencies), do not edit it — direct the user to run project-onboard's refresh mode, which owns that block.
 
 ### 3. Consistency Check
 

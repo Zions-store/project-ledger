@@ -9,6 +9,10 @@ aliases: [node, js, ts, javascript, typescript]
 signatures:
   any:
     - package.json
+    - deno.json
+    - deno.jsonc
+    - bun.lockb
+    - bunfig.toml
 
 exclusions:
   all:
