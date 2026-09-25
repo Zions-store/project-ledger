@@ -7,15 +7,15 @@ AI agent skills for project onboarding and documentation. OpenCode: tested. Clau
 
 ## Skills
 
-### project-onboard (v2.0.0)
+### project-onboard (v2.1.0)
 
 Auto-detect project type and generate AGENTS.md for AI agents. Four execution modes (inspect / generate / refresh / audit). 12 self-registering rule packs (Unity, Unreal, MonoGame, Node.js, Python, Rust, Go, Java, C++, C#, Lua, General). Zero dependencies.
 
-- **Hosts**: OpenCode 1.17.18 (tested); Claude Code / Codex / Cursor (designed-compatible)
+- **Hosts**: OpenCode 1.17.18–1.18.31 (tested); Claude Code / Codex / Cursor (designed-compatible)
 - **Trigger phrases**: "onboard", "analyze this project", "generate AGENTS.md"
 - **Force type**: `--type unity`, `--type unreal`, etc.
 
-### project-docs (v1.3.1)
+### project-docs (v1.4.0)
 
 Three-document project knowledge system (`AGENTS.md` + `PROJECT_STATE.md` + `DEVLOG.md`). Auto-discovers type-specific templates. Safety-hardened: trust boundary, secret exclusion, diff-first writes with managed markers.
 

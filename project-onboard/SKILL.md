@@ -1,6 +1,6 @@
 ---
 name: project-onboard
-version: 2.0.0
+version: 2.1.0
 description: "Use when the user wants AI project context or onboarding - 'onboard this project', 'analyze this project', '分析这个项目', 'generate AGENTS.md', 'refresh AGENTS.md', 'audit AGENTS.md', 'is AGENTS.md still accurate?'. Analyzes any project directory and generates AGENTS.md with four execution modes (inspect, generate, refresh, audit). Auto-detects Unity, Unreal, MonoGame, Node.js, Python, Rust, Go, Java, C/C++, C#, Lua, and general projects. Rule packs self-register via frontmatter."
 ---
 
@@ -33,7 +33,7 @@ project-onboard uses four distinct execution modes. The mode is inferred from th
 
 **User intent:** create an AGENTS.md for a project that doesn't have one yet.
 
-**Behavior:** performs full scan, writes AGENTS.md. If an AGENTS.md already exists at the target path without `project-onboard` markers, stops and reports the conflict. Suggests using `audit` mode to compare, or `refresh` mode if markers are present.
+**Behavior:** performs full scan, writes AGENTS.md. If an AGENTS.md already exists at the target path without `project-onboard` markers, stops and reports the conflict. Suggests using `audit` mode to compare. If the user reviews the diff and explicitly confirms the overwrite, generate may proceed — the confirmation satisfies the overwrite guard (see refresh mode for the same rule).
 
 **Trigger phrases:**
 - "generate AGENTS.md for this project"
@@ -45,7 +45,7 @@ project-onboard uses four distinct execution modes. The mode is inferred from th
 
 **User intent:** update an existing project-onboard-generated AGENTS.md to reflect current project state.
 
-**Behavior:** only modifies content between `<!-- project-onboard:generated:start -->` and `<!-- project-onboard:generated:end -->` markers. Content between `manual:start` and `manual:end` markers is preserved unchanged. If markers are absent, treats the file as fully manual and generates a diff suggestion instead.
+**Behavior:** only modifies content between `<!-- project-onboard:generated:start -->` and `<!-- project-onboard:generated:end -->` markers. Content between `manual:start` and `manual:end` markers is preserved unchanged. If markers are absent, treats the file as fully manual and generates a diff suggestion instead — never writes without consent. **Exit from the diff dead-end:** after the user reviews the diff and explicitly confirms, hand off to `generate` mode to write the file (the confirmation satisfies generate's conflict guard).
 
 **Trigger phrases:**
 - "refresh AGENTS.md"
@@ -143,7 +143,9 @@ Establish:
 
 ### Step 2: Build Rule Pack Registry
 
-Enumerate all `references/*.md` files (excluding `_common.md` and `_rule-pack-template.md`). For each rule pack, parse and preserve the **complete** YAML frontmatter object. This includes but is not limited to: `id`, `display_name`, `priority`, `kind`, `aliases`, `signatures`, `exclusions`, `refinements`, `workspace_files`, `priority_files`, `entry_point_patterns`, `known_blind_spots`, `optional_output_sections`.
+Enumerate all `references/*.md` files (excluding `_common.md` and `_rule-pack-template.md`). For each rule pack, parse and preserve the **complete** YAML frontmatter object — all 19 schema fields (see `references/_rule-pack-template.md` for the authoritative definitions):
+
+`schema_version`, `id`, `display_name`, `priority`, `kind`, `aliases`, `signatures`, `exclusions`, `refinements`, `workspace_files`, `priority_files`, `entry_point_patterns`, `known_blind_spots`, `optional_output_sections`, `binary_asset_types` (skipped during content scan — record type only, per _common §6), `generated_paths` (add to global ignores at scan time, per _common §7), `default_ignore_paths` (type-specific additions to the global ignore list), `large_structured_files` (route to targeted-reading strategy per _common §11), `external_reference_mechanisms` (recorded as external references, never followed).
 
 Build an in-memory registry:
 
@@ -168,6 +170,8 @@ For each scope (root + discovered workspace members), match against the registry
 - `any`: at least one entry must exist (e.g., Unreal: `any: [*.uproject]`)
 - `any_of`: a list of `all` groups; at least one group must fully match (e.g., C/C++: `any_of: [{all: [Makefile, *.cpp]}, {all: [CMakeLists.txt]}]`)
 - `none_of`: applied separately as `exclusions` — if any `all` group in exclusions fully matches, the candidate is removed
+
+**Exclusions YAML shape:** rule packs declare `exclusions` as a mapping with `any` and/or `all` keys, each a list of path/glob entries (`exclusions: { any: [...], all: [...] }`, as in `signatures`). An entry present under `all` must co-occur with every sibling entry to trigger exclusion; `any` entries each exclude on their own. An empty `exclusions` (or `any: []`) excludes nothing.
 
 Match against the scanned directory listing. For `any_of`, each `all` sub-group is evaluated independently. For exclusions, each entry in an `all` group must match to trigger exclusion.
 
@@ -199,6 +203,8 @@ Read `references/_common.md`. Then, based on topology and candidate scoring: sin
 Classify files by role (A-G) before reading. Apply scan budgets. Over-budget files use keyword search, sectioned reading, or structural sampling — never skipped.
 
 ### Step 6: Generate Output (generate/refresh only; skip for inspect/audit)
+
+**For inspect/audit (no file written):** report inline in the conversation. `quick` depth → a 20–60 line summary with exactly: detected type + evidence tag, entry points, key directories, dependency summary, build/test commands (if found), confidence + gaps. `standard`/`deep` → the same section set as generate below, rendered inline.
 
 Write output following `templates/AGENTS.md`.
 

@@ -185,4 +185,26 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 ---
 
+### Usage-audit repair round: instruction fixes + stale-fact refresh (project-onboard v2.1.0, project-docs v1.4.0)
+
+- **What was done**:
+  - Instruction defects (subagent walkthrough findings): closed the refresh-mode dead-end on marker-less AGENTS.md
+    (diff → user confirmation → hand off to generate, whose conflict guard the confirmation satisfies); fixed the
+    generate-mode conflict hint that pointed at a non-writable refresh; defined inspect/audit output structure
+    (quick = 20–60 line fixed blocks) and quick-mode scan budgets (halved, skips Test+CI and Docs quotas, _common §11).
+  - Cross-skill dead zone: project-docs now carries the handoff rule — architecture-triggered updates to a
+    project-onboard-generated AGENTS.md block route to project-onboard refresh (SKILL.md update step 5 +
+    maintenance-spec trigger section).
+  - Schema documentation: exclusions YAML shape (any/all mapping) documented in SKILL.md; Step 2 now enumerates
+    all 19 frontmatter fields with scan-time consumption notes.
+  - nodejs rule pack signatures extended: deno.json/deno.jsonc/bun.lockb/bunfig.toml (deno/bun projects previously
+    missed by the package.json-only signature).
+  - Stale facts corrected: fixtures 39→108, templates "5 directories"→4 type dirs + root, CI "3 workflows"→2
+    (project-docs validation merged into ci.yml + onboard-validate triggers), gh CLI "not authenticated"→authenticated
+    (3 locations), OpenCode host range 1.17.18–1.18.31, project-docs version reference (AGENTS.md L54), links block
+    aligned to the project-docs template shape, Last generated 2026-09-25.
+  - Versions bumped: project-onboard 2.0.0→2.1.0, project-docs 1.3.1→1.4.0; READMEs and AGENTS.md updated to match.
+
+---
+
 <!-- Append new entries above this line. -->
